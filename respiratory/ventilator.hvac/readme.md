@@ -1,4 +1,4 @@
-# [SickBay](../../../).[Modules](../../).[Respiratory](../)
+# [SickBay](../../../).[Respiratory](../)
 
 ## Ventilator HVAC
 

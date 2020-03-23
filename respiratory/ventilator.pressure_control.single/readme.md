@@ -1,8 +1,8 @@
-# [SickBay](../../../).[Modules](../../).[Vitals](../)
+# [SickBay](../../../).[Respiratory](../)
 
-## Single Vital Monitor
+## Single Pressure Control Ventilator
 
-This folder contains the SickBay module for monitoring single patient's vital signs.
+This folder contains the SickBay module for a Pressure Control Ventilator for a single person.
 
 ## License
 
