@@ -1,8 +1,8 @@
-# [SickBay](../)
+# [SickBay](../../../).[Respiratory](../)
 
-## Modules
+## Quad Pressure Control Ventilator
 
-This folder contains the modules for the SickBay. Please see the [SickBay readme](../) for the list of modules, or visit <https://github.com/KabukiStarship/sickbay> with a web browser.
+This folder contains the SickBay module for a Pressure Control Ventilator for four people.
 
 ## License
 

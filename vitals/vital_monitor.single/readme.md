@@ -1,8 +1,8 @@
-# [SickBay](../../../).[Modules](../../).[Respiratory](../)
+# [SickBay](../../../).[Vitals](../)
 
-## Quad Pressure Control Ventilator
+## Single Vital Monitor
 
-This folder contains the SickBay module for a Pressure Control Ventilator for four people.
+This folder contains the SickBay module for monitoring single patient's vital signs.
 
 ## License
 

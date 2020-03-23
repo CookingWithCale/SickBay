@@ -1,8 +1,12 @@
-# [SickBay](../../../).[Modules](../../).[Respiratory](../)
+# [SickBay](../../../).[Respiratory](../)
 
-## Single Pressure Control Ventilator
+## Ventilator
 
-This folder contains the SickBay module for a Pressure Control Ventilator for a single person.
+This folder contains the specifications for creating ventilators but does not contain any module design.
+
+### Specifications
+
+* [Rapidly manufactured ventilator system specification]
 
 ## License
 
