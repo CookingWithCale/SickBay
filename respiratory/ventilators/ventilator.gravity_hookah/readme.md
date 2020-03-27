@@ -2,7 +2,7 @@
 
 ## Gravity Hookah Ventilator
 
-This folder contains the design files and firmware for the Gravity Hookah Ventilator. You can find the instructions to build this product at <http://pandemiccookbook.org/critical_care/respiratory_care/ventilators/gravity_hookah_ventilator/>.
+This folder contains the design files and firmware for the Gravity Hookah Ventilator. You can find the instructions to build this product at <http://pandemiccookbook.org/critical_care/respiratory_care/ventilators/gravity_hookah_ventilator/>. The firmware is for mbed and we're in need of help with the Arduino port.
 
 ## License
 
