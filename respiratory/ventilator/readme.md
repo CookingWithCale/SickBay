@@ -6,7 +6,7 @@ This folder contains the specifications for creating ventilators but does not co
 
 ### Specifications
 
-* [Rapidly manufactured ventilator system specification]
+* [Rapidly manufactured ventilator system specification](./resources/rapidly_manufactured_ventilator_system_spec)
 
 ## License
 

@@ -1,24 +1,19 @@
 # SickBay
 
-Open-source Pandemic ventilator, hospital, and medical equipment design files for the [Pandemic Cookbook](https://pandemiccookbook.org). The best place to start is by reading the [Getting Started chapter](https://pandemiccookbook.org/getting_started) of the cookbook.
+Open-source Pandemic ventilator and medical equipment design files for the [Pandemic Cookbook](https://pandemiccookbook.org).
 
 ## Modules
 
 ### Respiratory
 
-These modules aid and replace the respirator system.
-
 #### Ventilators
 
-* [Single Positive Control Ventilator](./modules/respirator/ventilators/single_pc_ventilator)
-* [Quad Positive Control Ventilator](./modules/respirator/ventilators/quad_pc_ventilator)
+* [Gravity Hookah Ventilator](./respiratory/ventilators/ventilator.gravity_hookah) - A low-cost rapid manufacturable ventilator from Home Depot and Electronic hobby store parts.
 
 ### Vital Sign Monitors
 
-These modules are for monitoring patient vital signs.
-
-* [Single Vital Monitor](./modules/vital_monitors/vital_monitor.single) - A vital monitor monitor for 4 people using a single microcontroller board.
-* [Quad Vital Monitor](./modules/vital_monitors/vital_monitor.quad) - A vital monitor monitor for 4 people using a single microcontroller board.
+* [Blood Pressure Monitor](./vital_sign_monitors/blood_pressure_monitor) - A monification for off-the-self blood pressure monitors to interface with the SickBay app.
+* [Pulse Oxymeter](./vital_sign_monitors/pulse_oxymeter)
 
 ## License
 
