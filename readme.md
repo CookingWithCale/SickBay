@@ -12,7 +12,7 @@ Open-source Pandemic ventilator and medical equipment design files for the [Pand
 
 ### Vital Sign Monitors
 
-* [Blood Pressure Monitor](./vital_sign_monitors/blood_pressure_monitor) - A monification for off-the-self blood pressure monitors to interface with the SickBay app.
+* [Blood Pressure Monitor](./vital_sign_monitors/blood_pressure_monitor) - A modification for off-the-self blood pressure monitors to interface with the SickBay app.
 * [Pulse Oxymeter](./vital_sign_monitors/pulse_oxymeter)
 
 ## License
