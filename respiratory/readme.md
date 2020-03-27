@@ -1,8 +1,10 @@
-# [SickBay](../../).[Modules](../)
+# [sickbay](../)
 
 ## Respiratory
 
-This folder contains the modules for aiding the respiratory system.
+Modules related to the Respiratory System.
+
+* [Ventilators](./ventilators)
 
 ## License
 
