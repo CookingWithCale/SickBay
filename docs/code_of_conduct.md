@@ -1,4 +1,6 @@
-# Code of Conduct
+# [sickbay](../)
+
+## Code of Conduct
 
 The Code of Conduct (CoC) for this projects are linked to external sources that include the [Contributor Covenant CoC](https://www.contributor-covenant.org/version/1/4/code-of-conduct.html) and the [Kabuki Toolkit™ Cookbook](https://github.com/KabukiStarship/kabuki.toolkit.cookbook). You are required to read and agree to the following documents in order to contribute to this repository:
 
