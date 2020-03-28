@@ -4,6 +4,10 @@
 
 This folder contains the SickBay module for a Ventilator Heating, Air Conditioning, and Ventilation (HVAC) unit for filtering and humidifying the air and venting out bad air such that it doesn't get anyone sick.
 
+## How to Contribute
+
+The best way to learn how to contribute to SickBay is to read the Quickstart Guide of the Pandemic Cookbook at <https://pandemiccookbook.org/getting_started/quickstart_guide>.
+
 ## License
 
 Copyright © 2020 [Kabuki Starship](https://kabukistarship.com).

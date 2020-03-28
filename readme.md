@@ -1,6 +1,6 @@
 # SickBay
 
-Open-source Pandemic ventilator and medical equipment design files for the [Pandemic Cookbook](https://pandemiccookbook.org).
+Open-source ventilator and medical equipment design files and firmware for the [Pandemic Cookbook](https://pandemiccookbook.org).
 
 ## Modules
 
@@ -13,7 +13,11 @@ Open-source Pandemic ventilator and medical equipment design files for the [Pand
 ### Vital Sign Monitors
 
 * [Blood Pressure Monitor](./vital_sign_monitors/blood_pressure_monitor) - A modification for off-the-self blood pressure monitors to interface with the SickBay app.
-* [Pulse Oxymeter](./vital_sign_monitors/pulse_oxymeter)
+* [Pulse Oximeter](./vital_sign_monitors/pulse_oximeter) - A modification for an NS-100A fingertip pulse oximeter to measure pulse and blood oxygen absorption rate (SoO2).
+
+## How to Contribute
+
+The best way to learn how to contribute to SickBay is to read the Quickstart Guide of the Pandemic Cookbook at <https://pandemiccookbook.org/getting_started/quickstart_guide>.
 
 ## License
 
