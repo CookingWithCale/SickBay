@@ -1,14 +1,16 @@
 # [sickbay](../)
 
-### Contributing Guide
+## Contributing Guide
 
-### C++ Style Guide
+### Code Style Guide
 
-The style guide we're using is the Google C++ Style Guide that can be found at <https://google.github.io/styleguide/cppguide.html>.
+The style guide we're using is the ASCII C++ Style Guide, which is a modified version of the Google C++ Style Guide that can be found at <https://github.com/kabukistarship/script2/tree/master/style_guide>. We're going to just adapt this style guide for Python, and I'll probably end up make it's repo for the Style Guide but for right now they are too coupled to split up now.
 
 ### Easiest Way to Contribute
 
-The easiest way for you to contribute is using a GitHub Issue Ticket at <https://github.com/KabukiStarship/sickbay/issues>. For the title, enter a one-sentence mission statement of what you want us to do. Then enter in the Description a more detailed Problem and Solution statement of what it is that you're contributing, if what you want us to do is not obvious from the Title Mission Statement.
+The easiest way for you to contribute is using a GitHub Issue Ticket at <https://github.com/KabukiStarship/sickbay/issues>. For the title, enter a one-sentence mission statement of what you want us to do. Then enter in the Description a more detailed Problem and Solution statement of what it is that you're contributing, if what you want us to do is not obvious from the Title Mission Statement. You can also copy and paste any code fixes and I can manually update it, but the contribution process is industry best practice and will be some what complicated for new users, but doable.
+
+The easiest way to program the microcontroller is hands down the mbed online IDE at <https://ide.mbed.com>, they have a system where you the mbed board shows up as a drive in Windows and you can download the firmware to the drive to program it, but it can be frustrating so more advanced users who should read the Development Environment below.
 
 ## Development Environment
 
