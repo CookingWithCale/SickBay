@@ -1,4 +1,4 @@
-# [pandemic.cookbook](../)
+# [sickbay](../)
 
 ### Contributing Guide
 
@@ -8,35 +8,37 @@ The style guide we're using is the Google C++ Style Guide that can be found at <
 
 ### Easiest Way to Contribute
 
-The easiest way for you to contribute is using an issue ticket at <https://github.com/KabukiStarship/sickbay/issues>. For the title, enter a one-sentence mission statement of what you want us to do. Then enter in the Description a more detailed Problem and Solution statement of what it is that you're contributing.
+The easiest way for you to contribute is using a GitHub Issue Ticket at <https://github.com/KabukiStarship/sickbay/issues>. For the title, enter a one-sentence mission statement of what you want us to do. Then enter in the Description a more detailed Problem and Solution statement of what it is that you're contributing, if what you want us to do is not obvious from the Title Mission Statement.
 
 ## Development Environment
 
-Our primary development is for mbed using Arduino pin outs to make porting to Arduino as simple as possible. The mbed board we're using is the NUCLEO-L512RE, but any mbed board will work.
+Our primary development is for mbed using Arduino pin outs to make porting to Arduino as simple as possible. mbed has an online IDE so there is no need to setup an IDE, we don't have a walk through for you but feel free to contribute one via a GitHub Issue ticket. We are in need of someone to take over the Arduino ports; we need all the hardware we can get our hands on.
 
-**1.** Learn the Git Revision Control System at <https://try.github.io> and sign up for a GitHub account at <https://github.com>.
+**1.** Sign up for a GitHub account at <https://github.com>.
 
-**2.** There are two repositories, one for the Cookbook and another for the Sick Bay, which contains the design files. Fork both Git repositories (AKA repos) into your own account (See <https://try.github.io> for instructions on forking) so you can make and save changes and initiate Pull Requests to merge your contributions with the master branch. The repos are located at:
+**2.** Download Git for your Operating System at <https://git-scm.com/>.
+
+**3.** Learn the Git Revision Control System at <https://try.github.io>.
+
+**4.** There are two repositories, one for the Pandemic Cookbook and another for the SickBay, which contains the design files. Fork both Git repositories (AKA repos) into your own account (See <https://try.github.io> for instructions on forking) so you can make and save changes and initiate Pull Requests to merge your contributions with the master branch. The repos are located at:
 
 * <https://github.com/CookingWithCale/pandemic.cookbook>
 * <https://github.com/KabukiStarship/sickbay>
 
-**3** Clone the Cookbook repo using the command after you change MyGitHubAccountName to your GitHub account name you made in Step 1:
+**5** Clone the Cookbook repos:
 
 ```Bash
-git clone https://github.com/MyGitHubAccountName/pandemic.cookbook.git
-git clone https://github.com/MyGitHubAccountName/sickbay.git
+git clone https://github.com/CookingWithCale/pandemic.cookbook.git
+git clone https://github.com/KabukiStarship/sickbay.git
 ```
 
-**3.** Download and install Visual Studio Code at <https://code.visualstudio.com>.
+**6.** Download and install the latest version of FreeCAD, a really nice free Solid modeling program, at <https://www.freecadweb.org/>.
 
-**4.** Open Visual Studio Code, and add the two Git repo folders you just cloned to your Workspace by clicking File then "Add folder to workspace..." then navigating to the pandemic.cookbook folder, and repeating for the sickbay folder.
-
-**5.** Download and install FreeCAD at <https://www.freecadweb.org/>
+**7.** Download and install mbed studio at <https://os.mbed.com/studio/>.
 
 ## Reporting Bugs
 
-**1.** Ensure the bug was not already reported by by reading the [Issues](https://github.com/abc_org/xyz_project/issues).
+**1.** Ensure the bug was not already reported by by reading the [Issues](https://github.com/KabukiStarship/sickbay/issues).
 
 **2.** Open `/docs/bug_report_template.md` and copy it's contents to the clipboard.
 
@@ -48,7 +50,7 @@ git clone https://github.com/MyGitHubAccountName/sickbay.git
 
 ### Completing Issues
 
-**1.** Clone the repo and create a branch for the IssueNuber:
+**1.** Clone the repo and create a branch for the IssueNumber:
 
 ```BASH
 git checkout -b Issue123

@@ -1,4 +1,4 @@
-# IssueType Feature Request
+# IssueType Feature request
 
 ## Problem
 
@@ -11,6 +11,10 @@
 ## Hierarchy
 
 * This
+
+## How to Contribute
+
+The best way to learn how to contribute to SickBay is to read the Quickstart Guide of the Pandemic Cookbook at <https://pandemiccookbook.org/getting_started/quickstart_guide>.
 
 ## License
 
