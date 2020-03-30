@@ -34,9 +34,6 @@ bld/
 # VS Code files
 .vscode/
 
-# Compiled Python files
-.pyc
-
 # Wiki files
 wiki/
 
@@ -87,6 +84,7 @@ artifacts/
 *.pidb
 *.svclog
 *.scc
+*.pyc
 
 # Chutzpah Test files
 _Chutzpah*
