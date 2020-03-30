@@ -7,8 +7,9 @@ reserved (R). This Source Code Form is subject to the terms of the Mozilla
 Public License, v. 2.0. If a copy of the MPL was not distributed with this file,
 You can obtain one at <https://mozilla.org/MPL/2.0/>. """
 
-# A model of a human heart.
-class RespiratorySystem():
+def SickBay():
+  # A model of a human heart.
+  class RespiratorySystem():
     IRVMin = 0.0          # The min IRV value.
     IRVMax = 100.0        # The max IRV value.
 
@@ -52,13 +53,12 @@ class RespiratorySystem():
         IC = 2.4
         FRC = 1.8
         TLC = 4.2
-
-    def IRVSet(IRV):
+     def IRVSet(IRV):
       if (IRV >= IRVMin and
         IRV <= IRVMax):
         self.IRV = IRV
       Update()
-    
+  
     def TVSet(TV):
       if (TV >= TVMin and 
         TV <= TVMax):
@@ -84,16 +84,16 @@ class RespiratorySystem():
       self.TLC = IRV + TV + ERV + RV
 
     def DescriptionSet (Description):
-        self.Description = Description
+      self.Description = Description
 
     def PrintStats ():
-        print ("\nIRV:" + self:IRV + "\nTV:" + TV + "\nERV:" + "\nVC: " + VC +
-              "\nIC: " + IC + "\nFRC: " + FRC "\nTLC: " + TLC)
+      print ("\nIRV:" + self:IRV + "\nTV:" + TV + "\nERV:" + "\nVC: " + VC +
+             "\nIC: " + IC + "\nFRC: " + FRC "\nTLC: " + TLC)
 
     def PrintDetails ():
-        print ("\nIRV:" + self:IRV + "\nTV:" + TV + "\nERV:" + "\nVC: " + VC +
-              "\nIC: " + IC + "\nFRC: " + FRC "\nTLC: " + TLC +
-              "\nDescription: \"" + Description + "\n\"")
+      print ("\nIRV:" + self:IRV + "\nTV:" + TV + "\nERV:" + "\nVC: " + VC +
+             "\nIC: " + IC + "\nFRC: " + FRC "\nTLC: " + TLC +
+             "\nDescription: \"" + Description + "\n\"")
 
     def PrintDescription ():
-        "\nDescription:" + Description
+      "\nDescription:" + Description
