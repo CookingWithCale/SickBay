@@ -1,5 +1,5 @@
 """SickBay @version 0.x
-@link    https://github.com/KabukiStarship/sickbay.git
+@link    https://github.com/KabukiStarship/SickBay.git
 @file    /SickBay.py
 @author  Cale McCollough <https://cale-mccollough.github.io>
 @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>; all rights 
@@ -15,26 +15,27 @@ import sched, time
 Scheduler = sched.scheduler(time.time, time.sleep)
   
 # The SickBay app object.
-class SickBay(SickBayDevice):
+class SickBay():
   # Constants
   StateConfiguring = 0   #< State: Init.
   StateMonitor = 1       #< State: Monitoring.
   StateShutDown = 1      #< State: Shutting down.
-    
-  def __init__(self, ):
-    super().__init__(0, "SicKBay", "The main SickBay object.")
+  
+  def __init__(self):
     self.State = self.StateConfiguring    #< The app state.
     self.Patients = []             #< The List of patients.
     self.Patient = None            #< The currently selected patient.
     self.HumanOperator = ""        #< The human who is operating the system.
-    HumanOperatorSet()
+    self.HumanOperatorSet()
+    self.Run()
     
   def HumanOperatorSet(self):
-    self.HumanOperator = input("\nEnter your name: ")
+    self.HumanOperator = "Me" #raw_input("\nEnter your name: ")
+    print ("\nSwitching to HumanOperator: " + self.HumanOperator)
   
   # Adds a patient to the Patients.
   def PatientsAdd(self, Name, Sex, Height, Weight):
-    Patients.append(Human(Name, Sex, Height, Weight))
+    self.Patients.append(Human(Name, Sex, Height, Weight))
 
   # Handler for the init app state.
   def StateConfiguringHandle (self):
@@ -59,8 +60,7 @@ class SickBay(SickBayDevice):
 
   # Main program entry point.
   def Run(self):
-    Scheduler.enter(5, 1, Update, ())
-    Scheduler.enter(10, 1, Update, ())
+    Scheduler.enter(1, 1, self.Update, ())
     Scheduler.run()
     
   # Prints the most current and important stats to the Console.
@@ -69,19 +69,20 @@ class SickBay(SickBayDevice):
       Patient.PrintStats()
  
   # Function that is called every x seconds to update everything.
-  def Update(self, sc):
+  def Update(self):
     print ("\n\nUpdate Time:", time.time())
     Handler = {
-      1: StateConfiguringHandle,
-      2: StateMonitorHandle,
-      3: StateShutDownHandle
+      1: self.StateConfiguringHandle,
+      2: self.StateMonitorHandle,
+      3: self.StateShutDownHandle
     }
     # Get the function from switcher dictionary
     Handle = Handler.get(self.State, lambda: "Invalid state")
     # Execute the function
     Handle()
-    PrintStats()
+    self.PrintStats()
+    Scheduler.enter(1, 1, self.Update, ())
 
 if __name__ == '__main__':
-  SickBayApp = SickBay.SickBay()
+  SickBayConsole = SickBay()
     #unittest.main()
