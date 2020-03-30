@@ -18,18 +18,18 @@ def SickBay():
     StateMonitor = 1       #< State: Monitoring.
     StateShutDown = 1      #< State: Shutting down.
     
-    def __init__():
+    def __init__(self):
     State = StateInit      #< The app state.
     Patients = []          #< The List of patients.
     Patient = None         #< The current selected patient.
     Patients.append()
   
     # Adds a patient to the Patients.
-    def PatientsAdd(Name, Sex, Height, Weight):
+    def PatientsAdd(self, Name, Sex, Height, Weight):
       Patients.append(Human(Name, Sex, Height, Weight))
 
     # Handler for the init app state.
-    def StateInitHandle ():
+    def StateInitHandle (self):
       print ("\nWelcome to SickBay")
       print ("\n\nAdding test patients.")
       Patients.append ("John Doe 1", "M", 1.7, 70)
@@ -42,26 +42,26 @@ def SickBay():
       Patients.append ("Jane Doe 4", "F", 1.5, 70)
   
     # Handler for the Monitor app state.
-    def StateMonitorHandle():
+    def StateMonitorHandle(self):
       for Patient in Patients:
         Patient.PrintStats()
   
-    def StateShutDownHandle():
+    def StateShutDownHandle(self):
       print ("\n\nShutting down...")
 
     # Main program entry point.
-    def Run(Argument):
+    def Run(self, Argument):
       Handler = {
-          1: StateInitHandle,
-          2: StateMonitorHandle,
-          3: StateShutDownHandle
+        1: StateInitHandle,
+        2: StateMonitorHandle,
+        3: StateShutDownHandle
       }
       # Get the function from switcher dictionary
-      Handle = Handler.get(Argument, lambda: "Invalid state")
+      Handle = Handler.get(Argument, lambda: "Invalid State")
       # Execute the function
       Handle()
-  
+    
     # Prints all of the Patient's stats.
-    def PrintStats():
+    def PrintStats(self):
       for Patient in Patients:
         Patient.PrintStats()
