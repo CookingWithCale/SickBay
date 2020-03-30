@@ -1,8 +1,9 @@
-# [sickbay](../../../).[vital_sign_monitors](../)
+# [SickBay](../../)
 
-## Pulse Oximeter
+## Vital Sign Monitors
 
-This module will be used for measuring patient pulse and blood oxygen/SpO2 levels.
+* [Blood Pressure Monitor](./blood_pressure_monitor)
+* [Pulse Oximeter](./Pulse)
 
 ## How to Contribute
 

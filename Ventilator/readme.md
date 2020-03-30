@@ -12,7 +12,7 @@ The table bellow lists the four respiratory volumes (determined by spirometry) u
 |:--------------------------:|:------:|:------:|:------------|
 | Inspiratory reserve volume |  IRV   |   3L   | The amount of air that can be forcefully inspired after a normal inspiration. |
 | Tidal volume               |   TV   |  0.5L  | The volume of air which is circulated through inhalation and expiration during one normal respiration. |
-| Expiratory reserve volume  |  ERV   |  1.2L  | The volume of air which can be exhaled forcefully after a normal expiration.           |
+| Expiratory reserve volume  |  ERV   |  1.2L  | The volume of air which can be exhaled forcefully after a normal expiration. |
 | Residual volume            |   RV   |  1.2L  | The amount of air that remains in the lungs after normal expiration. |
 
 The four lung capacities can be calculated using the formulas:
@@ -33,7 +33,7 @@ The following table summarizes the above formulas and introduces the normal valu
 
 ### Tidal Volume Calculation
 
-Large Tidal volumes have been associated with increased death rate in patients, possibly going from a rate of 39.8% vs 31.0%). For this reason ideal body weight should be used instead of actual body weight because the lung volume doesn't change with weight gained.
+Large Tidal volumes have been associated with increased death rate in patients, possibly going from a rate of 39.8% vs 31.0%. For this reason ideal body weight should be used instead of actual body weight because the lung volume doesn't change with weight gained.
 
 * Male: 50 + (0.91) [height (cm) – 152.4] or 50 + 2.3[height (inches) – 60]
 * Female: 45.5 + (0.91) [height (cm) – 152.4] or 45.5 + 2.3[height (inches) – 60]
@@ -52,7 +52,7 @@ If blood gases can be normalized at the same time, then do so; however, doing so
 
 * [Lung Capacity Calculator](https://www.mdapp.co/lung-capacity-calculator-350/)
 * [Setting the Tidal Volume In Adults Receiving Mechanical Ventilation](https://www.nbrc.org/wp-content/uploads/2017/07/Setting-the-Tidal-Volume.pdf)
-* [Rapidly manufactured ventilator system specification](./rapidly_manufactured_ventilator_system_spec)
+* [Rapidly manufactured ventilator system specification](./resources/rapidly_manufactured_ventilator_system_spec)
 
 ## How to Contribute
 

@@ -1,4 +1,4 @@
-# [sickbay](../)
+# [SickBay](../)
 
 ## Code of Conduct
 

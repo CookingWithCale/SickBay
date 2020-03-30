@@ -1,10 +1,8 @@
-# [sickbay](../)
+# [SickBay](../../../).[CirculatorySystem](../)
 
-## Respiratory
+## Pulse Oximeter
 
-Modules related to the Respiratory System.
-
-* [Ventilators](./ventilators)
+This module will be used for measuring patient pulse and blood oxygen/SpO2 levels.
 
 ## How to Contribute
 

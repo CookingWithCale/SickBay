@@ -1,9 +1,8 @@
-# [sickbay](../../)
+# [SickBay](../)
 
-## Vital Sign Monitors
+## Respiratory
 
-* [Blood Pressure Monitor](./blood_pressure_monitor)
-* [Pulse Oxymeter](./pulse_oxymeter)
+This folder contains code to model the Human Respiratory System.
 
 ## How to Contribute
 
