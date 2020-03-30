@@ -3,7 +3,7 @@ import unittest
 import Test00Core
 import Test01GHVentilator
 
-TestSickBaySetup():
+def TestSickBaySetup():
   print("\n\nTesting SickBay\n")
 
 class TestGVVentilator(unittest.TestCase):
