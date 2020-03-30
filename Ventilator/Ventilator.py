@@ -7,35 +7,35 @@ reserved (R). This Source Code Form is subject to the terms of the Mozilla
 Public License, v. 2.0. If a copy of the MPL was not distributed with this file,
 You can obtain one at <https://mozilla.org/MPL/2.0/>. """
 
+import SickBayDevice
 import GHVentilator
 
-# The minimum breath 1-to-1 duty cycle.
-VentilatorBreathDutyCycleMin = 1.0 / (2.0 * 1.0)
-
-# The minimum breath 1-to-1 duty cycle.
-VentilatorBreathDutyCycleMin = 1.0 / (2.0 * 3.0)
-
-# The minimum breath 1-to-1 duty cycle.
-VentilatorBreathPeriod = 0.0
-
-# The minimum breath 1-to-1 duty cycle.
-VentilatorBreathDutyCycleMin = 1.0 / (2.0 * 3.0)
-
-class Ventilator:
-  Type = ""               #< The type of Ventilator
-  BreathDutyCycle = 0.5   #< The breath duty cycle where 0.5 is 50% duty cycle.
-  BreathPeriod = 2.0      #< The breath period in seconds.
-  TidalCurrent = 0.0      #< The tidal air current.
-
+class Ventilator(SickBayDevice):
+  # Constants
+  # The minimum breath 1-to-1 duty cycle.
+  BreathDutyCycleMin = 1.0 / (2.0 * 1.0)
+  # The minimum breath 1-to-1 duty cycle.
+  BreathDutyCycleMax = 1.0 / (2.0 * 3.0)
+  # The minimum breath 1-to-1 duty cycle.
+  BreathPeriodMin = 0.0
+  # The minimum breath period of 10.0 seconds.
+  BreathPeriodMax = 10.0
+    
   def __init__():
-    self.data = []
+    self.Type = ""               #< The type of Ventilator
+    self.BreathDutyCycle = 0.5   #< The breath duty cycle where 0.5 is 50% duty cycle.
+    self.BreathPeriod = 2.0      #< The breath period in seconds.
+    self.TidalCurrent = 0.0      #< The tidal air current.
   
-  def BreathDutyCycleSet(BreathDutyCycle)
+  def BreathDutyCycleSet(self, BreathDutyCycle)
     if (BreathDutyCycle >= BreathDutyCycleMin and
         BreathDutyCycle <= BreathDutyCycleMax):
-        self.BreathDutyCycle = BreathDutyCycle
+      self.BreathDutyCycle = BreathDutyCycle
   
-  def BreathPeriodSet(BreathPeriod):
+  def BreathPeriodSet(self, BreathPeriod):
     if (BreathPeriod >= BreathPeriodMin and
         BreathPeriod <= BreathPeriodMax):
-        self.BreathPeriod = BreathPeriod
+      self.BreathPeriod = BreathPeriod
+    
+  def PrintStats(self):
+    print("\nOK")
