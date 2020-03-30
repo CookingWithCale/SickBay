@@ -16,16 +16,16 @@ class SickBay:
   StateInit = 0          #< State: Init.
   StateMonitor = 1       #< State: Monitoring.
   StateShutDown = 1      #< State: Shutting down.
-
-  # Variables
-  State = StateInit      #< The app state.
-  Patients = []          #< The List of patients.
   
   def __init__():
-    Patients.append()
+  State = StateInit      #< The app state.
+  Patients = []          #< The List of patients.
+  Patient = None         #< The current selected patient.
+  Patients.append()
   
+  # Adds a patient to the Patients.
   def PatientsAdd(Name, Sex, Height, Weight):
-    Patients.append(Human())
+    Patients.append(Human(Name, Sex, Height, Weight))
 
   # Handler for the init app state.
   def StateInitHandle ():
