@@ -8,7 +8,7 @@ Public License, v. 2.0. If a copy of the MPL was not distributed with this file,
 You can obtain one at <https://mozilla.org/MPL/2.0/>. """
 
 # A model of a human heart.
-def RespiratorySystem():
+class RespiratorySystem():
     IRVMin = 0.0          # The min IRV value.
     IRVMax = 100.0        # The max IRV value.
 
@@ -40,33 +40,60 @@ def RespiratorySystem():
     Description = ""        # A Description of the lungs.
 
     def __init__(self):
-        self.data = []
+
+    def __init__(self, Sex):
+      if Sex == "M":
+        VC = 4.6    #< Vital capacity
+        IC = 3.5    #< Inspiratory capacity
+        RFC = 2.3   #< Functional residual capacity
+        TLC = 5.8   #< Total lung capacity
+      elif Sex == "F":
+        VC = 3.1
+        IC = 2.4
+        FRC = 1.8
+        TLC = 4.2
 
     def IRVSet(IRV):
-        if (IRV >= IRVMin and
-            IRV <= IRVMax):
-            self.IRV = IRV
+      if (IRV >= IRVMin and
+        IRV <= IRVMax):
+        self.IRV = IRV
+      Update()
     
     def TVSet(TV):
-        if (TV >= TVMin and 
-            TV <= TVMax):
-            self.TV = TV
+      if (TV >= TVMin and 
+        TV <= TVMax):
+        self.TV = TV
+      Update()
     
     def ERVSet(ERV):
-        if (ERV >= ERVMin and 
-            ERV <= ERVMax):
-            self.ERV = ERV
+      if (ERV >= ERVMin and 
+        ERV <= ERVMax):
+        self.ERV = ERV
+      Update()
     
     def RVSet(RV):
-        if (RV >= RVMin and 
-            RV <= RVMax):
-            self.RV = RV
+      if (RV >= RVMin and 
+        RV <= RVMax):
+        self.RV = RV
+      Update()
+    
+    def Update(): 
+      self.VC = IRV + TV + ERV
+      self.IC = IRV + TV
+      self.FRC = ERV + RV
+      self.TLC = IRV + TV + ERV + RV
 
     def DescriptionSet (Description):
         self.Description = Description
 
     def PrintStats ():
-        "\nIRV:" + self:IRV + "\nTV:" + TV + "\nERV:" + 
+        print ("\nIRV:" + self:IRV + "\nTV:" + TV + "\nERV:" + "\nVC: " + VC +
+              "\nIC: " + IC + "\nFRC: " + FRC "\nTLC: " + TLC)
+
+    def PrintDetails ():
+        print ("\nIRV:" + self:IRV + "\nTV:" + TV + "\nERV:" + "\nVC: " + VC +
+              "\nIC: " + IC + "\nFRC: " + FRC "\nTLC: " + TLC +
+              "\nDescription: \"" + Description + "\n\"")
 
     def PrintDescription ():
         "\nDescription:" + Description
