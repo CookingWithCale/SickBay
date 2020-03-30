@@ -1,6 +1,6 @@
-""" Gravity Hookah Ventilator @version 0.x
+""" SickBay @version 0.x
 @link    https://github.com/KabukiStarship/sickbay.git
-@file    /CirculatorySystem/CirculatorySystem.py
+@file    /SBHumanCirculatorySystem.py
 @author  Cale McCollough <https://cale-mccollough.github.io>
 @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>; all rights 
 reserved (R). This Source Code Form is subject to the terms of the Mozilla 
@@ -8,7 +8,7 @@ Public License, v. 2.0. If a copy of the MPL was not distributed with this file,
 You can obtain one at <https://mozilla.org/MPL/2.0/>. """
 
 # A model of a human Circulatory system.
-class CirculatorySystem():
+class SBHumanCirculatorySystem(SBNode):
   # Constants
   BloodPressureMin = 0.0     #< The min "dead" blood pressure rate of 0.0.
   BloodPressureMax = 1000.0  #< The max pulse rate.

@@ -21,20 +21,20 @@ class Ventilator(SickBayDevice):
   # The minimum breath period of 10.0 seconds.
   BreathPeriodMax = 10.0
     
-  def __init__():
+  def __init__(self):
     self.Type = ""               #< The type of Ventilator
     self.BreathDutyCycle = 0.5   #< The breath duty cycle where 0.5 is 50% duty cycle.
     self.BreathPeriod = 2.0      #< The breath period in seconds.
     self.TidalCurrent = 0.0      #< The tidal air current.
   
-  def BreathDutyCycleSet(self, BreathDutyCycle)
-    if (BreathDutyCycle >= BreathDutyCycleMin and
-        BreathDutyCycle <= BreathDutyCycleMax):
+  def BreathDutyCycleSet(self, BreathDutyCycle):
+    if (BreathDutyCycle >= self.BreathDutyCycleMin and
+        BreathDutyCycle <= self.BreathDutyCycleMax):
       self.BreathDutyCycle = BreathDutyCycle
   
   def BreathPeriodSet(self, BreathPeriod):
-    if (BreathPeriod >= BreathPeriodMin and
-        BreathPeriod <= BreathPeriodMax):
+    if (BreathPeriod >= self.BreathPeriodMin and
+        BreathPeriod <= self.BreathPeriodMax):
       self.BreathPeriod = BreathPeriod
     
   def PrintStats(self):
