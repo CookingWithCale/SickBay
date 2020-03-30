@@ -7,11 +7,12 @@ reserved (R). This Source Code Form is subject to the terms of the Mozilla
 Public License, v. 2.0. If a copy of the MPL was not distributed with this file,
 You can obtain one at <https://mozilla.org/MPL/2.0/>. """
 
-import CirculatorySystem
-import RespiratorySystem
+import SBNode
+import HumanCirculatorySystem
+import HumanRespiratorySystem
 
 # A model of a human.
-class Human():
+class SBHuman(SBNode):
   HeightMin = 0.0         #< The minimum Height of a person is 0M.
   HeightMax = 10.0        #< The maximum Height of a person is 10M.
   WeightMin = 0.0         #< The minimum Weight of a person is 0G.
@@ -27,10 +28,10 @@ class Human():
     self.Weight = Weight  #< The person's Weight.
 
     # The human's Circulatory system.
-    self.Circulatory = CirculatorySystem()
+    self.Circulatory = SBHumanCirculatorySystem()
 
     # The human's Respiratory system.
-    self.Respiratory =  RespiratorySystem()
+    self.Respiratory = SBHumanRespiratorySystem()
 
   def NameSet (self, Name):
     self.Name = Name
@@ -38,7 +39,7 @@ class Human():
   def UIDSet (self, UID):
     self.UID = UID
   
-  def SexSex(self, Sex):
+  def SexSet(self, Sex):
     if Sex >= SexMale or Sex <= SexFemale:
       self.Sex = Sex
   
@@ -56,19 +57,19 @@ class Human():
   def RespiratorySet(self, Respiratory):
     self.Respiratory = Respiratory
 
-  def PrintStats ():
+  def PrintStats (self):
     print ("Name:" + self.Name + " UID:" + self.UID)
     self.Circulatory.PrintStats ()
     self.Respiratory.PrintStats ()
       
-  def PrintDetails ():
+  def PrintDetails (self):
     print ("Name:" + self.Name + " UID:" + self.UID + " Sex:" + self.Sex + 
            " Height:" + self.Height + " Weight:" + self.Weight
            "\nDescription:\"" + self.Description + "\n")
     self.Circulatory.PrintDetails ()
     self.Respiratory.PrintDetails ()
       
-  def PrintDescription ():
+  def DescriptionPrint (self):
     print ("\nDescription:\"" + self.Description + "\n")
     self.Circulatory.PrintDescription ()
     self.Respiratory.PrintDescription ()
