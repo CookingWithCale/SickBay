@@ -2,15 +2,14 @@
 # -*- coding: utf-8 -*-
 """SickBay @version 0.x
 @link    https://github.com/KabukiStarship/sickbay.git
-@file    /SBVentilator/SBVentilator.py
+@file    /SBVentilator.py
 @author  Cale McCollough <https://cale-mccollough.github.io>
 @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>; all rights 
 reserved (R). This Source Code Form is subject to the terms of the Mozilla 
 Public License, v. 2.0. If a copy of the MPL was not distributed with this file,
 You can obtain one at <https://mozilla.org/MPL/2.0/>. """
 
-import SBDevice
-import GHVentilator
+from SBDevice import SBDevice
 
 # A SBVentilator to aid the human respiratory system.
 # Values used to calculate the SBVentilator Tidal current come from:
@@ -22,7 +21,7 @@ class SBVentilator(SBDevice):
   # The minimum breath 1-to-1 duty cycle.
   BreathDutyCycleMin = 1.0 / (2.0 * 1.0)
   # The minimum breath 1-to-2 duty cycle.
-  BreathPeriodDefault = 1.0 / (2.0 * 2.0)
+  BreathDutyCycleDefault = 1.0 / (2.0 * 2.0)
   # The minimum breath 1-to-1 duty cycle.
   BreathDutyCycleMax = 1.0 / (2.0 * 3.0)
   # The minimum breath 1-to-1 duty cycle.
@@ -49,14 +48,14 @@ class SBVentilator(SBDevice):
   # if that pressure is exceeded.
   EIPPMax = 30.0
     
-  def __init__(self):
-    super().__init__()
-    #super().__init__("Device", "SBVentilator")
-    self.Type = ""               #< The type of SBVentilator
-    self.BreathDutyCycle = 0.5   #< The breath duty cycle where 0.5 is 50% duty cycle.
-    self.BreathPeriod = 2.0      #< The breath period in seconds.
-    self.TidalCurrent = 0.0      #< The tidal air current.
-    self.EIPP = 0.0              #< End Inspiratory plateau pressure.
+  def __init__(self, NID, BreathDutyCycle = 0.5, BreathPeriod = 2.0, TidalCurrent = 0.0, EIPP = 0.0):
+    SBDevice.__init__(self, "Device", "Ventilator")
+    self.Type = ""                        #< The type of SBVentilator
+    # The breath duty cycle where 0.5 is 50% duty cycle.
+    self.BreathDutyCycle = BreathDutyCycle 
+    self.BreathPeriod = BreathPeriod      #< The breath period in seconds.
+    self.TidalCurrent = TidalCurrent      #< The tidal air current.
+    self.EIPP = EIPP                      #< End Inspiratory plateau pressure.
   
   # Attaches a Patient to the SBVentilator.
   def AttachPatient(self, Patient):

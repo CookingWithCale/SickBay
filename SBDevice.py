@@ -9,12 +9,12 @@ reserved (R). This Source Code Form is subject to the terms of the Mozilla
 Public License, v. 2.0. If a copy of the MPL was not distributed with this file,
 You can obtain one at <https://mozilla.org/MPL/2.0/>. """
 
-import SBNode
+from SBNode import SBNode
 
 # A SickBay Device.
-class SBDevice():
+class SBDevice(SBNode):
   
-  def __init__(self, Handle = "", Name = "", Description = "", Help = ""):
-    #super().__init__()#"Device", Handle, Name, Description, Help)
+  def __init__(self, NID, Handle = "", Name = "", Description = "", Help = ""):
+    SBNode.__init__(self, NID, "Device", Handle, Name, Description, Help)
     pass
   
