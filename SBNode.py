@@ -56,6 +56,9 @@ class SBNode:
     SBPrint.Indent(Indent, "NID: " + self.NID + "Type: " + self.Type  + 
                        "Handle: " + self.Handle + "Name: " + self.Name)
   
+  def PrintHelp(self):
+    print(self.Help)
+  
   def PrintAll(self, Indent = 0):
     self.Print(Indent)
     SBPrint.Indent(Indent, "Children: Count", self.NodesCount (), " { ")
@@ -68,7 +71,7 @@ class SBNode:
     # Commands that list the child notes by group, NID, Type, Handle, or Name.
     Command = Command.lower()
     Results = []
-    if Command[0].isnumeric():
+    if Command[0].isdigit():
       IndexLength = 1
       Index = 1
       while Command[Index].isnum(): Index += 1
@@ -83,33 +86,33 @@ class SBNode:
     elif Command.startswith("search nid "):
       Query = Command[10:]
       for Node in self.Nodes:
-        if str(Node.NID).find(Query):
+        if str(self.Node.NID).find(Query):
           Results.append(Node)
       return Results
     elif Command.startswith("search type "):
       Query = Command[11:]
       for Node in self.Nodes:
-        if(Node.Type.find(Query)):
+        if(self.Node.Type.find(Query)):
           Results.append(Node)
       return Results
     elif Command.startswith("search handle "):
       Query = Command[13:]
       for Node in self.Nodes:
-        if(Node.Handle.find(Query)):
+        if(self.Node.Handle.find(Query)):
           Results.append(Node)
       return Results
     elif Command.startswith("search name "):
       for Node in self.Nodes:
-        if(Node.Name.find(Query)):
+        if(self.Node.Name.find(Query)):
           Results.append(Node)
       return Results
     elif Command.startswith("search description "):
       for Node in self.Nodes:
-        if(Node.Description.find(Query)):
+        if(self.Node.Description.find(Query)):
           Results.append(Node)
       return Results
     for Node in self.Nodes:
-      if (Node.Handle) == Query:
+      if self.Node.Handle == Query:
         Results.append(Node)
         return Results
     return Results
