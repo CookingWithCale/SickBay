@@ -9,24 +9,22 @@ reserved (R). This Source Code Form is subject to the terms of the Mozilla
 Public License, v. 2.0. If a copy of the MPL was not distributed with this file,
 You can obtain one at <https://mozilla.org/MPL/2.0/>. """
 
-import SBNode
-import SBHumanCirculatorySystem
-import SBHumanRespiratorySystem
+from SBNode import SBNode
+from SBHumanCirculatorySystem import SBHumanCirculatorySystem
+from SBHumanRespiratorySystem import SBHumanRespiratorySystem
 
 # A model of a human.
 class SBHuman(SBNode):
   HeightMin = 0.0         #< The minimum Height of a person is 0M.
   HeightMax = 10.0        #< The maximum Height of a person is 10M.
-  WeightMin = 0.0         #< The minimum Weight of a person is 0G.
+  WeightMin = 0.0         #< The minimum Weight of a person is 0KG.
   WeightMax = 1000000.0   #< The maximum Weight of a person is 1000KG.
   SexMale = 0             #< Sex is male.
   SexFemale = 1           #< Sex if female.
   
-  def __init__(self, Name, UID, Sex, Height, Weight):
-    super().__init__()
-    #super().__init__("Human", Name)
+  def __init__(self, NID, Name = "", Sex = "", Height = 0.0, Weight = 0.0):
+    SBNode.__init__(self, NID, "Human", Name)
     self.Name = Name      #< The person's Name
-    self.UID = UID        #< The unique ID of the person.
     self.Sex = Sex        #< The Sex of the person.
     self.Height = Height  #< The person's Height.
     self.Weight = Weight  #< The person's Weight.
@@ -44,15 +42,15 @@ class SBHuman(SBNode):
     self.UID = UID
   
   def SexSet(self, Sex):
-    if Sex >= SexMale or Sex <= SexFemale:
+    if Sex >= self.SexMale or Sex <= self.SexFemale:
       self.Sex = Sex
   
   def HeightSet (self, Height):
-    if Height >= HeightMin and Height <= HeightMax:
+    if Height >= self.HeightMin and Height <= self.HeightMax:
       self.Height = Height
   
   def WeightSet (self, Weight):
-    if Weight >= WeightMin and Weight <= WeightMax:
+    if Weight >= self.WeightMin and Weight <= self.WeightMax:
       self.Weight = Weight
   
   def IsMale (self): return self.Sex == "m"

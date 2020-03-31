@@ -11,34 +11,19 @@ You can obtain one at <https://mozilla.org/MPL/2.0/>. """
 
 from shlex import split
 import time
-import SBPrint
-
-SBNodeIDCount = 0  #< The static node count.
-def SBNodeNIDNext():
-  Result = SBNodeIDCount
-  SBNodeIDCount += 1
-  return Result
+from SBPrint import SBPrint
   
 # A SickBay tree node with a unique Node ID (NID).
 class SBNode:
-  
-  def __init__(self):
-    self.Nodes = []                #< The child SBNodes.
-    self.NID = SBNode.SBNodeNIDNext()    #< The Node ID.
+
+  def __init__(self, NID, Type, Handle, Name = "", Description = "", Help=""):
+    self.NID = NID                 #< The Node ID.
     self.Type = Type               #< The node Type in UpperCaseCamel.
     self.Handle = Handle           #< The Node name in any format.
     self.Name = Name               #< The Node name in any format.
     self.Description = Description #< The description of this Device.
     self.Help = Help               #< The help string.
-  
-  #def __init__(self, Type = "", Handle = "", Name = "", Description = "", Help=""):
-  #  self.Nodes = []                #< The child SBNodes.
-  #  self.NID = SBNode.SBNodeNIDNext()    #< The Node ID.
-  #  self.Type = Type               #< The node Type in UpperCaseCamel.
-  #  self.Handle = Handle           #< The Node name in any format.
-  #  self.Name = Name               #< The Node name in any format.
-  #  self.Description = Description #< The description of this Device.
-  # self.Help = Help               #< The help string.
+    self.Nodes = []                #< The child SBNodes.
   
   def Count(self): return len(self.Nodes)
 
@@ -79,7 +64,7 @@ class SBNode:
     print (" }")
     SBPrint.Indent(Indent, "Description" + self.Description)
   
-  def Command(self, Command):
+  def Command(self, SB, Command):
     # Commands that list the child notes by group, NID, Type, Handle, or Name.
     Command = Command.lower()
     Results = []

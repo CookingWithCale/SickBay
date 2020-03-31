@@ -9,11 +9,11 @@ reserved (R). This Source Code Form is subject to the terms of the Mozilla
 Public License, v. 2.0. If a copy of the MPL was not distributed with this file,
 You can obtain one at <https://mozilla.org/MPL/2.0/>. """
  
-import SBNode
-import SBDevice
-import SBHuman
-import SBVentilator
-import GHVentilator
+from SBNode import SBNode
+from SBDevice import SBDevice
+from SBHuman import SBHuman
+from SBVentilator import SBVentilator
+from GHVentilator import GHVentilator
 #import sched, time
 
 #Scheduler = sched.scheduler(time.time, time.sleep)
@@ -23,31 +23,36 @@ class SBSickBay(SBNode):
   # Constants
   StateMonitoring = 1     #< State: Monitoring.
   StateShuttingDown = 2   #< State: Shutting down.
-  
+  NIDCount = 0            #< The total number of SBNodes.
+
   def __init__(self):
-    super().__init__("Device", "SickBay", "Root", "The root scope.")
+    SBNode.__init__(self, "Device", "SickBay", "Root", "The root scope.")
     self.Node = self               #< The currently selected node.
     self.Stack = []                #< The stack of SBNodes.
-    self.HumanOperator = ""        #< The SickBay operator.
     self.State = self.StateMonitoring #< The app state.
     self.Devices = []              #< A list of Devices this SickBay supports.
+
     self.PatientsAddTestPatients()
     self.ConsoleMain()
+  
+  def NIDNext(self):
+    Result = self.NIDCount
+    self.NIDCount = Result + 1
+    return Result
 
-    # Add Device
-    def DevicesAdd(self, DeviceName):
-      self.Devices.append(DeviceName)
+  # Add Device
+  def DevicesAdd(self, DeviceName):
+    self.Devices.append(DeviceName)
 
-    # Console main loop.
-    def ConsoleMain():
-      print ("\n\nWelcome to SickBay.\n")
-      self.HumanOperatorSetConsole()
-      while True:
-        UserInput = input("\n> ")
-        if(self.Node != None):
-          Node.Command(UserInput)
-        else:
-          print("\nWe need to add some nodes.")
+  # Console main loop.
+  def ConsoleMain(self):
+    print ("\n\nWelcome to SickBay.\n")
+    while True:
+      UserInput = input("\n> ")
+      if(self.Node != None):
+        self.Node.Command(self, UserInput)
+      else:
+        print("\nWe need to add some nodes.")
   
   # Pushes an SBNode onto the stack.
   def Push(self, NodeNew):
@@ -65,33 +70,19 @@ class SBSickBay(SBNode):
     #Scheduler.enter(1, 1, self.Update, ())
     #Scheduler.run()
     print("\n\nBeginning monitoring...")
-    
-  # Sets the Human Operator.
-  def HumanOperatorSet(self, NewOperator):
-    self.HumanOperator = NewOperator
-    
-  def HumanOperatorSetConsole(self):
-    print("\nEnter new Operator name or type cancel: ")
-    input = "Me" #raw_input("")
-    if (input.lower() == "cancel"):
-      return
-    NewOperator = raw_input("\nSwitching to HumanOperator: ")
-    print (NewOperator)
-    HumanOperatorSet(NewOperator)
 
   # Handler for the init app state.
   def PatientsAddTestPatients (self):
     print ("\n\nAdding test patients.")
-    self.Patients.append ("John Doe 1", "M", 170.0, 70.0)
-    self.Patients.append ("John Doe 2", "M", 180.0, 75.0)
-    self.Patients.append ("John Doe 3", "M", 190.0, 80.0)
-    self.Patients.append ("John Doe 4", "M", 200.0, 85.0)
-    self.Patients.append ("Jane Doe 1", "F", 120.0, 55.0)
-    self.Patients.append ("Jane Doe 2", "F", 130.0, 60.0)
-    self.Patients.append ("Jane Doe 3", "F", 140.0, 65.0)
-    self.Patients.append ("Jane Doe 4", "F", 150.0, 70.0)
-
-    self.Devices.append (GHVentilator())
+    self.Node.NodesAdd (SBHuman(self.NIDNext(), "John Doe 1", "M", 170.0, 70.0))
+    self.Node.NodesAdd (SBHuman(self.NIDNext(), "John Doe 2", "M", 180.0, 75.0))
+    self.Node.NodesAdd (SBHuman(self.NIDNext(), "John Doe 3", "M", 190.0, 80.0))
+    self.Node.NodesAdd (SBHuman(self.NIDNext(), "John Doe 4", "M", 200.0, 85.0))
+    self.Node.NodesAdd (SBHuman(self.NIDNext(), "Jane Doe 1", "F", 120.0, 55.0))
+    self.Node.NodesAdd (SBHuman(self.NIDNext(), "Jane Doe 2", "F", 130.0, 60.0))
+    self.Node.NodesAdd (SBHuman(self.NIDNext(), "Jane Doe 3", "F", 140.0, 65.0))
+    self.Node.NodesAdd (SBHuman(self.NIDNext(), "Jane Doe 4", "F", 150.0, 70.0))
+    self.Node.NodesAdd (GHVentilator(self.NIDNext()))
   
   # Handler for the Monitor app state.
   def StateMonitorHandle(self):
@@ -108,7 +99,7 @@ class SBSickBay(SBNode):
  
   # Function that is called every x seconds to update everything.
   def Update(self):
-    print ("\n\nUpdate Time:", time.time())
+    #print ("\n\nUpdate Time:", time.time())
     Handler = {
       1: self.StateMonitorHandle,
       2: self.StateShutDownHandle
