@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 """SickBay @version 0.x
 @link    https://github.com/KabukiStarship/sickbay.git
 @file    /SBDevice.py
@@ -9,22 +11,10 @@ You can obtain one at <https://mozilla.org/MPL/2.0/>. """
 
 import SBNode
 
-# A SickBay device with a Device ID (DID).
-class SBDevice(SBNode):
-
-  def __init__(self):
-    super().__init__()
-    self.DID = 0                  #< The Device ID.
-    self.Name = "SickBay"         #< The Device name in UpperCaseCamel.
-    self.Description = "SickBay"  #< The description of this Device.
+# A SickBay Device.
+class SBDevice():
   
-  def __init__(self, DID, Name, Description):
-    self.DID = DID                #< The Device ID.
-    self.Name = Name              #< The Device name in UpperCaseCamel.
-    self.Description = "SBDevice" #< The description of this Device.
-    
-  def DescriptionSet(self, Description):
-    self.Description = Description
-
-  def DescriptionPrint (self):
-    print (self.Description)
+  def __init__(self, Handle = "", Name = "", Description = "", Help = ""):
+    #super().__init__()#"Device", Handle, Name, Description, Help)
+    pass
+  

@@ -1,5 +1,7 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 """SickBay @version 0.x
-@link    https://github.com/KabukiStarship/sickbay.git
+@link    https://github.com/KabukiStarship/SickBay.git
 @file    /SBNode.py
 @author  Cale McCollough <https://cale-mccollough.github.io>
 @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>; all rights 
@@ -12,23 +14,31 @@ import time
 import SBPrint
 
 SBNodeIDCount = 0  #< The static node count.
-
+def SBNodeNIDNext():
+  Result = SBNodeIDCount
+  SBNodeIDCount += 1
+  return Result
+  
 # A SickBay tree node with a unique Node ID (NID).
 class SBNode:
-
-  @staticmethod
-  def NIDNext():
-    Result = SBNodeIDCount
-    SBNodeIDCount += 1
-    return Result
   
-  def __init__(self, Type = "", Handle = "", Name = "", Description = ""):
-    self.Nodes = []
-    self.NID = SBNode.NIDNext()     #< The Node ID.
+  def __init__(self):
+    self.Nodes = []                #< The child SBNodes.
+    self.NID = SBNode.SBNodeNIDNext()    #< The Node ID.
     self.Type = Type               #< The node Type in UpperCaseCamel.
     self.Handle = Handle           #< The Node name in any format.
     self.Name = Name               #< The Node name in any format.
     self.Description = Description #< The description of this Device.
+    self.Help = Help               #< The help string.
+  
+  #def __init__(self, Type = "", Handle = "", Name = "", Description = "", Help=""):
+  #  self.Nodes = []                #< The child SBNodes.
+  #  self.NID = SBNode.SBNodeNIDNext()    #< The Node ID.
+  #  self.Type = Type               #< The node Type in UpperCaseCamel.
+  #  self.Handle = Handle           #< The Node name in any format.
+  #  self.Name = Name               #< The Node name in any format.
+  #  self.Description = Description #< The description of this Device.
+  # self.Help = Help               #< The help string.
   
   def Count(self): return len(self.Nodes)
 
@@ -58,22 +68,22 @@ class SBNode:
     self.Description = Description
   
   def Print(self, Indent = 0):
-    SBPrint.IndentLine(Indent, "NID: " + self.NID + "Type: " + self.Type  + 
+    SBPrint.Indent(Indent, "NID: " + self.NID + "Type: " + self.Type  + 
                        "Handle: " + self.Handle + "Name: " + self.Name)
   
   def PrintAll(self, Indent = 0):
     self.Print(Indent)
-    SBPrint.IndentLine(Indent, "Children: Count", self.NodesCount (), " { ")
+    SBPrint.Indent(Indent, "Children: Count", self.NodesCount (), " { ")
     for Node in self.Nodes:
       print(Node.Handle + ", ")
     print (" }")
-    SBPrint.IndentLine(Indent, "Description" + self.Description)
+    SBPrint.Indent(Indent, "Description" + self.Description)
   
   def Command(self, Command):
     # Commands that list the child notes by group, NID, Type, Handle, or Name.
     Command = Command.lower()
     Results = []
-    if Command[0].isnum():
+    if Command[0].isnumeric():
       IndexLength = 1
       Index = 1
       while Command[Index].isnum(): Index += 1
@@ -98,6 +108,7 @@ class SBNode:
           Results.append(Node)
       return Results
     elif Command.startswith("search handle "):
+      Query = Command[13:]
       for Node in self.Nodes:
         if(Node.Handle.find(Query)):
           Results.append(Node)
