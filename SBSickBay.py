@@ -24,6 +24,13 @@ class SBSickBay(SBNode):
   StateMonitoring = 1     #< State: Monitoring.
   StateShuttingDown = 2   #< State: Shutting down.
   NIDCount = 0            #< The total number of SBNodes.
+  HelpString = (
+    "\nSickBay is a tree and node system where you start out at in the root." +
+    "\nTo list the contents of any SickBay Node type the word \"list\"." +
+    "\nEach Node has a Node ID (NID), Type, Handle, Name, Description, and " +
+    "\nHelp string. You can search through the nodes and their children by " +
+    "\nTyping \"search name John\" will search for any node with John in the " +
+    "\nName.")
 
   def __init__(self):
     SBNode.__init__(self, "Device", "SickBay", "Root", "The root scope.")
@@ -46,13 +53,11 @@ class SBSickBay(SBNode):
 
   # Console main loop.
   def ConsoleMain(self):
-    print ("\n\nWelcome to SickBay.\n")
+    print ("\n\nWelcome to SickBay.\n\nEnter ? at any time to get help.\n")
     while True:
-      UserInput = input("\n> ")
-      if(self.Node != None):
-        self.Node.Command(self, UserInput)
-      else:
-        print("\nWe need to add some nodes.")
+      UserInput = raw_input("\n> ")
+      self.Node.Command(self, UserInput)
+      
   
   # Pushes an SBNode onto the stack.
   def Push(self, NodeNew):
