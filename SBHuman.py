@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 """SickBay @version 0.x
 @link    https://github.com/KabukiStarship/sickbay.git
 @file    /Human/Human.py
@@ -8,8 +10,8 @@ Public License, v. 2.0. If a copy of the MPL was not distributed with this file,
 You can obtain one at <https://mozilla.org/MPL/2.0/>. """
 
 import SBNode
-import HumanCirculatorySystem
-import HumanRespiratorySystem
+import SBHumanCirculatorySystem
+import SBHumanRespiratorySystem
 
 # A model of a human.
 class SBHuman(SBNode):
@@ -21,6 +23,8 @@ class SBHuman(SBNode):
   SexFemale = 1           #< Sex if female.
   
   def __init__(self, Name, UID, Sex, Height, Weight):
+    super().__init__()
+    #super().__init__("Human", Name)
     self.Name = Name      #< The person's Name
     self.UID = UID        #< The unique ID of the person.
     self.Sex = Sex        #< The Sex of the person.
@@ -31,7 +35,7 @@ class SBHuman(SBNode):
     self.Circulatory = SBHumanCirculatorySystem()
 
     # The human's Respiratory system.
-    self.Respiratory = SBHumanRespiratorySystem()
+    self.Respiratory = SBHumanRespiratorySystem(Sex)
 
   def NameSet (self, Name):
     self.Name = Name
@@ -51,6 +55,20 @@ class SBHuman(SBNode):
     if Weight >= WeightMin and Weight <= WeightMax:
       self.Weight = Weight
   
+  def IsMale (self): return self.Sex == "m"
+  
+  def IsFemale (self): return self.Sex == "f"
+  
+  # Returns the idea body weight of a person.
+  def WeightIdeal(self):
+    # Height calculations using centimeters.
+    if self.IsMale():
+      return 50.0 + 0.91 * (self.Height - 152.4)
+    elif self.IsFemale(): 
+      return 45.5 + 0.91 * (self.Height - 152.4)
+    else: 
+      return -1.0
+  
   def CirculatorySet(self, Circulatory):
     self.Circulatory = Circulatory
   
@@ -64,11 +82,11 @@ class SBHuman(SBNode):
       
   def PrintDetails (self):
     print ("Name:" + self.Name + " UID:" + self.UID + " Sex:" + self.Sex + 
-           " Height:" + self.Height + " Weight:" + self.Weight
+           " Height:" + self.Height + " Weight:" + self.Weight +
            "\nDescription:\"" + self.Description + "\n")
     self.Circulatory.PrintDetails ()
     self.Respiratory.PrintDetails ()
-      
+    
   def DescriptionPrint (self):
     print ("\nDescription:\"" + self.Description + "\n")
     self.Circulatory.PrintDescription ()

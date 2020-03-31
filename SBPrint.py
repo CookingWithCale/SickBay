@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 """ SickBay @version 0.x
 @link    https://github.com/KabukiStarship/SickBay.git
 @file    /SBPrint.py
@@ -7,25 +9,22 @@ reserved (R). This Source Code Form is subject to the terms of the Mozilla
 Public License, v. 2.0. If a copy of the MPL was not distributed with this file,
 You can obtain one at <https://mozilla.org/MPL/2.0/>. """
 
+# Constants
+SBPrintSpacesPerIndent = 2  #< The number of spaces per indentation level.
+
+# SickBay Printing functions.
 class SBPrint:
   
+  # Prints the Item repeatedly NTimes
   @staticmethod
-  def Indent(self, IndentationCount):
-    for X in range(0, IndentationCount):
-      print(" ")
+  def Repeat(self, NTimes, Item = " "):
+    for X in range(0, NTimes):
+      print(Item)
     return ""
 
+  # Prints the given Item indented by the given IndentationLevel
   @staticmethod
-  def Indent(IndentationCount, Item):
-    SBPrintIndent(IndentationCount)
-    print(Item)
-
-  @staticmethod
-  def IndentLine(IndentationCount):
-    print("\n")
-    return SBPrintIndent(IndentationCount)
-
-  @staticmethod
-  def IndentLine(IndentationCount, Item):
-    SBPrintIndentLine(IndentationCount)
+  def Indent(IndentationLevel, Item = ""):
+    for X in range(0, IndentationLevel * SBPrintSpacesPerIndent):
+      print(" ")
     print(Item)

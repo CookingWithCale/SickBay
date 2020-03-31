@@ -8,7 +8,7 @@ Public License, v. 2.0. If a copy of the MPL was not distributed with this file,
 You can obtain one at <https://mozilla.org/MPL/2.0/>. """
 
 # A model of a human Circulatory system.
-class SBHumanCirculatorySystem(SBNode):
+class SBHumanCirculatorySystem():
   # Constants
   BloodPressureMin = 0.0     #< The min "dead" blood pressure rate of 0.0.
   BloodPressureMax = 1000.0  #< The max pulse rate.
@@ -21,10 +21,10 @@ class SBHumanCirculatorySystem(SBNode):
   HeartRateMax = 1000.0      #< The max pulse rate.
     
   def __init__(self):
-    self.BloodPressure = 0.0          #< The heart pulse rate.
+    self.BloodPressure = 0.0               #< The heart pulse rate.
     self.BloodType = self.BloodTypeUnknown #< The patient's blood type.
-    self.HeartRate = 0.0              #< The heart pulse rate.
-    self.Description = ""             #< A Description of the heart.
+    self.HeartRate = 0.0                   #< The heart pulse rate.
+    self.Description = ""                  #< A Description of the heart.
 
   def BloodPressureSet (self, BloodPressure):
     if (BloodPressure <= self.BloodPressureMin and 

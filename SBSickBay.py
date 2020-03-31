@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 """SickBay @version 0.x
 @link    https://github.com/KabukiStarship/SickBay.git
 @file    /SickBay.py
@@ -9,12 +11,12 @@ You can obtain one at <https://mozilla.org/MPL/2.0/>. """
  
 import SBNode
 import SBDevice
-import Human
-import Ventilator
+import SBHuman
+import SBVentilator
 import GHVentilator
-import sched, time
+#import sched, time
 
-Scheduler = sched.scheduler(time.time, time.sleep)
+#Scheduler = sched.scheduler(time.time, time.sleep)
   
 # The SickBay app object.
 class SBSickBay(SBNode):
@@ -23,46 +25,59 @@ class SBSickBay(SBNode):
   StateShuttingDown = 2   #< State: Shutting down.
   
   def __init__(self):
-    print ("\n\nWelcome to SickBay.\n")
     super().__init__("Device", "SickBay", "Root", "The root scope.")
     self.Node = self               #< The currently selected node.
     self.Stack = []                #< The stack of SBNodes.
-    self.Patients = []             #< The patients checked into SickBay.
-    self.Devices = []              #< The devices in the SickBay.
-    self.Patient = None            #< The currently selected patient.
     self.HumanOperator = ""        #< The SickBay operator.
-    self.HumanOperatorSet()
-    self.State = self.StateMonitoring    #< The app state.
+    self.State = self.StateMonitoring #< The app state.
+    self.Devices = []              #< A list of Devices this SickBay supports.
     self.PatientsAddTestPatients()
-    
-    if (input == "1"):
-      self.EditPatient()
-    # self.MonitorBegin()
+    self.ConsoleMain()
+
+    # Add Device
+    def DevicesAdd(self, DeviceName):
+      self.Devices.append(DeviceName)
+
+    # Console main loop.
+    def ConsoleMain():
+      print ("\n\nWelcome to SickBay.\n")
+      self.HumanOperatorSetConsole()
+      while True:
+        UserInput = input("\n> ")
+        if(self.Node != None):
+          Node.Command(UserInput)
+        else:
+          print("\nWe need to add some nodes.")
   
+  # Pushes an SBNode onto the stack.
   def Push(self, NodeNew):
     self.Stack.append(self.Node)
     self.Node = NodeNew
   
+  # Pops an SBNode off the stack.
   def Pop(self):
     if len(self.Stack) == 0:
       return
     self.Node = self.Stack.pop()
   
+  # Enters the monitoring state.
   def MonitorBegin(self):
-    Scheduler.enter(1, 1, self.Update, ())
-    Scheduler.run()
+    #Scheduler.enter(1, 1, self.Update, ())
+    #Scheduler.run()
+    print("\n\nBeginning monitoring...")
     
-  def HumanOperatorSet(self):
+  # Sets the Human Operator.
+  def HumanOperatorSet(self, NewOperator):
+    self.HumanOperator = NewOperator
+    
+  def HumanOperatorSetConsole(self):
     print("\nEnter new Operator name or type cancel: ")
     input = "Me" #raw_input("")
     if (input.lower() == "cancel"):
       return
-    self.HumanOperator = input
-    print ("\nSwitching to HumanOperator: " + self.HumanOperator)
-  
-  # Adds a patient to the Patients.
-  def PatientsAdd(self, Name, Sex, Height, Weight):
-    self.Patients.append(Human(Name, Sex, Height, Weight))
+    NewOperator = raw_input("\nSwitching to HumanOperator: ")
+    print (NewOperator)
+    HumanOperatorSet(NewOperator)
 
   # Handler for the init app state.
   def PatientsAddTestPatients (self):
@@ -103,8 +118,8 @@ class SBSickBay(SBNode):
     # Execute the function
     Handle()
     self.PrintStats()
-    Scheduler.enter(1, 1, self.Update, ())
+    #Scheduler.enter(1, 1, self.Update, ())
 
 if __name__ == '__main__':
-  SickBayConsole = SickBay()
-    #unittest.main()
+  SickBayConsole = SBSickBay()
+  #unittest.main()

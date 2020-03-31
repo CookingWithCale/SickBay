@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 """SickBay @version 0.x
 @link    https://github.com/KabukiStarship/sickbay.git
 @file    /Ventilators/GravityHookahVentilator/GravityHookahVentilator.py

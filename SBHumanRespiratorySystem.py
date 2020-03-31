@@ -19,7 +19,7 @@ class SBHumanRespiratorySystem():
   RVMin = 0.0           # The min RV value.
   RVMax = 100.0         # The max RV value.
 
-  def __init__(self):
+  def __init__(self, Sex):
     # Inspiratory reserve volume is the amount of air that can be forcefully 
     # inspired after a normal inspiration.
     self.IRV = 3.0
@@ -38,7 +38,6 @@ class SBHumanRespiratorySystem():
 
     self.Description = ""        # A Description of this human's Respiratory system.
 
-  def __init__(self, Sex):
     if Sex == "M":
       self.VC = 4.6    #< Vital capacity
       self.IC = 3.5    #< Inspiratory capacity
@@ -54,25 +53,25 @@ class SBHumanRespiratorySystem():
     if (IRV >= self.IRVMin and
       IRV <= self.IRVMax):
       self.IRV = IRV
-    Update()
+    self.Update()
   
   def TVSet(self, TV):
     if (TV >= self.TVMin and 
         TV <= self.TVMax):
-    self.TV = TV
-  Update()
+      self.TV = TV
+    self.Update()
     
   def ERVSet(self, ERV):
     if (ERV >= self.ERVMin and 
         ERV <= self.ERVMax):
       self.ERV = ERV
-    Update()
+    self.Update()
     
   def RVSet(self, RV):
     if (RV >= self.RVMin and 
         RV <= self.RVMax):
       self.RV = RV
-    Update()
+    self.Update()
     
   def Update(self): 
     self.VC = self.IRV + self.TV + self.ERV
@@ -83,16 +82,8 @@ class SBHumanRespiratorySystem():
   def DescriptionSet (self, Description):
     self.Description = Description
 
-  def PrintStats (self):
-    print ("\nIRV:" + self.IRV + "\nTV:" + self.TV + "\nERV:" + self.ERV + 
-           "\nVC: " + self.VC + "\nIC: " + self.IC + "\nFRC: " + self.FRC +
-           "\nTLC: " + self.TLC)
-
   def PrintDetails (self):
     print ("\nIRV:" + self.IRV + "\nTV:" + self.TV + "\nERV:" + self.ERV + 
            "\nVC: " + self.VC + "\nIC: " + self.IC + "\nFRC: " + self.FRC +
            "\nTLC: " + self.TLC + 
            "\nDescription: \"" + self.Description + "\n\"")
-
-  def PrintDescription (self):
-    "\nDescription:" + self.Description
