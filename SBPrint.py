@@ -17,14 +17,13 @@ class SBPrint:
   
   # Prints the Item repeatedly NTimes
   @staticmethod
-  def Repeat(self, NTimes, Item = " "):
-    for X in range(0, NTimes):
+  def Repeat(NTimes, Item = " "):
+    for X in range(NTimes):
       print(Item)
     return ""
 
   # Prints the given Item indented by the given IndentationLevel
   @staticmethod
   def Indent(IndentationLevel, Item = ""):
-    for X in range(0, IndentationLevel * SBPrintSpacesPerIndent):
-      print(" ")
+    SBPrint.Repeat(IndentationLevel * SBPrintSpacesPerIndent, " ")
     print(Item)
