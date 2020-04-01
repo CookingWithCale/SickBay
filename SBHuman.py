@@ -1,13 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-"""SickBay @version 0.x
-@link    https://github.com/KabukiStarship/sickbay.git
-@file    /Human/Human.py
-@author  Cale McCollough <https://cale-mccollough.github.io>
-@license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>; all rights 
-reserved (R). This Source Code Form is subject to the terms of the Mozilla 
-Public License, v. 2.0. If a copy of the MPL was not distributed with this file,
-You can obtain one at <https://mozilla.org/MPL/2.0/>. """
+# SickBay @version 0.x
+# @link    https://github.com/KabukiStarship/sickbay.git
+# @file    /SBHuman.py
+# @author  Cale McCollough <https://cale-mccollough.github.io>
+# @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>; all rights 
+# reserved (R). This Source Code Form is subject to the terms of the Mozilla 
+# Public License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at <https://mozilla.org/MPL/2.0/>.
 
 from SBNode import SBNode
 from SBHumanCirculatorySystem import SBHumanCirculatorySystem
@@ -22,8 +22,8 @@ class SBHuman(SBNode):
   SexMale = 0             #< Sex is male.
   SexFemale = 1           #< Sex if female.
   
-  def __init__(self, NID, Name = "", Sex = "", Height = 0.0, Weight = 0.0):
-    SBNode.__init__(self, NID, "Human", Name)
+  def __init__(self, SickBay, Handle = "", Name = "", Sex = "", Height = 0.0, Weight = 0.0):
+    SBNode.__init__(self, SickBay, Handle, "Human", Name)
     self.Name = Name      #< The person's Name
     self.Sex = Sex        #< The Sex of the person.
     self.Height = Height  #< The person's Height.
