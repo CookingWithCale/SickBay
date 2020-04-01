@@ -12,6 +12,7 @@
 from shlex import split
 import time
 from SBPrint import SBPrint
+import sys
   
 # A SickBay tree node with a unique Node ID (NID).
 class SBNode:
@@ -52,7 +53,7 @@ class SBNode:
     if (Key not in self.Members): return None
     return self.Members[Key]
   
-  def NodesCount(self): return len(self.Children)
+  def ChildCount(self): return len(self.Children)
 
   def Add(self, Handle, ChildNode):
     self.Children[Handle] = ChildNode
@@ -126,20 +127,20 @@ class SBNode:
     self.Members["Description"] = Description
   
   def PrintStats(self):
-    pass
+    for Key, Value in self.Children.iteritems() :
+      Value.PrintStats()
   
   def Print(self, Indent = 0):
     #SBPrint.Indent(Indent, "Node { Count: NID: " + self.NID)# + "Type: " + self.Type()) # +
     #      "Handle: " + self.Handle() + "Name: " + self.Name() + 
     #      "Description: " + self.Description()
     SBPrint.Indent(Indent, "Node { Count: NID: ")
-    print(self.NID)
-    print("\nChildren: NodesCount")
-    print(self.NodesCount ())
-    print (" { ")
-    print(self.Children.keys())
-    print (" }")
-    SBPrint.Indent(Indent, "Description: " + self.Members["Description"])
+    sys.stdout.write(str(self.NID))
+    SBPrint.Indent(Indent + 1, "Description: " + self.Members["Description"])
+    sys.stdout.write("\nChildren: ")
+    sys.stdout.write(str(self.ChildCount ()))
+    for Key in self.Children:
+      sys.stdout.write(Key + " ")
     SBPrint.Indent (Indent, "}")
 
   def PrintHelp(self):

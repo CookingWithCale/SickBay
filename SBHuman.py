@@ -24,7 +24,6 @@ class SBHuman(SBNode):
   
   def __init__(self, SickBay, Handle = "", Name = "", Sex = "", Height = 0.0, Weight = 0.0):
     SBNode.__init__(self, SickBay, Handle, "Human", Name)
-    self.Members["Name"] = Name      #< The person's Name
     self.Members["Sex"] = Sex        #< The Sex of the person.
     self.Members["Height"] = Height  #< The person's Height.
     self.Members["Weight"] = Weight  #< The person's Weight.
@@ -74,12 +73,12 @@ class SBHuman(SBNode):
     self.Respiratory = Respiratory
 
   def PrintStats (self):
-    print ("Name:" + self.Name + " UID:" + self.UID)
+    print ("Name:" + self.Name () + " NID:" + self.NID)
     self.Circulatory.PrintStats ()
     self.Respiratory.PrintStats ()
-      
+    
   def PrintDetails (self):
-    print ("Name:" + self.Name () + " UID:" + self.UID () + " Sex:" + self.Sex () + 
+    print ("Name:" + self.Name () + " UID:" + self.NID + " Sex:" + self.Sex () + 
            " Height:" + self.Height () + " Weight:" + self.Weight () +
            "\nDescription:\"" + self.Description + "\n")
     self.Circulatory.PrintDetails ()
