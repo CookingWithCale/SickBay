@@ -2,15 +2,17 @@
 # -*- coding: utf-8 -*-
 # SickBay @version 0.x
 # @link    https://github.com/KabukiStarship/SickBay.git
-# @file    /SBHumanRespiratorySystem.py
+# @file    /SBHumanRespiratory.py
 # @author  Cale McCollough <https://cale-mccollough.github.io>
 # @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>; all rights 
 # reserved (R). This Source Code Form is subject to the terms of the Mozilla 
 # Public License, v. 2.0. If a copy of the MPL was not distributed with this file,
 # You can obtain one at <https://mozilla.org/MPL/2.0/>.
 
+from SBNode import SBNode
+
 # A model of a human heart.
-class SBHumanRespiratorySystem():
+class SBHumanRespiratory(SBNode):
   # Constants
   IRVMin = 0.0          # The min IRV value.
   IRVMax = 100.0        # The max IRV value.
@@ -21,7 +23,9 @@ class SBHumanRespiratorySystem():
   RVMin = 0.0           # The min RV value.
   RVMax = 100.0         # The max RV value.
 
-  def __init__(self, Sex):
+  def __init__(self, SickBay, Sex):
+    SBNode.__init__(self, SickBay, "Respiratory", "Respiratory System",
+                          "The Human Respiratory System.")
     # Inspiratory reserve volume is the amount of air that can be forcefully 
     # inspired after a normal inspiration.
     self.IRV = 3.0

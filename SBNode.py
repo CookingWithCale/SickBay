@@ -19,14 +19,22 @@ class SBNode:
   def __init__(self, SickBay, Handle = "", Type = "", Name = "", Description = "", Help=""):
     self.NID = SickBay.NIDNext ()  #< The Node ID.
     self.Parent = SickBay.Top.NID  #< This node's parent NID.
-    self.Handle = Handle           #< The Node name in any format.
     self.Members = {               #< The Metadata members
       "Type": Type,                #< The node Type in UpperCaseCamel.
       "Name": Name,                #< The Node name in any format.
       "Description": Description,  #< The description of this Device.
       "Help": Help                 #< The help string.
     }
-    self.Nodes = []                #< The child SBNodes.
+    self.Children = {}             #< The child SBNodes.
+  
+  def PushHandle(self, SickBay, Handle):
+    if (Handle in self.Children):
+      SickBay.Push(self.Children[Handle])
+    if (Handle in self.Members):
+      SickBay.Push(self.Members[Handle])
+  
+  def Name(self):
+    return "" #self.Members["Name"]
   
   # Loads a Node from the URI.
   # @todo Write me!
@@ -44,24 +52,29 @@ class SBNode:
     if (Key not in self.Members): return None
     return self.Members[Key]
   
-  def NodesCount(self): return len(self.Nodes)
+  def NodesCount(self): return len(self.Children)
 
-  def Add(self, Node):
-    self.Nodes.append(Node)
+  def Add(self, Handle, ChildNode):
+    self.Children[Handle] = ChildNode
+
+  def Add(self, Handle, ChildNode):
+    self.Children[Handle] = ChildNode
     
   # Removes the given Key from the Members
   def Remove(self, Key):
-    if (Key not in self.Members): return
-    del self.Members[Key]
+    if (Key in self.Children):
+      del self.Children[Key]
+    if (Key in self.Members):
+      del self.Members[Key]
   
   # Removes the given node index
   def RemoveIndex(self, Index):
-    if Index >= 0 and Index < len(self.Nodes):
-      del self.Nodes[Index]
+    if Index >= 0 and Index < len(self.Children):
+      del self.Children[Index]
   
   def SearchNID(self, NID):
     Results = []
-    for Node in self.Nodes:
+    for Node in self.Children:
       Node.NID == NID
     return Results
   
@@ -70,7 +83,7 @@ class SBNode:
     Results = []
     if self.NID.startswith(Query):
       Results += self
-      for Node in self.Nodes:
+      for Node in self.Children:
         if Node.Members[Tag].startswith(Query):
           Results += Node
       return Results
@@ -79,7 +92,7 @@ class SBNode:
     for Member in self.Members:
       if Member.Members[Tag].startswith(Query):
         Results += Member
-    for Node in self.Nodes:
+    for Node in self.Children:
       if Node.Members[Tag].startswith(Query):
         Results += Node
     return Results
@@ -90,7 +103,7 @@ class SBNode:
 
   def Search(self, Query):
     Results = []
-    for Node in self.Nodes:
+    for Node in self.Children:
       if (Node.NID == str(Node.NID) or
           self.Members["Name"].startswith(Query) or
           self.Members["Handle"].find(Query) == 0):
@@ -112,21 +125,25 @@ class SBNode:
   def DescriptionSet(self, Description):
     self.Members["Description"] = Description
   
+  def PrintStats(self):
+    pass
+  
   def Print(self, Indent = 0):
-    SBPrint.Indent(Indent, "NID: " + self.NID + "Type: " + self.Type() + 
-                   "Handle: " + self.Handle() + "Name: " + self.Name() +
-                   "Description: " + self.Description())
+    #SBPrint.Indent(Indent, "Node { Count: NID: " + self.NID)# + "Type: " + self.Type()) # +
+    #      "Handle: " + self.Handle() + "Name: " + self.Name() + 
+    #      "Description: " + self.Description()
+    SBPrint.Indent(Indent, "Node { Count: NID: ")
+    print(self.NID)
+    print("\nChildren: NodesCount")
+    print(self.NodesCount ())
+    print (" { ")
+    print(self.Children.keys())
+    print (" }")
+    SBPrint.Indent(Indent, "Description: " + self.Members["Description"])
+    SBPrint.Indent (Indent, "}")
 
   def PrintHelp(self):
     print(self.Members["Help"])
-  
-  def PrintAll(self, Indent = 0):
-    self.Print(Indent)
-    SBPrint.Indent(Indent, "Children: NodesCount" + self.NodesCount () + " { ")
-    for Node in self.Nodes:
-      print(Node.Handle + ", ")
-    print (" }")
-    SBPrint.Indent(Indent, "Description" + self.Members["Description"])
   
   def Command(self, SickBay, Command):
     if Command == "":
@@ -151,21 +168,21 @@ class SBNode:
       Index = int(Command[0:Index])
       if Index == 0:
         SickBay.Push(SickBay)
-      if Index >= 0 and Index < len(self.Nodes):
-        Results.Push(self.Nodes[Index])
+      if Index >= 0 and Index < len(self.Children):
+        Results.Push(self.Children[Index])
         SickBay.Push(Results)
         return ""
     if (Command == "*"):
-      for Node in self.Nodes:
+      for Node in self.Children:
         Results.append(Node)
       return Results
     elif Command.startswith("? "):
       Query = Command[10:]
-      for Node in self.Nodes:
+      for Node in self.Children:
         if str(self.Node.NID).find(Query):
           Results.append(Node)
       return Results
-    for Node in self.Nodes:
+    for Node in self.Children:
       if self.Node.Handle == Command:
         Results.append(Node)
         return Results

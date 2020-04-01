@@ -18,75 +18,75 @@ from SBDevice import SBDevice
 # specification
 class SBVentilator(SBDevice):
   # Constants
-    
+  # The minimum breath 1-to-1 duty cycle.
+  BreathDutyCycleMin = 1.0 / (2.0 * 1.0)
+  # The minimum breath 1-to-2 duty cycle.
+  BreathDutyCycleDefault = 1.0 / (2.0 * 2.0)
+  # The minimum breath 1-to-1 duty cycle.
+  BreathDutyCycleMax = 1.0 / (2.0 * 3.0)
+  # The minimum breath 1-to-1 duty cycle.
+  BreathPeriodMi = 0.0
+  # The default breath period of in for 2s and out for 4s (2-to-1 ratio default)
+  BreathPeriodDefault = 6.0
+  # The minimum breath period of 10.0 seconds.
+  BreathPeriodMax = 10.0
+  # The minimum Tidal current.
+  TidalCurrentMin = 6.0
+  # The minimum recommended Tidal Current.
+  # Maximum tidal current to patient in ml/kg.
+  # The maximum tidal volume has been dropped to 8 ml per kilogram
+  # ideal or predicted body weight based on the patient’s height and sex
+  # Source: 
+  TidalCurrentMax = 8.0
+  # minimum End Inspiratory plateau pressure
+  # @units cm H2O
+  EIPPMin = 0.0
+  # @units cm H2O
+  # Lung protection also places an equal importance on maintaining an 
+  # end-inspiratory plateau pressure ≤ 30 cm H2O to avoid alveolar 
+  # overdistention and lowering the targeted tidal volume below 8 ml/kg 
+  # if that pressure is exceeded.
+  EIPPMax = 30.0
+
   def __init__(self, SickBay, Handle, BreathDutyCycle = 0.5, BreathPeriod = 2.0, TidalCurrent = 0.0, EIPP = 0.0):
     SBDevice.__init__(self, SickBay, Handle, "Ventilator")
     #The breath duty cycle where 0.5 is 50% duty cycle.
-    SBNode.Members["BreathDutyCycle"] = BreathDutyCycle
+    self.Members["BreathDutyCycle"] = BreathDutyCycle
     # The breath period in seconds.
-    SBNode.Members["BreathPeriod"] = BreathPeriod
+    self.Members["BreathPeriod"] = BreathPeriod
     # The tidal air current.      
-    SBNode.Members["TidalCurrent"] = TidalCurrent
+    self.Members["TidalCurrent"] = TidalCurrent
     # End Inspiratory plateau pressure.
-    SBNode.Members["EIPP"]  = EIPP
-    # The minimum breath 1-to-1 duty cycle.
-    SBNode.Members["BreathDutyCycleMin"] = 1.0 / (2.0 * 1.0)
-    # The minimum breath 1-to-2 duty cycle.
-    SBNode.Members["BreathDutyCycleDefault"] = 1.0 / (2.0 * 2.0)
-    # The minimum breath 1-to-1 duty cycle.
-    SBNode.Members["BreathDutyCycleMax"] = 1.0 / (2.0 * 3.0)
-    # The minimum breath 1-to-1 duty cycle.
-    SBNode.Members["BreathPeriodMin"] = 0.0
-    # The default breath period of in for 2s and out for 4s (2-to-1 ratio default)
-    SBNode.Members["BreathPeriodDefault"] = 6.0
-    # The minimum breath period of 10.0 seconds.
-    SBNode.Members["BreathPeriodMax"] = 10.0
-    # The minimum Tidal current.
-    SBNode.Members["TidalCurrentMin"] = 6.0
-    # The minimum recommended Tidal Current.
-    # Maximum tidal current to patient in ml/kg.
-    # The maximum tidal volume has been dropped to 8 ml per kilogram
-    # ideal or predicted body weight based on the patient’s height and sex
-    # Source: 
-    SBNode.Members["TidalCurrentMax"] = 8.0
-    # minimum End Inspiratory plateau pressure
-    # @units cm H2O
-    SBNode.Members["EIPPMin"] = 0.0
-    # @units cm H2O
-    # Lung protection also places an equal importance on maintaining an 
-    # end-inspiratory plateau pressure ≤ 30 cm H2O to avoid alveolar 
-    # overdistention and lowering the targeted tidal volume below 8 ml/kg 
-    # if that pressure is exceeded.
-    SBNode.Members["EIPPMax"] = 30.0
+    self.Members["EIPP"]  = EIPP
   
   def BreathDutyCycle(self, BreathDutyCycle):
-    return SBNode.Members["BreathDutyCycle"]
+    return self.Members["BreathDutyCycle"]
   
   def BreathDutyCycleSet(self, BreathDutyCycle):
     if (BreathDutyCycle >= self.BreathDutyCycleMin and
         BreathDutyCycle <= self.BreathDutyCycleMax):
-      self.BreathDutyCycle = BreathDutyCycle
+      self.self.Members["BreathDutyCycle"] = BreathDutyCycle
   
   def BreathPeriod(self, BreathPeriod):
-    return SBNode.Members["BreathPeriod"]
+    return self.Members["BreathPeriod"]
   
   def BreathPeriodSet(self, BreathPeriod):
     if (BreathPeriod >= self.BreathPeriodMin and
         BreathPeriod <= self.BreathPeriodMax):
-      self.BreathPeriod = BreathPeriod
+      self.self.Members["BreathPeriod"] = BreathPeriod
     
   def TidalCurrent(self, TidalCurrent):
-    return SBNode.Members["TidalCurrent"]
+    return self.Members["TidalCurrent"]
     
   def TidalCurrentSet(self, TidalCurrent):
     if (TidalCurrent >= self.TidalCurrentMin and
         TidalCurrent <= self.TidalCurrentMax):
-      self.TidalCurrent = TidalCurrent
+      self.self.Members["TidalCurrent"] = TidalCurrent
     
   def EIPP(self, EIPP):
-    return SBNode.Members["EIPP"]
+    return self.Members["EIPP"]
     
   def EIPPSet(self, EIPP):
     if (EIPP >= self.EIPPMin and
         EIPP <= self.EIPPMax):
-      self.EIPP = EIPP
+      self.self.Members["EIPP"] = EIPP

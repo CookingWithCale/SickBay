@@ -39,14 +39,14 @@ class SBSickBay(SBNode):
     self.Stack = []                   #< The stack of SBNodes.
     self.State = self.StateMonitoring #< The app state.
     self.Devices = []                 #< A list of Devices this SickBay supports.
-    SBNode.Add(self, SBRoom(self, "WR", "Waiting Room", "The ER Waiting Room."))
-    SBNode.Add(self, SBRoom(self, "ERI", "Emergency Room Intake", "The Room where you wait get get into the ER."))
-    SBNode.Add(self, SBRoom(self, "ER", "Emergency Room", "The room with Patients who may need critical care."))
-    SBNode.Add(self, SBRoom(self, "ICU", "Intensive Care Unit", "The room for Patients in need of critical care."))
-    SBNode.Add(self, SBRoom(self, "Room", "Patient Rooms", "The Rooms where the Patients are in who aren't in the ER or ICU."))
-    SBNode.Add(self, SBRoom(self, "Guests", "Guest Room", "The Room where guests start out in."))
-    SBNode.Add(self, SBRoom(self, "Staff", "Staff Room", "The Room where all the Staff start out in."))
-    SBNode.Add(self, SBRoom(self, "Storage", "Storage Room.", "The Room where all of the unused devices are stored in."))
+    self.Add("WR", SBRoom(self, "Waiting Room", "The ER Waiting Room."))
+    self.Add("ERI", SBRoom(self, "Emergency Room Intake", "The Room where you wait get get into the ER."))
+    self.Add("ER", SBRoom(self, "Emergency Room", "The room with Patients who may need critical care."))
+    self.Add("ICU", SBRoom(self, "Intensive Care Unit", "The room for Patients in need of critical care."))
+    self.Add("Room", SBRoom(self, "Patient Rooms", "The Rooms where the Patients are in who aren't in the ER or ICU."))
+    self.Add("Guests", SBRoom(self, "Guest Room", "The Room where guests start out in."))
+    self.Add("Staff", SBRoom(self, "Staff Room", "The Room where all the Staff start out in."))
+    self.Add("Storage", SBRoom(self, "Storage Room.", "The Room where all of the unused devices are stored in."))
     self.SetupTest()
     self.ConsoleMain()
   
@@ -82,22 +82,36 @@ class SBSickBay(SBNode):
     #Scheduler.enter(1, 1, self.Update, ())
     #Scheduler.run()
     print("\n\nBeginning monitoring...")
+  
+  def Print(self):
+    print("\nSickBay:")
+    SBNode.Print(self)
 
   # Handler for the init app state.
   def SetupTest (self):
     self.Print()
     print ("\n\nAdding test patients.")
-    
-    WR = SBNode.Get(self, "WR")
-    WR.NodesAdd (SBHuman(self.NIDNext(), "John Doe 1", "M", 170.0, 70.0))
-    WR.NodesAdd (SBHuman(self.NIDNext(), "John Doe 2", "M", 180.0, 75.0))
-    WR.NodesAdd (SBHuman(self.NIDNext(), "John Doe 3", "M", 190.0, 80.0))
-    WR.NodesAdd (SBHuman(self.NIDNext(), "John Doe 4", "M", 200.0, 85.0))
-    WR.NodesAdd (SBHuman(self.NIDNext(), "Jane Doe 1", "F", 120.0, 55.0))
-    WR.NodesAdd (SBHuman(self.NIDNext(), "Jane Doe 2", "F", 130.0, 60.0))
-    WR.NodesAdd (SBHuman(self.NIDNext(), "Jane Doe 3", "F", 140.0, 65.0))
-    WR.NodesAdd (SBHuman(self.NIDNext(), "Jane Doe 4", "F", 150.0, 70.0))
-    WR.NodesAdd (GHVentilator(self.NIDNext()))
+    self.PushHandle(self, "WR")
+    Top = self.Top
+    Top.Print()
+    Top.Add ("DoeJohn1", SBHuman(self, "John Doe 1", "M", 155.0, 70.0))
+    Top.Add ("DoeJohn2", SBHuman(self, "John Doe 2", "M", 160.0, 75.0))
+    Top.Add ("DoeJohn3", SBHuman(self, "John Doe 3", "M", 165.0, 80.0))
+    Top.Add ("DoeJohn4", SBHuman(self, "John Doe 4", "M", 170.0, 85.0))
+    Top.Add ("DoeJohn5", SBHuman(self, "John Doe 5", "M", 175.0, 90.0))
+    Top.Add ("DoeJohn6", SBHuman(self, "John Doe 6", "M", 185.0, 95.0))
+    Top.Add ("DoeJohn7", SBHuman(self, "John Doe 7", "M", 190.0, 100.0))
+    Top.Add ("DoeJohn8", SBHuman(self, "John Doe 8", "M", 195.0, 105.0))
+    Top.Add ("DoeJane1", SBHuman(self, "Jane Doe 1", "F", 120.0, 55.0))
+    Top.Add ("DoeJane2", SBHuman(self, "Jane Doe 2", "F", 125.0, 60.0))
+    Top.Add ("DoeJane3", SBHuman(self, "Jane Doe 3", "F", 130.0, 65.0))
+    Top.Add ("DoeJane4", SBHuman(self, "Jane Doe 4", "F", 135.0, 70.0))
+    Top.Add ("DoeJane5", SBHuman(self, "Jane Doe 5", "F", 140.0, 75.0))
+    Top.Add ("DoeJane6", SBHuman(self, "Jane Doe 6", "F", 145.0, 80.0))
+    Top.Add ("DoeJane7", SBHuman(self, "Jane Doe 7", "F", 150.0, 85.0))
+    Top.Add ("DoeJane8", SBHuman(self, "Jane Doe 8", "F", 155.0, 90.0))
+    Top.Add ("GHV1", GHVentilator(self, "Gravity Hookah Ventilator 1"))
+    Top.Add ("GHV2", GHVentilator(self, "Gravity Hookah Ventilator 2"))
   
   # Handler for the Monitor app state.
   def StateMonitorHandle(self):

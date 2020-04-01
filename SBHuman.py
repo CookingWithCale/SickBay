@@ -10,8 +10,8 @@
 # You can obtain one at <https://mozilla.org/MPL/2.0/>.
 
 from SBNode import SBNode
-from SBHumanCirculatorySystem import SBHumanCirculatorySystem
-from SBHumanRespiratorySystem import SBHumanRespiratorySystem
+from SBHumanCirculatory import SBHumanCirculatory
+from SBHumanRespiratory import SBHumanRespiratory
 
 # A model of a human.
 class SBHuman(SBNode):
@@ -24,16 +24,16 @@ class SBHuman(SBNode):
   
   def __init__(self, SickBay, Handle = "", Name = "", Sex = "", Height = 0.0, Weight = 0.0):
     SBNode.__init__(self, SickBay, Handle, "Human", Name)
-    self.Name = Name      #< The person's Name
-    self.Sex = Sex        #< The Sex of the person.
-    self.Height = Height  #< The person's Height.
-    self.Weight = Weight  #< The person's Weight.
+    self.Members["Name"] = Name      #< The person's Name
+    self.Members["Sex"] = Sex        #< The Sex of the person.
+    self.Members["Height"] = Height  #< The person's Height.
+    self.Members["Weight"] = Weight  #< The person's Weight.
 
     # The human's Circulatory system.
-    self.Circulatory = SBHumanCirculatorySystem()
+    self.Circulatory = SBHumanCirculatory(SickBay)
 
     # The human's Respiratory system.
-    self.Respiratory = SBHumanRespiratorySystem(Sex)
+    self.Respiratory = SBHumanRespiratory(SickBay, Sex)
 
   def NameSet (self, Name):
     self.Name = Name
@@ -79,8 +79,8 @@ class SBHuman(SBNode):
     self.Respiratory.PrintStats ()
       
   def PrintDetails (self):
-    print ("Name:" + self.Name + " UID:" + self.UID + " Sex:" + self.Sex + 
-           " Height:" + self.Height + " Weight:" + self.Weight +
+    print ("Name:" + self.Name () + " UID:" + self.UID () + " Sex:" + self.Sex () + 
+           " Height:" + self.Height () + " Weight:" + self.Weight () +
            "\nDescription:\"" + self.Description + "\n")
     self.Circulatory.PrintDetails ()
     self.Respiratory.PrintDetails ()
