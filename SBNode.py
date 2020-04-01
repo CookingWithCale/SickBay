@@ -128,6 +128,7 @@ class SBNode:
   
   def PrintStats(self):
     for Key, Value in self.Children.iteritems() :
+      print("\n\n" + Key + " ")
       Value.PrintStats()
   
   def Print(self, Indent = 0):
@@ -137,12 +138,12 @@ class SBNode:
     SBPrint.Indent(Indent, "Node { Count: NID: ")
     sys.stdout.write(str(self.NID))
     SBPrint.Indent(Indent + 1, "Description: " + self.Members["Description"])
-    sys.stdout.write("\nChildren: ")
+    SBPrint.Indent(Indent + 1, "Children: ")
     sys.stdout.write(str(self.ChildCount ()))
     sys.stdout.write(" { ")
     for Key in self.Children:
       sys.stdout.write(Key + " ")
-    sys.stdout.write(" >")
+    sys.stdout.write(" }")
     SBPrint.Indent (Indent, " }")
 
   def PrintHelp(self):

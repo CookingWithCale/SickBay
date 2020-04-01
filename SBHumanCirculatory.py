@@ -54,18 +54,18 @@ class SBHumanCirculatory(SBNode):
       self.Members["HeartRate"] = HeartRate
 
   def PrintStats (self):
-    print ("\nBloodPressure:")
+    sys.stdout.write ("   BloodPressure:")
     sys.stdout.write(str(self.BloodPressure ()))
-    sys.stdout.write("\nHeartRate:")
+    sys.stdout.write("   HeartRate:")
     sys.stdout.write(str(self.HeartRate ()))
     
   def PrintDetails (self):
-    print ("\nBloodPressure: ")
+    sys.stdout.write ("   BloodPressure: ")
     sys.stdout.write(self.BloodPressure ())
-    sys.stdout.write("\nBloodType: ")
+    sys.stdout.write("   BloodType: ")
     sys.stdout.write(str (self.BloodType()))
-    sys.stdout.write("\nHeartRate: ")
+    sys.stdout.write("   HeartRate: ")
     sys.stdout.write(str(self.HeartRate ()))
   
   def PrintDescription (self):
-    print ("Description:" + self.Description ())
+    sys.stdout.write ("Description:" + self.Description ())
