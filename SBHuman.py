@@ -12,6 +12,7 @@
 from SBNode import SBNode
 from SBHumanCirculatory import SBHumanCirculatory
 from SBHumanRespiratory import SBHumanRespiratory
+import sys
 
 # A model of a human.
 class SBHuman(SBNode):
@@ -73,7 +74,7 @@ class SBHuman(SBNode):
     self.Respiratory = Respiratory
 
   def PrintStats (self):
-    print ("Name:" + self.Name () + " NID:" + self.NID)
+    print ("Name:" + self.Name () + " NID:" + str(self.NID))
     self.Circulatory.PrintStats ()
     self.Respiratory.PrintStats ()
     

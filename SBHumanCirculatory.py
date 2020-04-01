@@ -8,6 +8,7 @@
 # You can obtain one at <https://mozilla.org/MPL/2.0/>.
 
 from SBNode import SBNode
+import sys
 
 # A model of a human Circulatory system.
 class SBHumanCirculatory(SBNode):
@@ -27,7 +28,7 @@ class SBHumanCirculatory(SBNode):
     self.Members["BloodType"] = self.BloodTypeUnknown #< The patient's blood type.
     self.Members["HeartRate"] = 0.0                   #< The heart pulse rate.
 
-  def BloodPressure (self, BloodPressure):
+  def BloodPressure (self):
     return self.Members["BloodPressure"]
 
   def BloodPressureSet (self, BloodPressure):
@@ -35,7 +36,7 @@ class SBHumanCirculatory(SBNode):
         BloodPressure <= self.BloodPressureMax):
       self.Members["BloodPressure"] = BloodPressure
 
-  def BloodType (self, BloodType):
+  def BloodType (self):
     return self.Members["BloodType"]
 
   def BloodTypeSet (self, BloodType):
@@ -44,7 +45,7 @@ class SBHumanCirculatory(SBNode):
       self.BloodType = BloodType
     self.BloodType = self.BloodTypeUnknown
 
-  def HeartRate (self, HeartRate):
+  def HeartRate (self):
     return self.Members["HeartRate"]
   
   def HeartRateSet (self, HeartRate):
@@ -53,13 +54,18 @@ class SBHumanCirculatory(SBNode):
       self.Members["HeartRate"] = HeartRate
 
   def PrintStats (self):
-    print ("\nBloodPressure:" + self.BloodPressure +
-           "\nHeartRate:" + self.HeartRate)
+    print ("\nBloodPressure:")
+    sys.stdout.write(str(self.BloodPressure ()))
+    sys.stdout.write("\nHeartRate:")
+    sys.stdout.write(str(self.HeartRate ()))
     
   def PrintDetails (self):
-    print ("\nBloodPressure: " + self.BloodPressure +
-           "\nBloodType: " + self.BloodType +
-           "\nHeartRate: " + self.HeartRate)
+    print ("\nBloodPressure: ")
+    sys.stdout.write(self.BloodPressure ())
+    sys.stdout.write("\nBloodType: ")
+    sys.stdout.write(str (self.BloodType()))
+    sys.stdout.write("\nHeartRate: ")
+    sys.stdout.write(str(self.HeartRate ()))
   
   def PrintDescription (self):
-    print ("Description:" + self.Description)
+    print ("Description:" + self.Description ())
