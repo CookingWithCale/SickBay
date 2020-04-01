@@ -89,7 +89,7 @@ class SBHumanRespiratory(SBNode):
     self.Description = Description
 
   def PrintDetails (self):
-    print ("\nIRV:" + self.IRV + "\nTV:" + self.TV + "\nERV:" + self.ERV + 
-           "\nVC: " + self.VC + "\nIC: " + self.IC + "\nFRC: " + self.FRC +
+    sys.stdout.write ("\nIRV:" + self.IRV + "\nTV:" + self.TV + "\nERV:" + 
+           self.ERV + "\nVC: " + self.VC + "\nIC: " + self.IC + "\nFRC: " + self.FRC +
            "\nTLC: " + self.TLC + 
            "\nDescription: \"" + self.Description + "\n\"")

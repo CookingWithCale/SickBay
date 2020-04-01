@@ -74,12 +74,12 @@ class SBHuman(SBNode):
     self.Respiratory = Respiratory
 
   def PrintStats (self):
-    print ("Name:" + self.Name () + " NID:" + str(self.NID))
+    sys.stdout.write ("Name:" + self.Name () + " NID:" + str(self.NID))
     self.Circulatory.PrintStats ()
     self.Respiratory.PrintStats ()
     
   def PrintDetails (self):
-    print ("Name:" + self.Name () + " UID:" + self.NID + " Sex:" + self.Sex () + 
+    sys.stdout.write ("Name:" + self.Name () + " NID:" + self.NID + " Sex:" + self.Sex () + 
            " Height:" + self.Height () + " Weight:" + self.Weight () +
            "\nDescription:\"" + self.Description + "\n")
     self.Circulatory.PrintDetails ()

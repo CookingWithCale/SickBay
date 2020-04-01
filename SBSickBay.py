@@ -15,7 +15,7 @@ from SBHuman import SBHuman
 from SBRoom import SBRoom
 from SBVentilator import SBVentilator
 from GHVentilator import GHVentilator
-import sched, time, datetime
+import sched, time, datetime, sys
 
 #Scheduler = sched.scheduler(time.time, time.sleep)
   
@@ -61,7 +61,7 @@ class SBSickBay(SBNode):
 
   # Console main loop.
   def ConsoleMain(self):
-    print ("\n\nWelcome to SickBay.\n\nEnter \"?\" at any time to get help " +
+    sys.stdout.write ("\n\nWelcome to SickBay.\n\nEnter \"?\" at any time to get help " +
            "\nor press Enter on the keyboard to update the stats"
            "\nor type \"exit\" to exit the console.")
     while True:
@@ -70,7 +70,7 @@ class SBSickBay(SBNode):
         return
       if UserInput == "":
         self.PrintStats()
-      print (self.Top.Command(self, UserInput))
+      sys.stdout.write (self.Top.Command(self, UserInput))
       
   # Pushes an SBNode onto the stack.
   def Push(self, Node):
@@ -96,7 +96,7 @@ class SBSickBay(SBNode):
   # Handler for the init app state.
   def SetupTest (self):
     self.Print()
-    print ("\n\nAdding test patients.")
+    sys.stdout.write ("\n\nAdding test patients.")
     self.PushHandle(self, "WR")
     Top = self.Top
     Top.Print()
@@ -125,17 +125,17 @@ class SBSickBay(SBNode):
       Child.Children.PrintStats()
   
   def StateShutDownHandle(self):
-    print ("\n\nShutting down...")
+    sys.stdout.write ("\n\nShutting down...")
     
   # Prints the most current and important stats to the Console.
   def PrintStats(self):
-    print ("\n\nTime: ")
-    print (datetime.datetime.now())
+    sys.stdout.write ("\n\nTime: ")
+    sys.stdout.write (str (datetime.datetime.now()))
     SBNode.PrintStats(self)
  
   # Function that is called every x seconds to update everything.
   def Update(self):
-    #print ("\n\nUpdate Time:", time.time())
+    #sys.stdout.write ("\n\nUpdate Time:", time.time())
     Handler = {
       1: self.StateMonitorHandle,
       2: self.StateShutDownHandle
