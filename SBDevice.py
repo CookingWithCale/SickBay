@@ -14,7 +14,7 @@ from SBNode import SBNode
 # A SickBay Device.
 class SBDevice(SBNode):
   
-  def __init__(self, NID, Handle = "", Name = "", Description = "", Help = ""):
-    SBNode.__init__(self, NID, "Device", Handle, Name, Description, Help)
+  def __init__(self, SickBay, Handle = "", Name = "", Description = "", Help = ""):
+    SBNode.__init__(self, SickBay, Handle, "Device", Name, Description, Help)
     pass
   
