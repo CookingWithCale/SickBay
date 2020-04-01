@@ -139,9 +139,11 @@ class SBNode:
     SBPrint.Indent(Indent + 1, "Description: " + self.Members["Description"])
     sys.stdout.write("\nChildren: ")
     sys.stdout.write(str(self.ChildCount ()))
+    sys.stdout.write(" { ")
     for Key in self.Children:
       sys.stdout.write(Key + " ")
-    SBPrint.Indent (Indent, "}")
+    sys.stdout.write(" >")
+    SBPrint.Indent (Indent, " }")
 
   def PrintHelp(self):
     print(self.Members["Help"])
