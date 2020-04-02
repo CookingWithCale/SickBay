@@ -17,24 +17,29 @@ import sys
 class SBPrint:
     
   @staticmethod
-  def COut(Item = " "):
+  def COut(Item):
     sys.stdout.write(str(Item))
-    return ""
+    return Item
     
   @staticmethod
-  def Print(Item = " "):
-    sys.stdout.write("\n")
-    sys.stdout.write(str(Item))
-    return ""
-
-  # Prints the Item repeatedly NTimes
+  def COut1(Item1, Item2):
+    String = Item1 + Item2
+    SBPrint.COut(String)
+    return String
+    
   @staticmethod
-  def Repeat(NTimes, Item = " "):
-    Item * NTimes
-    return SBPrint.COut(Item)
+  def COut2(Item1, Item2, Item3):
+    String = Item1 + Item2 + Item3
+    SBPrint.COut(String)
+    return String
+  
+  @staticmethod
+  def Repeat(Item = " ", Repeat = 0, StartingString = ""):
+    String = StartingString + Item * Repeat
+    SBPrint.COut(String)
+    return String
 
   # Prints the given Item indented by the given IndentationLevel
   @staticmethod
-  def Indent(IndentationLevel, Item = ""):
-    SBPrint.Repeat(IndentationLevel * SBPrintSpacesPerIndent, " ")
-    SBPrint.COut(Item)
+  def Indent(Item = "", IndentationLevel = 0):
+    return "\n" + (IndentationLevel * " ") + Item

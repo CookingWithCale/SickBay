@@ -8,6 +8,7 @@
 # You can obtain one at <https://mozilla.org/MPL/2.0/>.
 
 from SBNode import SBNode
+from SBPrint import SBPrint
 import sys
 
 # A model of a human Circulatory system.
@@ -55,19 +56,18 @@ class SBHumanCirculatory(SBNode):
         HeartRate > self.HeartRateMax):
       self.Members["HeartRate"] = HeartRate
 
-  def PrintStats (self):
-    sys.stdout.write ("   BloodPressure:")
-    sys.stdout.write(str(self.BloodPressure ()))
-    sys.stdout.write("   HeartRate:")
-    sys.stdout.write(str(self.HeartRate ()))
+  def PrintStats (self, Stats):
+    return Stats + "   BloodPressure:" + str(self.BloodPressure ()) + \
+           "   HeartRate:" + str(self.HeartRate ())
     
-  def PrintDetails (self):
-    sys.stdout.write ("   BloodPressure: ")
-    sys.stdout.write(self.BloodPressure ())
-    sys.stdout.write("   BloodType: ")
-    sys.stdout.write(str (self.BloodType()))
-    sys.stdout.write("   HeartRate: ")
-    sys.stdout.write(str(self.HeartRate ()))
+  def PrintDetails (self, Details):
+    SBPrint.COut ("   BloodPressure: ")
+    SBPrint.COut(self.BloodPressure ())
+    SBPrint.COut("   BloodType: ")
+    SBPrint.COut(str (self.BloodType()))
+    SBPrint.COut("   HeartRate: ")
+    SBPrint.COut(str(self.HeartRate ()))
+    return Details
   
   def PrintDescription (self):
-    sys.stdout.write ("Description:" + self.Description ())
+    SBPrint.COut ("Description:" + self.Description ())

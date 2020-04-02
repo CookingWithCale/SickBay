@@ -18,7 +18,7 @@ from SBVentilator import SBVentilator
 from GHVentilator import GHVentilator
 import sched, time, datetime
 
-#Scheduler = sched.scheduler(time.time, time.sleep)
+Scheduler = sched.scheduler(time.time, time.sleep)
   
 # The SickBay app object.
 class SBSickBay(SBNode):
@@ -111,19 +111,17 @@ class SBSickBay(SBNode):
 
   # Console main loop.
   def ConsoleMain(self):
-    SBPrint.COut ("\n\nWelcome to SickBay.\n\nEnter \"?\" at any time to get help " +
+    SBPrint.COut ("\n\nWelcome to SickBay.")
+    SBPrint.COut (self.PrintStats())
+    SBPrint.COut ("\n\nEnter \"?\" at any time to get help " +
            "\nor press Enter on the keyboard to update the stats"
            "\nor type \"exit\" to exit the console.\n")
     while True:
-      self.Top.Path()
-      UserInput = raw_input("> ").lower()
+      SBPrint.COut(self.Top.Path())
+      UserInput = raw_input("").lower()
       if UserInput == "exit":
         return
-      if UserInput == "":
-        self.PrintStats()
-      SBPrint.COut(self.Top.Path())
-      SBPrint.COut(">")
-      SBPrint.Print (self.Top.Command(self, UserInput))
+      SBPrint.COut (self.Top.Command(self, UserInput))
       
   # Pushes an SBNode onto the stack.
   def Push(self, Node):
@@ -137,8 +135,8 @@ class SBSickBay(SBNode):
   
   # Enters the monitoring state.
   def MonitorBegin(self):
-    #Scheduler.enter(1, 1, self.Update, ())
-    #Scheduler.run()
+    Scheduler.enter(1, 1, self.Update, ())
+    Scheduler.run()
     SBPrint.COut("\n\nBeginning monitoring...")
   
   def Print(self):
@@ -149,7 +147,7 @@ class SBSickBay(SBNode):
   def SetupTest (self):
     self.Print()
     SBPrint.COut ("\n\nAdding test patients...\n\n")
-    self.PushHandle(self, "Name=\"Intake\"")
+    self.PushKey(self, "Intake")
     Top = self.Top
     Top.Print()
     
@@ -187,16 +185,14 @@ class SBSickBay(SBNode):
   
   def StateShutDownHandle(self):
     SBPrint.COut ("\n\nShutting down...")
-    
-  # Prints the most current and important stats to the Console.
-  def PrintStats(self):
-    SBPrint.COut ("\n\nTime: ")
-    SBPrint.COut (str (datetime.datetime.now()))
-    SBNode.PrintStats(self)
+  
+  def PrintDetails(self, Details = ""):
+    return Details + "\n><>SickBay:\n>\nTime=" + \
+           str (datetime.datetime.now()) + "\n" + \
+           SBNode.PrintDetails(self, Details)
  
   # Function that is called every x seconds to update everything.
   def Update(self):
-    #SBPrint.COut ("\n\nUpdate Time:", time.time())
     Handler = {
       1: self.StateMonitorHandle,
       2: self.StateShutDownHandle
@@ -206,7 +202,7 @@ class SBSickBay(SBNode):
     # Execute the function
     Key()
     self.PrintStats()
-    #Scheduler.enter(1, 1, self.Update, ())
+    Scheduler.enter(1, 1, self.Update, ())
 
 if __name__ == '__main__':
   SickBayConsole = SBSickBay()

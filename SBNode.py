@@ -48,12 +48,12 @@ class SBNode:
   def Pop(self, SickBay):
     SickBay.Top = SickBay.Stack.pop()
   
-  def PushHandle(self, SickBay, Key):
+  def PushKey(self, SickBay, Key):
     if (Key in self.Children):
       self.Children[Key].Push(SickBay)
   
   def Name(self):
-    return "" #self.Members["Name"]
+    return self.Members["Name"]
   
   # Loads a Node from the URI.
   # @todo Write me!
@@ -194,12 +194,39 @@ class SBNode:
   def DescriptionSet(self, Description):
     self.Members["Description"] = Description
   
-  def PrintStats(self):
+  def PrintStats(self, String = "", Indent = 0, SelfKey = None):
+    print("\nIt works!!! ")
+    return "FJDKSLDFJS"
+    String += SBPrint.Indent("> ", Indent)
+    if SelfKey != None:
+      String += SelfKey
     for Key, Value in self.Children.iteritems() :
+      Value.PrintStats(String, Indent + 1, Key)
+    String += SBPrint.Indent("<", Indent)
+    return String
   
-      Value.PrintStats()
+  def PrintDetails(self, String = "", Indent = 0, SelfKey = None):
+    String += SBPrint.Indent("> ", Indent) + ".Details"
+    if SelfKey != None:
+      String += SelfKey
+    for Key, Value in self.Children.iteritems() :
+      Value.PrintDetails(String, Indent + 1, Key)
+    return String
+  
+  # Prints a human-readable help string.
+  def PrintHelp(self, String = "", Indent = 0, SelfKey = None):
+    String += SBPrint.Indent("> ", Indent) + SelfKey + ".Help" + \
+              SBPrint.Indent("", Indent + 1) + self.Members["Help"]
+    for Child in self.Children:
+      Child.PrintHelp(String, SelfKey, Indent + 1)
+  
+  # Prints the List() to the COut
+  def Print(self, Indent = 0):
+    SBPrint.COut(self.List())
 
   def Key(self):
+    if self == self.Parent:
+      return "><"
     for Key, Value in self.Children.iteritems():
       if (Value == self):
         return Key
@@ -208,38 +235,36 @@ class SBNode:
   def Path(self, Path = ""):
     Parent = self.Parent
     if self != Parent:
-      Parent.Path(Path)
-    Path += "." + self.Key()
+      return Parent.Path(Path)
+    return Path + self.Key() + "."
   
-  def Print(self, Indent = 0):
-    #SBPrint.Indent(Indent, "Node { Count: NID: " + self.NID)# + "Type: " + self.Type()) # +
-    #      "Key: " + self.Key() + "Name: " + self.Name() + 
-    #      "Description: " + self.Description()
-    SBPrint.Indent(Indent, "Node { Count: NID: ")
-    SBPrint.COut(str(self.NID))
-    SBPrint.Indent(Indent + 1, "Description: " + self.Members["Description"])
-    SBPrint.Indent(Indent + 1, "Children: " + str(self.ChildCount ()) + " { ")
-    for Key in self.Children:
-      SBPrint.COut(Key + " ")
-    SBPrint.COut(" }")
-    SBPrint.Indent (Indent, " }")
-  
-  def PrintHelp(self):
-    SBPrint.COut("\nHelp:")
-    SBPrint.COut(self.Members["Help"])
+  # Returns a string with all of the Keys in the Members and Children.
+  def List(self):
+    Index = 0
+    Result = "{ Members: { "
+    for Key, Value in self.Members.iteritems():
+      Result += Key + ":" + Value.__class__.__name__ + ", "
+    Result += "} Children: { "
+    for Key, Value in self.Children.iteritems():
+      Result += Key + ":" + Value.__class__.__name__ + ", "
+    Result += "} }"
+    return Result
   
   # Issues a Console command to this node.
   # Intake.Add Token="" Name="Harry" Description=""
   # 
   def Command(self, SickBay, Command):
     if Command == "":
-      self.PrintStats()
-      return ""
+      print("\nThis works???")
+      return self.PrintStats(self)
     if Command == "..":
       self.Pop(SickBay)
     Tokens = Command.split(".", 1)
     Target = Tokens[0]
     TokensLength = len(Tokens)
+
+    if Command == "list":
+      return "\n> " + self.List()
     
     if Target == "?" or Target == "help":
       if TokensLength == 1:
