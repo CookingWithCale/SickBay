@@ -11,19 +11,30 @@
 
 # Constants
 SBPrintSpacesPerIndent = 2  #< The number of spaces per indentation level.
+import sys
 
 # SickBay Printing functions.
 class SBPrint:
-  
+    
+  @staticmethod
+  def COut(Item = " "):
+    sys.stdout.write(str(Item))
+    return ""
+    
+  @staticmethod
+  def Print(Item = " "):
+    sys.stdout.write("\n")
+    sys.stdout.write(str(Item))
+    return ""
+
   # Prints the Item repeatedly NTimes
   @staticmethod
   def Repeat(NTimes, Item = " "):
-    for X in range(NTimes):
-      print(Item)
-    return ""
+    Item * NTimes
+    return SBPrint.COut(Item)
 
   # Prints the given Item indented by the given IndentationLevel
   @staticmethod
   def Indent(IndentationLevel, Item = ""):
     SBPrint.Repeat(IndentationLevel * SBPrintSpacesPerIndent, " ")
-    print(Item)
+    SBPrint.COut(Item)

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # SickBay @version 0.x
 # @link    https://github.com/KabukiStarship/sickbay.git
-# @file    /SBDevice.py
+# @file    /Utility.py
 # @author  Cale McCollough <https://cale-mccollough.github.io>
 # @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>; all rights 
 # reserved (R). This Source Code Form is subject to the terms of the Mozilla 
@@ -11,9 +11,7 @@
 
 from SBNode import SBNode
 
-# A SickBay Device.
-class SBDevice(SBNode):
+class SBUtility(SBNode):
   
-  def __init__(self, SickBay, Type = "Device", Command = ""):
-    SBNode.__init__(self, SickBay, Type, SickBay.DeviceCountNext(), Command)
-    pass
+  def __init__(self, SickBay, Type = "App", Command = ""):
+    SBNode.__init__(self, SickBay, Type, SickBay.AppCountNext(), Command)

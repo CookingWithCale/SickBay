@@ -22,11 +22,13 @@ class SBHumanCirculatory(SBNode):
   BloodTypeUnknown = "Unknown" #< String to use if the BloodType input was bad.
   
   def __init__(self, SickBay):
-    SBNode.__init__(self, SickBay, "Circulatory", "Human.Circulatory", 
-                    "Circulatory system", "The human circulatory system")
+    SBNode.__init__(self, SickBay, "HumanSystem", Arguments = " Name=\"Human "\
+                    "circulatory system\" Description=\"The human circulatory "\
+                    "system\"")
     self.Members["BloodPressure"] = 0.0               #< The heart pulse rate.
     self.Members["BloodType"] = self.BloodTypeUnknown #< The patient's blood type.
     self.Members["HeartRate"] = 0.0                   #< The heart pulse rate.
+    SickBay.Push(self)
 
   def BloodPressure (self):
     return self.Members["BloodPressure"]

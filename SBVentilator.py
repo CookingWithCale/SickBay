@@ -48,16 +48,17 @@ class SBVentilator(SBDevice):
   # if that pressure is exceeded.
   EIPPMax = 30.0
 
-  def __init__(self, SickBay, Handle, BreathDutyCycle = 0.5, BreathPeriod = 2.0, TidalCurrent = 0.0, EIPP = 0.0):
-    SBDevice.__init__(self, SickBay, Handle, "Ventilator")
-    #The breath duty cycle where 0.5 is 50% duty cycle.
-    self.Members["BreathDutyCycle"] = BreathDutyCycle
+  def __init__(self, SickBay, Type = "DeviceVentilator", Arguments = "Name=\"Generic\" "\
+               "Description=\"A meta model for RespiratoryVentilator.\""):
+    SBDevice.__init__(self, SickBay, Type, Arguments)
+    # The breath duty cycle where 0.5 is 50% duty cycle.
+    self.Members["BreathDutyCycle"] = 0.5
     # The breath period in seconds.
-    self.Members["BreathPeriod"] = BreathPeriod
+    self.Members["BreathPeriod"] = 2.0
     # The tidal air current.      
-    self.Members["TidalCurrent"] = TidalCurrent
+    self.Members["TidalCurrent"] = 0.0
     # End Inspiratory plateau pressure.
-    self.Members["EIPP"]  = EIPP
+    self.Members["EIPP"]  = 0.0
   
   def BreathDutyCycle(self, BreathDutyCycle):
     return self.Members["BreathDutyCycle"]

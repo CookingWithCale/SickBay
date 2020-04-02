@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 # SickBay @version 0.x
-# @link    https://github.com/KabukiStarship/sickbay.git
+# @link    https://github.com/KabukiStarship/SickBay.git
 # @file    /SBRoom.py
 # @author  Cale McCollough <https://cale-mccollough.github.io>
 # @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>; all rights 
@@ -14,12 +14,18 @@ from SBNode import SBNode
 # A Room in real life you put put SBNodes into.
 class SBRoom(SBNode):
   
-  def __init__(self, SickBay, Handle = "", Name = "", Description = "", Help = ""):
-    SBNode.__init__(self, SickBay, Handle, "Room", Name, Description, Help)
+  def __init__(self, SickBay, Command = ""):
+    SBNode.__init__(self, SickBay, Command)
+    self.Members["Directions"] = ""
+    SickBay.RoomCountNext()
 
   def Directions(self):
-    return SBRoom.Members["Directions"]
+    return self.Members["Directions"]
   
   def DirectionsSet(self, Directions):
-    SBRoom.Members["Directions"] = Directions
+    self.Add("Directions", Directions)
   
+  def Command(self, SickBay, Command):
+    Key = Command.split(".", 1)
+    if len(Key) != 3 and " " not in Key[1]:
+      pass
