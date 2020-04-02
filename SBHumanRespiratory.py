@@ -89,7 +89,7 @@ class SBHumanRespiratory(SBNode):
   def DescriptionSet (self, Description):
     self.Description = Description
 
-  def PrintStats (self, Stats = ""):
+  def PrintStats (self, Stats = "", SelfKey = ""):
     return Stats
 
   def PrintDetails (self, Details = ""):

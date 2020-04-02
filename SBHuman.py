@@ -75,14 +75,16 @@ class SBHuman(SBNode):
   def RespiratorySet(self, Respiratory):
     self.Respiratory = Respiratory
 
-  def PrintStats (self, Stats = "", Indent = 0, SelfKey = ""):
-    return Stats + "\nName:" + self.Name () + " NID:" + str(self.NID) +\
-           self.Circulatory.PrintStats (Stats, Indent) +\
-           self.Respiratory.PrintStats (Stats, Indent)
+  def PrintStats (self, String = "", SelfKey = ""):
+    if SelfKey is not None:
+      String += SelfKey + "   "
+    return String + "Name:" + self.Name () + "   NID:" + str(self.NID) +\
+           self.Circulatory.PrintStats (String) +\
+           self.Respiratory.PrintStats (String)
     
-  def PrintDetails (self, Details = ""):
-    return Details + "Name:" + self.Name () + " NID:" + self.NID + " Sex:" + self.Sex () + \
+  def PrintDetails (self, String = ""):
+    return String + "Name:" + self.Name () + " NID:" + self.NID + " Sex:" + self.Sex () + \
            " Height:" + self.Height () + " Weight:" + self.Weight () + \
            "\nDescription:\"" + self.Description + "\n" +\
-    self.Circulatory.PrintDetails (Details) + \
-    self.Respiratory.PrintDetails (Details)
+           self.Circulatory.PrintDetails (String) + \
+           self.Respiratory.PrintDetails (String)

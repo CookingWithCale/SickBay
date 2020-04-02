@@ -194,15 +194,12 @@ class SBNode:
   def DescriptionSet(self, Description):
     self.Members["Description"] = Description
   
-  def PrintStats(self, String = "", Indent = 0, SelfKey = None):
-    print("\nIt works!!! ")
-    return "FJDKSLDFJS"
-    String += SBPrint.Indent("> ", Indent)
+  def PrintStats(self, String = "", SelfKey = None):
+    print ("\nPrinting Stats")
     if SelfKey != None:
-      String += SelfKey
+      String += SelfKey + " "
     for Key, Value in self.Children.iteritems() :
-      Value.PrintStats(String, Indent + 1, Key)
-    String += SBPrint.Indent("<", Indent)
+      Value.PrintStats(String, Key)
     return String
   
   def PrintDetails(self, String = "", Indent = 0, SelfKey = None):
@@ -255,8 +252,8 @@ class SBNode:
   # 
   def Command(self, SickBay, Command):
     if Command == "":
-      print("\nThis works???")
-      return self.PrintStats(self)
+      print("\nAttempting to PrintStats")
+      return self.PrintStats()
     if Command == "..":
       self.Pop(SickBay)
     Tokens = Command.split(".", 1)
