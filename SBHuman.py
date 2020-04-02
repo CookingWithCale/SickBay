@@ -12,6 +12,7 @@
 from SBNode import SBNode
 from SBHumanCirculatory import SBHumanCirculatory
 from SBHumanRespiratory import SBHumanRespiratory
+from SBPrint import SBPrint
 import sys
 
 # A model of a human.
@@ -74,19 +75,14 @@ class SBHuman(SBNode):
   def RespiratorySet(self, Respiratory):
     self.Respiratory = Respiratory
 
-  def PrintStats (self):
-    sys.stdout.write ("Name:" + self.Name () + " NID:" + str(self.NID))
-    self.Circulatory.PrintStats ()
-    self.Respiratory.PrintStats ()
+  def PrintStats (self, Stats = "", Indent = 0, SelfKey = ""):
+    return Stats + "\nName:" + self.Name () + " NID:" + str(self.NID) +\
+           self.Circulatory.PrintStats (Stats, Indent) +\
+           self.Respiratory.PrintStats (Stats, Indent)
     
-  def PrintDetails (self):
-    sys.stdout.write ("Name:" + self.Name () + " NID:" + self.NID + " Sex:" + self.Sex () + 
-           " Height:" + self.Height () + " Weight:" + self.Weight () +
-           "\nDescription:\"" + self.Description + "\n")
-    self.Circulatory.PrintDetails ()
-    self.Respiratory.PrintDetails ()
-    
-  def DescriptionPrint (self):
-    print ("\nDescription:\"" + self.Description + "\n")
-    self.Circulatory.PrintDescription ()
-    self.Respiratory.PrintDescription ()
+  def PrintDetails (self, Details = ""):
+    return Details + "Name:" + self.Name () + " NID:" + self.NID + " Sex:" + self.Sex () + \
+           " Height:" + self.Height () + " Weight:" + self.Weight () + \
+           "\nDescription:\"" + self.Description + "\n" +\
+    self.Circulatory.PrintDetails (Details) + \
+    self.Respiratory.PrintDetails (Details)

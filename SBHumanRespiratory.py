@@ -89,8 +89,11 @@ class SBHumanRespiratory(SBNode):
   def DescriptionSet (self, Description):
     self.Description = Description
 
-  def PrintDetails (self):
-    sys.stdout.write ("\nIRV:" + self.IRV + "\nTV:" + self.TV + "\nERV:" + 
-           self.ERV + "\nVC: " + self.VC + "\nIC: " + self.IC + "\nFRC: " + self.FRC +
-           "\nTLC: " + self.TLC + 
-           "\nDescription: \"" + self.Description + "\n\"")
+  def PrintStats (self, Stats = ""):
+    return Stats
+
+  def PrintDetails (self, Details = ""):
+    return "\nIRV:" + self.IRV + "\nTV:" + self.TV + "\nERV:" + \
+           self.ERV + "\nVC: " + self.VC + "\nIC: " + self.IC + "\nFRC: " + self.FRC +\
+           "\nTLC: " + self.TLC + \
+           "\nDescription: \"" + self.Description + "\n\""
