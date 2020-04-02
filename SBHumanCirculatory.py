@@ -56,7 +56,7 @@ class SBHumanCirculatory(SBNode):
         HeartRate > self.HeartRateMax):
       self.Members["HeartRate"] = HeartRate
 
-  def PrintStats (self, Stats):
+  def PrintStats (self, Stats, SelfKey = ""):
     return Stats + "   BloodPressure:" + str(self.BloodPressure ()) + \
            "   HeartRate:" + str(self.HeartRate ())
     
