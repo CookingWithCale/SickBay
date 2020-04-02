@@ -12,8 +12,8 @@
 from SBVentilator import SBVentilator
 
 class GHVentilator(SBVentilator):
-  def __init__(self, SickBay, Handle, Description = "", Help = ""):
-    SBVentilator.__init__(self, SickBay, Handle, "GHVentilator", Description, Help)
+  def __init__(self, SickBay, Arguments = ""):
+    SBVentilator.__init__(self, SickBay, "DeviceVentilatorGH", Arguments)
     self.Members["BreathDutyCycle"] = 0.5   #< The breath duty cycle where 0.5 is 50% duty cycle.
     self.Members["BreathPeriod"] = 2.0      #< The breath period in seconds.
     self.Members["TidalCurrent"] = 0.0      #< The tidal air current.

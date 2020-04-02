@@ -16,23 +16,41 @@ import sys
   
 # A SickBay tree node with a unique Node ID (NID).
 class SBNode:
+  HelpDefault = ("This is a Generic node that contains a collection of Keys " +
+                 "that you push Nodes onto the SickBay Stack, which is best " +
+                 "described as putting playing cards on a stack face down " +
+                 "with one card face up on top, and your manipulate the " +
+                 "face up card. You push items on the stack either by their " +
+                 "index 0, 1, ...N, or, by their Key by typing it in and " +
+                 "pressing enter, or by the unique Node ID (NID) which you " +
+                 "enter as a negative number." +
+                 "Example Command 1> Foo" +
+                 "Example Command 2> Foo add" +
+                 "\n")
 
-  def __init__(self, SickBay, Handle = "", Type = "", Name = "", Description = "", Help=""):
+  def __init__(self, SickBay, Type = "", TypeCount = 0, Arguments=""):
     self.NID = SickBay.NIDNext ()  #< The Node ID.
-    self.Parent = SickBay.Top.NID  #< This node's parent NID.
+    self.TypeCount = TypeCount     #< The unique index of the Type created.
+    self.Parent = SickBay.Top      #< This node's parent.
     self.Members = {               #< The Metadata members
-      "Type": Type,                #< The node Type in UpperCaseCamel.
-      "Name": Name,                #< The Node name in any format.
-      "Description": Description,  #< The description of this Device.
-      "Help": Help                 #< The help string.
+      "Type": "",                  #< The node Type in UpperCaseCamel.
+      "Name": "",                  #< The Node name in any format.
+      "Description": "",           #< The description of this Device.
+      "Help": ""                   #< The help string.
     }
     self.Children = {}             #< The child SBNodes.
+    #self.Push(SickBay)
+
+  def Push(self, SickBay):
+    SickBay.Stack.append(SickBay.Top)
+    SickBay.Top = self
+
+  def Pop(self, SickBay):
+    SickBay.Top = SickBay.Stack.pop()
   
-  def PushHandle(self, SickBay, Handle):
-    if (Handle in self.Children):
-      SickBay.Push(self.Children[Handle])
-    if (Handle in self.Members):
-      SickBay.Push(self.Members[Handle])
+  def PushHandle(self, SickBay, Key):
+    if (Key in self.Children):
+      self.Children[Key].Push(SickBay)
   
   def Name(self):
     return "" #self.Members["Name"]
@@ -53,13 +71,52 @@ class SBNode:
     if (Key not in self.Members): return None
     return self.Members[Key]
   
+  def Command(self, Arguments):
+    Loop = True
+    while Loop:
+      Args = Arguments.split("=", 1)
+      if (len(Args) == 1):
+        return ""
+      Key = Args[0].strip()
+      if " " in Key:
+        return "ERROR: Spaces aren't allowed in Keys."
+      if "." in Key:
+        return "ERROR: Nested children are not implemented yet."
+      Strings = Args[1].spilt("\"", 2)
+      if len(Strings) == 3:
+        self.Add(Key, Strings[1])
+        return ""
+      String = Args[1].lstrip()
+      Args = Arguments.split(" ", 1)
+      String = Args[0]
+      try: 
+        self.Add(Key, int(String))
+        return ""
+      except ValueError:
+        pass
+      try: 
+        self.Add(Key, float(String))
+        return ""
+      except ValueError:
+        return ""
+      Arguments = Args[1]
+      if (len(Args[1]) == 0):
+        Loop = False
+  
+  def MemberCount(self): return len(self.Members)
+  
   def ChildCount(self): return len(self.Children)
+  
+  def Add(self, Key, Value):
+    if Value == None:
+      return
+    if isinstance(Value, SBNode):
+      self.Children[Key] = Value
+    else:
+      self.Members[Key] = Value
 
-  def Add(self, Handle, ChildNode):
-    self.Children[Handle] = ChildNode
-
-  def Add(self, Handle, ChildNode):
-    self.Children[Handle] = ChildNode
+  def AddChild(self, Key, Value):
+    self.Children[Key] = Value
     
   # Removes the given Key from the Members
   def Remove(self, Key):
@@ -80,42 +137,53 @@ class SBNode:
     return Results
   
   # Searches for SBNode contents that starts with the query.
-  def Search(self, Tag, Query):
+  def Search(self, Key, Query):
     Results = []
     if self.NID.startswith(Query):
       Results += self
       for Node in self.Children:
-        if Node.Members[Tag].startswith(Query):
+        if Node.Members[Key].startswith(Query):
           Results += Node
       return Results
-    if Query == "Handle":
+    if Query == "Key":
       Results += self
     for Member in self.Members:
-      if Member.Members[Tag].startswith(Query):
+      if Member.Members[Key].startswith(Query):
         Results += Member
     for Node in self.Children:
-      if Node.Members[Tag].startswith(Query):
+      if Node.Members[Key].startswith(Query):
         Results += Node
     return Results
   
-  # Searches this node for a tag that contains the query.
-  def Find(self, Tag, Query):
-     pass
+  # Searchs for the NID in this object and it's children.
+  def FindNID(self, NID):
+    if self.NID == NID:
+      return self
+    for Child in self.Children:
+      Child.FindNID(NID)
+    return None
+  
+  # Searches this node for with a Key.
+  def Find(self, Key):
+    if Key in self.Children:
+      return self.Children[Key]
+    return None    
 
-  def Search(self, Query):
+  def Search(self, SickBay, Query):
     Results = []
     for Node in self.Children:
       if (Node.NID == str(Node.NID) or
+          Query in self.Members or
           self.Members["Name"].startswith(Query) or
-          self.Members["Handle"].find(Query) == 0):
+          self.Members["Key"].find(Query) == 0):
         Results.append(Node)
     return Results
   
   def TypeSet(self, Type):
     self.Type = Type
   
-  def HandleSet(self, Handle):
-    self.Handle = Handle
+  def HandleSet(self, Key):
+    self.Key = Key
   
   def DescriptionSet(self, Description):
     self.Description = Description
@@ -128,34 +196,67 @@ class SBNode:
   
   def PrintStats(self):
     for Key, Value in self.Children.iteritems() :
-      print("\n\n" + Key + " ")
+  
       Value.PrintStats()
+
+  def Key(self):
+    for Key, Value in self.Children.iteritems():
+      if (Value == self):
+        return Key
+    return ""
+
+  def Path(self, Path = ""):
+    Parent = self.Parent
+    if self != Parent:
+      Parent.Path(Path)
+    Path += "." + self.Key()
   
   def Print(self, Indent = 0):
     #SBPrint.Indent(Indent, "Node { Count: NID: " + self.NID)# + "Type: " + self.Type()) # +
-    #      "Handle: " + self.Handle() + "Name: " + self.Name() + 
+    #      "Key: " + self.Key() + "Name: " + self.Name() + 
     #      "Description: " + self.Description()
     SBPrint.Indent(Indent, "Node { Count: NID: ")
-    sys.stdout.write(str(self.NID))
+    SBPrint.COut(str(self.NID))
     SBPrint.Indent(Indent + 1, "Description: " + self.Members["Description"])
-    SBPrint.Indent(Indent + 1, "Children: ")
-    sys.stdout.write(str(self.ChildCount ()))
-    sys.stdout.write(" { ")
+    SBPrint.Indent(Indent + 1, "Children: " + str(self.ChildCount ()) + " { ")
     for Key in self.Children:
-      sys.stdout.write(Key + " ")
-    sys.stdout.write(" }")
+      SBPrint.COut(Key + " ")
+    SBPrint.COut(" }")
     SBPrint.Indent (Indent, " }")
-
-  def PrintHelp(self):
-    print(self.Members["Help"])
   
+  def PrintHelp(self):
+    SBPrint.COut("\nHelp:")
+    SBPrint.COut(self.Members["Help"])
+  
+  # Issues a Console command to this node.
+  # Intake.Add Token="" Name="Harry" Description=""
+  # 
   def Command(self, SickBay, Command):
     if Command == "":
       self.PrintStats()
       return ""
-    if Command == "?":
-      self.PrintHelp()
-      return ""
+    if Command == "..":
+      self.Pop(SickBay)
+    Tokens = Command.split(".", 1)
+    Target = Tokens[0]
+    TokensLength = len(Tokens)
+    
+    if Target == "?" or Target == "help":
+      if TokensLength == 1:
+        self.PrintHelp()
+        return ""
+      if TokensLength > 1:
+        return ("ERROR: Must enter a ? or help followed by either a child " +
+                "Node ID (NID) or Key, a negative to select an index " +
+                "number, the word All.\nExample 1:? Foo\nExample 2:? all")
+      ObjectToken = Tokens[1]
+      if ObjectToken == "all" or ObjectToken == "*":
+        self.PrintHelp()
+        for Child in self.Children:
+          Child.PrintHelp()
+        return ""
+      if ObjectToken in self.Children:
+        SickBay.Push(self.Children[ObjectToken])
     if Command.isdigit():
       Index = int(Command)
       SickBay.Push (self)
@@ -186,8 +287,4 @@ class SBNode:
         if str(self.Node.NID).find(Query):
           Results.append(Node)
       return Results
-    for Node in self.Children:
-      if self.Node.Handle == Command:
-        Results.append(Node)
-        return Results
     return Results

@@ -23,17 +23,18 @@ class SBHuman(SBNode):
   SexMale = 0             #< Sex is male.
   SexFemale = 1           #< Sex if female.
   
-  def __init__(self, SickBay, Handle = "", Name = "", Sex = "", Height = 0.0, Weight = 0.0):
-    SBNode.__init__(self, SickBay, Handle, "Human", Name)
-    self.Members["Sex"] = Sex        #< The Sex of the person.
-    self.Members["Height"] = Height  #< The person's Height.
-    self.Members["Weight"] = Weight  #< The person's Weight.
+  def __init__(self, SickBay, Arguments = ""):
+    SBNode.__init__(self, SickBay, Arguments)
+    self.Add("Sex", "")         #< The Sex of the person.
+    self.Add("Height", 0.0)     #< The person's Height.
+    self.Add("Weight", 0.0)     #< The person's Weight.
+    SickBay.Push(self)
 
     # The human's Circulatory system.
     self.Circulatory = SBHumanCirculatory(SickBay)
 
     # The human's Respiratory system.
-    self.Respiratory = SBHumanRespiratory(SickBay, Sex)
+    self.Respiratory = SBHumanRespiratory(SickBay, self.Members["Sex"])
 
   def NameSet (self, Name):
     self.Name = Name

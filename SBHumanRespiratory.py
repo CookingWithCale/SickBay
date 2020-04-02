@@ -54,6 +54,7 @@ class SBHumanRespiratory(SBNode):
       self.IC = 2.4
       self.FRC = 1.8
       self.TLC = 4.2
+    SickBay.Push(self)
     
   def IRVSet(self, IRV):
     if (IRV >= self.IRVMin and
