@@ -1,8 +1,16 @@
-# [SickBay](../../../).[CirculatorySystem](../)
+# IssueType Bug Report
 
-## Pulse Oximeter
+## Problem
 
-This module will be used for measuring patient pulse and blood oxygen/SpO2 levels.
+
+
+## Solution
+
+
+
+## Hierarchy
+
+* This
 
 ## How to Contribute
 

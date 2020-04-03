@@ -7,54 +7,124 @@
 # @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>; all rights 
 # reserved (R). This Source Code Form is subject to the terms of the Mozilla 
 # Public License, v. 2.0. If a copy of the MPL was not distributed with this 
-# file, you can obtain one at <https://mozilla.org/MPL/2.0/>.
+# file, you can obtain one at <https://mozilla.org/MPL/2.0/>. Process
  
 from SBNode import SBNode
 from SBDevice import SBDevice
 from SBHuman import SBHuman
 from SBRoom import SBRoom
-from SBPrint import SBPrint
+from Stringf import Stringf
 from SBVentilator import SBVentilator
 from GHVentilator import GHVentilator
 import sched, time, datetime
 
 Scheduler = sched.scheduler(time.time, time.sleep)
   
-# The SickBay app object.
+# The SickBay Process object.
 class SBSickBay(SBNode):
   # Constants
   StateMonitoring = 1     #< State: Monitoring.
   StateShuttingDown = 2   #< State: Shutting down.
-  HelpString = (
-    "\nSickBay is a tree and node system where you start out at in the root." +
-    "\nTo list the contents of any SickBay Node type the word \"list\"." +
-    "\nEach Node has a Node ID (NID), Type, Key, Name, Description, and " +
-    "\nHelp string. You can search through the nodes and their children by " +
-    "\nTyping \"search name John\" will search for any node with John in the " +
-    "\nName.")
-
+  
   def __init__(self):
     self.NIDCount = 0                 #< The total number of SBNodes.
     self.HeadCount = 0                #< The count of new Humans in the Room.
-    self.DeviceCount = 0              #< The Device count
-    self.RoomCount = 0                #< The Room count
-    self.SearchCount = 0              #< The search count
-    self.ProcedureCount = 0           #< The procedure count
-    self.AppCount = 0                 #< The application count
+    self.DeviceCount = 0              #< The SBDevice count
+    self.RoomCount = 0                #< The SBRoom count
+    self.SearchCount = 0              #< The SBSearch count
+    self.ProcedureCount = 0           #< The Procedure count
+    self.ProcessCount = 0             #< The Process count
     self.Top = self                   #< The currently selected node.
+    self.PushCount = 0                #< The number pushes since the of the Command.
+    self.ModeStackRestore = False     #< Mode for Commands that start with a '.'
     self.Stack = []                   #< The stack of SBNodes.
-    SBNode.__init__(self, self, "Type=\"SickBay\" Name=\"SickBay\" Description=\"Root Node with NID 0.\"")
-    self.State = self.StateMonitoring #< The app state.
-    self.Devices = []                 #< A list of Devices this SickBay supports.
-    self.Add("Intake", SBRoom(self, "Name=\"Patient Intake\" Description=\"The Intake Room where you wait get get into the Hospital."))
-    self.Add("ER", SBRoom(self, "Name=\"Emergency Room\" Description=\"The room with Patients who may need critical care."))
-    self.Add("ICU", SBRoom(self, "Name=\"Intensive Care Unit\" Description=\"The room for Patients in need of critical care."))
-    self.Add("Rooms", SBRoom(self, "Name=\"Patient Rooms\" Description=\"The Rooms where the Patients are in who aren't in the ER or ICU."))
-    self.Add("Guests", SBRoom(self, "Name=\"Guest Room\" Description=\"The Room where guests start out in."))
-    self.Add("Staff", SBRoom(self, "Name=\"Staff Room\" Description=\"The Room where all the Staff start out in."))
-    self.Add("Devices", SBRoom(self, "Name=\"Device Room\" Description=\The Room where all of the unused devices are stored in."))
+    SBNode.__init__(self, self, "Type=\"SickBay\" Name=\"SickBay\" " \
+                                "Description=\"Root Node with NID 0.\"")
+    self.State = self.StateMonitoring #< The Process state.
+    self.AddPop(self, "Intake", SBRoom(self, "Name=\"Patient Intake\" Description=\"The Intake Room where you wait get get into the Hospital.\""))
+    self.AddPop(self, "ER", SBRoom(self, "Name=\"Emergency Room\" Description=\"The room with Patients who may need critical care.\""))
+    self.AddPop(self, "ICU", SBRoom(self, "Name=\"Intensive Care Unit\" Description=\"The room for Patients in need of critical care.\""))
+    self.AddPop(self, "Rooms", SBRoom(self, "Name=\"Patient Rooms\" Description=\"The Rooms where the Patients are in who aren't in the ER or ICU.\""))
+    self.AddPop(self, "Guests", SBRoom(self, "Name=\"Guest Room\" Description=\"The Room where guests start out in.\""))
+    self.AddPop(self, "Staff", SBRoom(self, "Name=\"Staff Room\" Description=\"The Room where all the Staff start out in.\""))
+    self.AddPop(self, "Devices", SBRoom(self, "Name=\"Device Room\" Description=\"The Room where all of the unused devices are stored in.\""))
     self.SetupTest()
     self.ConsoleMain()
+
+  # Handler for the init Process state.
+  def SetupTest (self):
+    Stringf.COut ("\n\nPrinting root address \"SickBay.\"\n\n" + \
+                  self.Path() + "\n")
+    Stringf.COut ("\n\nPrinting root scope...\n\n")
+    self.Print()
+    Stringf.COut ("\n\nPushing Intake onto the stack...\n\n")
+    self.PushKey("Intake")
+    Top = self.Top
+    Stringf.COut("\n\nPath:" + Top.Path())
+    Stringf.COut ("\n\n Printing Intake...\n\n")
+    Top.Print()
+    Stringf.COut ("\n\nListing...\n\n")
+    Stringf.COut(self.List())
+    Stringf.COut ("\n\nPushed Intake onto the stack with Top.Path()=\"" + self.Top.Path() + "\"\n")
+    
+    Top.AddPop (self, "DoeJohn1", SBHuman(self, "Sex=M Name=\"John Doe 1\" Weight=155.0 Height=70.0"))
+    Stringf.COut ("\n\nWorks here!.\n\n")
+    Top.Print()
+    Top.AddPop (self, "DoeJohn2", SBHuman(self, "Name=\"John Doe 2\", Sex=M Weight=160.0 Height=75.0"))
+    Top.AddPop (self, "DoeJohn3", SBHuman(self, "Name=\"John Doe 3\" Sex=M Weight=165.0 Height=80.0"))
+    Top.AddPop (self, "DoeJohn4", SBHuman(self, "Name=\"John Doe 4\" Sex=M Weight=170.0 Height=85.0"))
+    Top.AddPop (self, "DoeJohn5", SBHuman(self, "Name=\"John Doe 5\" Sex=M Weight=175.0 Height=90.0"))
+    Top.AddPop (self, "DoeJohn6", SBHuman(self, "Name=\"John Doe 6\" Sex=M Weight=185.0 Height=95.0"))
+    Top.AddPop (self, "DoeJohn7", SBHuman(self, "Name=\"John Doe 7\" Sex=M Weight=190.0 Height=100.0"))
+    Top.AddPop (self, "DoeJohn8", SBHuman(self, "Name=\"John Doe 8\" Sex=M Weight=195.0 Height=105.0"))
+    Top.AddPop (self, "DoeJane1", SBHuman(self, "Name=\"Jane Doe 1\" Sex=F Weight=120.0 Height=55.0"))
+    Top.AddPop (self, "DoeJane2", SBHuman(self, "Name=\"Jane Doe 2\" Sex=F Weight=125.0 Height=60.0"))
+    Top.AddPop (self, "DoeJane3", SBHuman(self, "Name=\"Jane Doe 3\" Sex=F Weight=130.0 Height=65.0"))
+    Top.AddPop (self, "DoeJane4", SBHuman(self, "Name=\"Jane Doe 4\" Sex=F Weight=135.0 Height=70.0"))
+    Top.AddPop (self, "DoeJane5", SBHuman(self, "Name=\"Jane Doe 5\" Sex=F Weight=140.0 Height=75.0"))
+    Top.AddPop (self, "DoeJane6", SBHuman(self, "Name=\"Jane Doe 6\" Sex=F Weight=145.0 Height=80.0"))
+    Top.AddPop (self, "DoeJane7", SBHuman(self, "Name=\"Jane Doe 7\" Sex=F Weight=150.0 Height=85.0"))
+    Top.AddPop (self, "DoeJane8", SBHuman(self, "Name=\"Jane Doe 8\" Sex=F Weight=155.0 Height=90.0"))
+    Top.AddPop (self, "GHV1", GHVentilator(self, "Name=\"Gravity Hookah Ventilator 1\""))
+    Top.AddPop (self, "GHV2", GHVentilator(self, "Name=\"Gravity Hookah Ventilator 2\""))
+    Stringf.COut ("\n\nDone adding test patients...\n\n")
+    #self.Command(self, "Intake.add")
+    #self.Command(self, "Intake.add Sex=M")
+    #self.Command(self, "Intake.add Weight=85")
+    #self.Command(self, "move ../../ER")
+    #self.Command(self, "list members")
+    #self.Command(self, "list children")
+    #self.Command(self, "list")
+    #self.Command(self, "0.list.*")
+
+  # Pushes this node onto the Crabs stack.
+  def Push(self, Node, Command = ""):
+    print ("\nPushing Node ", Node.Key, " on the stack")
+    self.Stack.append(self.Top)
+    self.PushCount += 1
+    self.Top = Node
+    return Node.Command(self, Command)
+
+  # Pushes this node onto the Crabs stack.
+  def PushKey(self, Key, Command = ""):
+    if Key in self.Children:
+      Child = self.Children[Key]
+      print("\n\nFound child with Path=\"" + Child.Path() + "\"")
+      Child.Print()
+      return self.Push(Child, Command)
+
+  # Pushes this node onto the Crabs stack.
+  def CommandStart(self, Node, Args = ""):
+    if Args[0] == ".":
+      self.TopStart = 0
+      Args = Args[1:]
+    return self.Push(Node, Args)
+
+  def Pop(self, Args = ""):
+    Top = self.Stack.pop()
+    #Top.Command(self, Args)
+    self.Top = Top
+    self.PushCount -= 1
   
   # Checks if the given Key is valid.
   @staticmethod
@@ -99,92 +169,49 @@ class SBSickBay(SBNode):
     self.ProcedureCount = Result + 1
     return Result
   
-  # Generates the next unique App Id by incrementing AppCount
-  def AppCountNext(self):
-    Result = self.AppCount
-    self.AppCount = Result + 1
+  # Generates the next unique Process Id by incrementing ProcessCount
+  def ProcessCountNext(self):
+    Result = self.ProcessCount
+    self.ProcessCount = Result + 1
     return Result
-
-  # Add Device
-  def DevicesAdd(self, DeviceName):
-    self.Devices.append(DeviceName)
 
   # Console main loop.
   def ConsoleMain(self):
-    SBPrint.COut ("\n\nWelcome to SickBay.")
-    SBPrint.COut (self.PrintStats())
-    SBPrint.COut ("\n\nEnter \"?\" at any time to get help " +
-           "\nor press Enter on the keyboard to update the stats"
-           "\nor type \"exit\" to exit the console.\n")
+    Stringf.COut ("\n\nWelcome to SickBay." + self.PrintStats() +\
+                  "\n\nEnter \"?\" at any time to get help " + \
+                  "\nor press Enter on the keyboard to update the stats" + \
+                  "\nor type \"exit\" to exit the console.\n")
     while True:
-      SBPrint.COut(self.Top.Path())
+      Stringf.COut(self.Top.Path())
       UserInput = raw_input("").lower()
       if UserInput == "exit":
         return
-      SBPrint.COut (self.Top.Command(self, UserInput))
-      
-  # Pushes an SBNode onto the stack.
-  def Push(self, Node):
-    Node.Push(self)
+      Stringf.COut (self.Top.CommandStart(self, self, UserInput))
   
   # Pops an SBNode off the stack.
-  def Pop(self):
+  def Pop(self, Args = None):
     if len(self.Stack) == 0:
-      return
+      return ""
+    Top = self.Top
     self.Top = self.Stack.pop()
+    return Top.Command(self, Args)
   
   # Enters the monitoring state.
   def MonitorBegin(self):
     Scheduler.enter(1, 1, self.Update, ())
     Scheduler.run()
-    SBPrint.COut("\n\nBeginning monitoring...")
+    Stringf.COut("\n\nBeginning monitoring...")
   
   def Print(self):
-    SBPrint.COut("\nSickBay:")
     SBNode.Print(self)
-
-  # Handler for the init app state.
-  def SetupTest (self):
-    self.Print()
-    SBPrint.COut ("\n\nAdding test patients...\n\n")
-    self.PushKey(self, "Intake")
-    Top = self.Top
-    Top.Print()
-    
-    Top.Add ("DoeJohn1", SBHuman(self, "Sex=M Name=\"John Doe 1\" Weight=155.0 Height=70.0"))
-    Top.Add ("DoeJohn2", SBHuman(self, "Name=\"John Doe 2\", Sex=M Weight=160.0 Height=75.0"))
-    Top.Add ("DoeJohn3", SBHuman(self, "Name=\"John Doe 3\" Sex=M Weight=165.0 Height=80.0"))
-    Top.Add ("DoeJohn4", SBHuman(self, "Name=\"John Doe 4\" Sex=M Weight=170.0 Height=85.0"))
-    Top.Add ("DoeJohn5", SBHuman(self, "Name=\"John Doe 5\" Sex=M Weight=175.0 Height=90.0"))
-    Top.Add ("DoeJohn6", SBHuman(self, "Name=\"John Doe 6\" Sex=M Weight=185.0 Height=95.0"))
-    Top.Add ("DoeJohn7", SBHuman(self, "Name=\"John Doe 7\" Sex=M Weight=190.0 Height=100.0"))
-    Top.Add ("DoeJohn8", SBHuman(self, "Name=\"John Doe 8\" Sex=M Weight=195.0 Height=105.0"))
-    Top.Add ("DoeJane1", SBHuman(self, "Name=\"Jane Doe 1\" Sex=F Weight=120.0 Height=55.0"))
-    Top.Add ("DoeJane2", SBHuman(self, "Name=\"Jane Doe 2\" Sex=F Weight=125.0 Height=60.0"))
-    Top.Add ("DoeJane3", SBHuman(self, "Name=\"Jane Doe 3\" Sex=F Weight=130.0 Height=65.0"))
-    Top.Add ("DoeJane4", SBHuman(self, "Name=\"Jane Doe 4\" Sex=F Weight=135.0 Height=70.0"))
-    Top.Add ("DoeJane5", SBHuman(self, "Name=\"Jane Doe 5\" Sex=F Weight=140.0 Height=75.0"))
-    Top.Add ("DoeJane6", SBHuman(self, "Name=\"Jane Doe 6\" Sex=F Weight=145.0 Height=80.0"))
-    Top.Add ("DoeJane7", SBHuman(self, "Name=\"Jane Doe 7\" Sex=F Weight=150.0 Height=85.0"))
-    Top.Add ("DoeJane8", SBHuman(self, "Name=\"Jane Doe 8\" Sex=F Weight=155.0 Height=90.0"))
-    Top.Add ("GHV1", GHVentilator(self, "Name=\"Gravity Hookah Ventilator 1\""))
-    Top.Add ("GHV2", GHVentilator(self, "Name=\"Gravity Hookah Ventilator 2\""))
-    self.Command(self, "Intake.add")
-    self.Command(self, "Intake.add Sex=M")
-    self.Command(self, "Intake.add Weight=85")
-    self.Command(self, "move ../../ER")
-    self.Command(self, "list members")
-    self.Command(self, "list children")
-    self.Command(self, "list")
-    self.Command(self, "0.list.*")
   
-  # Handler for the Monitor app state.
+  # Handler for the Monitor Process state.
   def StateMonitorHandle(self):
     for Child in self.Patients:
       Child.Children.PrintStats()
   
   def StateShutDownHandle(self):
-    SBPrint.COut ("\n\nShutting down...")
+    Stringf.COut ("\n\nShutting down...")
   
   def PrintDetails(self, Details = ""):
     return Details + "\n><>SickBay:\n>\nTime=" + \
@@ -206,4 +233,3 @@ class SBSickBay(SBNode):
 
 if __name__ == '__main__':
   SickBayConsole = SBSickBay()
-  #unittest.main()

@@ -12,7 +12,7 @@
 from SBNode import SBNode
 from SBHumanCirculatory import SBHumanCirculatory
 from SBHumanRespiratory import SBHumanRespiratory
-from SBPrint import SBPrint
+from Stringf import Stringf
 import sys
 
 # A model of a human.
@@ -30,12 +30,12 @@ class SBHuman(SBNode):
     self.Add("Height", 0.0)     #< The person's Height.
     self.Add("Weight", 0.0)     #< The person's Weight.
     SickBay.Push(self)
-
+    
     # The human's Circulatory system.
     self.Circulatory = SBHumanCirculatory(SickBay)
 
     # The human's Respiratory system.
-    self.Respiratory = SBHumanRespiratory(SickBay, self.Members["Sex"])
+    self.Respiratory = SBHumanRespiratory(SickBay, self.Meta["Sex"])
 
   def NameSet (self, Name):
     self.Name = Name
@@ -67,7 +67,7 @@ class SBHuman(SBNode):
     elif self.IsFemale(): 
       return 45.5 + 0.91 * (self.Height - 152.4)
     else: 
-      return -1.0
+      return self.Weight
   
   def CirculatorySet(self, Circulatory):
     self.Circulatory = Circulatory
@@ -82,9 +82,10 @@ class SBHuman(SBNode):
            self.Circulatory.PrintStats (String) +\
            self.Respiratory.PrintStats (String)
     
+  # Prints all of the Details about the object except the Help.
   def PrintDetails (self, String = ""):
-    return String + "Name:" + self.Name () + " NID:" + self.NID + " Sex:" + self.Sex () + \
+     String += "Name:" + self.Name () + " NID:" + self.NID + " Sex:" + self.Sex () + \
            " Height:" + self.Height () + " Weight:" + self.Weight () + \
-           "\nDescription:\"" + self.Description + "\n" +\
-           self.Circulatory.PrintDetails (String) + \
-           self.Respiratory.PrintDetails (String)
+           "\nDescription:\"" + self.Description () + "\n"
+     self.Circulatory.PrintDetails (String)
+     return self.Respiratory.PrintDetails (String)

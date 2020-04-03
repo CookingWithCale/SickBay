@@ -1,4 +1,4 @@
-# !/usr/bin/python
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 # SickBay @version 0.x
 # @link    https://github.com/KabukiStarship/SickBay.git
@@ -12,31 +12,20 @@
 from SBNode import SBNode
 
 # A Room in real life you put put SBNodes into.
-# Example
-# ```BASH
-# ><.Intake DoeJohn1 Name="John Doe 1"
-# ><.ICU.Intake Name="John Doe 2"
-# ><.Devices.Ventilators.GHVentilator.GHVA
-# ><.Devices.GHVA.GHVA1.Move 0.*.DoeJohn1
-# ```
 class SBRoom(SBNode):
   
   def __init__(self, SickBay, Command = ""):
     SBNode.__init__(self, SickBay, Command)
-    self.Meta["Directions"] = ""
+    self.Members["Directions"] = ""
     SickBay.RoomCountNext()
 
   def Directions(self):
-    return self.Meta["Directions"]
+    return self.Members["Directions"]
   
   def DirectionsSet(self, Directions):
     self.Add("Directions", Directions)
   
-  def Command(self, SickBay, Command = ""):
-    Result = SBNode.CommandSuper(self, SickBay, Command)
-    if Result != None:
-      return Result
-    Arg1 = Command.split(" ", 1)
-    if len(Args1 > 1):
-      Result = SBNode.Command(SickBay, Command)
-    return ""
+  def Command(self, SickBay, Command):
+    Key = Command.split(".", 1)
+    if len(Key) != 3 and " " not in Key[1]:
+      pass
