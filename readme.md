@@ -1,27 +1,17 @@
 # SickBay
 
-Open-source emergency medical equipment, SickBay app, and Gravity Hookah Ventilator design files and firmware for the [Pandemic Cookbook](https://pandemiccookbook.org).
+An open-source hospital and medical device control center powered by the Python Chinese Room Abstract Stack Machine (PyCrabs). SickBay is able to work with open-source devices using Python 2.7, mbed RPC, and ArduRPC
 
 ## Respiratory
 
 ### Ventilators
 
-* [Gravity Hookah Ventilator](./respiratory/ventilators/ventilator.gravity_hookah) - A low-cost rapid manufacturable ventilator from Home Depot and Electronic hobby store parts.
+* [Gravity Hookah Ventilator](./GHVentilator) - An ultra-low-cost rapid manufacturable ventilator from Home Depot and Electronic hobby store parts.
 
 ## Vital Sign Monitors
 
 * [Blood Pressure Monitor](./vital_sign_monitors/blood_pressure_monitor) - A modification for off-the-self blood pressure monitors to interface with the SickBay app.
 * [Pulse Oximeter](./vital_sign_monitors/pulse_oximeter) - A modification for an NS-100A fingertip pulse oximeter to measure pulse and blood oxygen absorption rate (SoO2).
-
-## SickBay App
-
-The SickBay app is a Python app for controlling and monitoring SickBay hardware. The SickBay app talks to mbed hardware via [mbed RPC](https://os.mbed.com/cookbook/Interfacing-Using-RPC). The app models the human body so that Medical caretakers can enter in real-world measurements such as patient height, weight, age, sex, and the app calculates the optimal settings for the SickBay hardware.
-
-The SickBay app needs to be able to control and interface with open-source Ventilators and to monitor heart rate and blood O2 absortion rate (SpO2) using a 7-pin pulse oximeter, and to be able to monitor and control off-the-shelf blood pressure monitors.
-
-The SickBay hardware firmware is designed to not do any intense calculations because microcontrollers are VERY VERY slow at division, so all calculations need to be done on a PC. The SickBay app must be able to hot swap hardware and the Hardware should not need to be reset if the connection to the PC is lost. The SickBay is to monitor and control the hardware, but the hardware must run independently from the PC.
-
-The GUI we're using is called [PyNuklear](https://github.com/billsix/pyNuklear), it's the most modular of the GUIs that I've come across. The code will have to work in the console without the GUI but the GUI should just plot down right on top of the console interface without any hassle.
 
 ## How to Contribute
 

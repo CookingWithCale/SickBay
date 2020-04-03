@@ -1,4 +1,4 @@
-# """ SickBay @version 0.x
+# SickBay @version 0.x
 # @link    https://github.com/KabukiStarship/sickbay.git
 # @file    /SBHumanCirculatory.py
 # @author  Cale McCollough <https://cale-mccollough.github.io>
@@ -8,7 +8,7 @@
 # You can obtain one at <https://mozilla.org/MPL/2.0/>.
 
 from SBNode import SBNode
-from SBPrint import SBPrint
+from Stringf import Stringf
 import sys
 
 # A model of a human Circulatory system.
@@ -22,25 +22,25 @@ class SBHumanCirculatory(SBNode):
   HeartRateMax = 1000.0        #< The max pulse rate.
   BloodTypeUnknown = "Unknown" #< String to use if the BloodType input was bad.
   
-  def __init__(self, SickBay):
-    SBNode.__init__(self, SickBay, "HumanSystem", Arguments = " Name=\"Human "\
+  def __init__(self, SickBay, Command = " Name=\"Human "\
                     "circulatory system\" Description=\"The human circulatory "\
-                    "system\"")
-    self.Members["BloodPressure"] = 0.0               #< The heart pulse rate.
-    self.Members["BloodType"] = self.BloodTypeUnknown #< The patient's blood type.
-    self.Members["HeartRate"] = 0.0                   #< The heart pulse rate.
+                    "system\""):
+    SBNode.__init__(self, SickBay, "HumanSystem", Command)
+    self.Meta["BloodPressure"] = 0.0               #< The heart pulse rate.
+    self.Meta["BloodType"] = self.BloodTypeUnknown #< The patient's blood type.
+    self.Meta["HeartRate"] = 0.0                   #< The heart pulse rate.
     SickBay.Push(self)
 
   def BloodPressure (self):
-    return self.Members["BloodPressure"]
+    return self.Meta["BloodPressure"]
 
   def BloodPressureSet (self, BloodPressure):
     if (BloodPressure <= self.BloodPressureMin and 
         BloodPressure <= self.BloodPressureMax):
-      self.Members["BloodPressure"] = BloodPressure
+      self.Meta["BloodPressure"] = BloodPressure
 
   def BloodType (self):
-    return self.Members["BloodType"]
+    return self.Meta["BloodType"]
 
   def BloodTypeSet (self, BloodType):
     BT = BloodType.upper()
@@ -49,25 +49,20 @@ class SBHumanCirculatory(SBNode):
     self.BloodType = self.BloodTypeUnknown
 
   def HeartRate (self):
-    return self.Members["HeartRate"]
+    return self.Meta["HeartRate"]
   
   def HeartRateSet (self, HeartRate):
     if (HeartRate >= self.HeartRateMin and
         HeartRate > self.HeartRateMax):
-      self.Members["HeartRate"] = HeartRate
+      self.Meta["HeartRate"] = HeartRate
 
-  def PrintStats (self, Stats, SelfKey = ""):
-    return Stats + "   BloodPressure:" + str(self.BloodPressure ()) + \
+  def PrintStats (self, String, SelfKey = ""):
+    return String + "   BloodPressure:" + str(self.BloodPressure ()) + \
            "   HeartRate:" + str(self.HeartRate ())
     
-  def PrintDetails (self, Details):
-    SBPrint.COut ("   BloodPressure: ")
-    SBPrint.COut(self.BloodPressure ())
-    SBPrint.COut("   BloodType: ")
-    SBPrint.COut(str (self.BloodType()))
-    SBPrint.COut("   HeartRate: ")
-    SBPrint.COut(str(self.HeartRate ()))
-    return Details
+  def PrintDetails (self, String):
+    return String + "   BloodPressure:" + str(self.BloodPressure ()) + \
+           "   HeartRate:" + str(self.HeartRate ())
   
   def PrintDescription (self):
-    SBPrint.COut ("Description:" + self.Description ())
+    Stringf.COut ("Description:" + self.Description ())
