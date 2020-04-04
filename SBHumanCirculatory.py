@@ -8,7 +8,7 @@
 # You can obtain one at <https://mozilla.org/MPL/2.0/>.
 
 from SBNode import SBNode
-from Stringf import Stringf
+from COut import COut
 import sys
 
 # A model of a human Circulatory system.
