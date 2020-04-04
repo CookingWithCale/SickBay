@@ -24,12 +24,11 @@ class SBHuman(SBNode):
   SexMale = 0             #< Sex is male.
   SexFemale = 1           #< Sex if female.
   
-  def __init__(self, SickBay, Arguments = ""):
-    SBNode.__init__(self, SickBay, Arguments)
-    self.Add("Sex", "")         #< The Sex of the person.
-    self.Add("Height", 0.0)     #< The person's Height.
-    self.Add("Weight", 0.0)     #< The person's Weight.
-    SickBay.Push(self)
+  def __init__(self, SickBay, Command = ""):
+    SBNode.__init__(self, SickBay, "Human", SickBay.HIDNext(), Command)
+    self.Metadata("Sex", "")         #< The Sex of the person.
+    self.Metadata("Height", 0.0)     #< The person's Height.
+    self.Metadata("Weight", 0.0)     #< The person's Weight.
     
     # The human's Circulatory system.
     self.Circulatory = SBHumanCirculatory(SickBay)

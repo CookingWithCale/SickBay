@@ -21,11 +21,12 @@ from Stringf import Stringf
 # ><.Foo 1.234
 # ><.Print
 # ><.PrintStats
-# ><.PrintDetails
+# ><.ListDetails
 # ```
 class SBNode:
 
   def __init__(self, SickBay, Type = "", TID = 0, Command = ""):
+    Stringf.COut("\n> SBNode TID=" + str(TID) + " Type=\"" + Type + "\" " + Command)
     self.NID = SickBay.NIDNext ()  #< The globally unique Node ID.
     self.TID = TID                 #< The class unique Type ID.
     self.Parent = SickBay.Top      #< This node's parent.
@@ -37,7 +38,13 @@ class SBNode:
     }
     self.Children = {}             #< The child SBNodes.
     self.Functions = {}            #< Callable Crabs functions.
-    SickBay.Push(self, Command)
+    Result = self.Command(SickBay, Command)
+    if Result != None:
+      self.Meta["Error"] = Result
+    Result = SickBay.Push(self)
+    Stringf.COut("\n> Created Node <")
+    
+    
 
   def FunctionsAdd(self, Key):
     self.Functions[Key] = None
@@ -78,18 +85,15 @@ class SBNode:
   def ChildCount(self): return len(self.Children)
   
   # Adds a Key-Value pair to the Children or Meta
-  def Add(self, Key, Value):
-    if Value == None:
-      return
-    if isinstance(Value, SBNode):
-      self.Children[Key] = Value
-    else:
+  def Metadata(self, Key, Value):
       self.Meta[Key] = Value
   
   # Adds a Key-Value pair to the Children or Meta
-  def AddPop(self, SickBay, Key, Value):
-    self.Add(Key, Value)
+  def Add(self, SickBay, Key, Value):
+    Stringf.COut("\n> Adding Key " + Key + " <")
+    self.Children[Key] = Value
     SickBay.Pop()
+    Stringf.COut("\n> Added Key " + Key + " <")
     
   # Removes the given Key from the Meta
   def Remove(self, Key):
@@ -169,19 +173,11 @@ class SBNode:
     self.Meta["Description"] = Description
   
   def PrintStats(self, String = "", SelfKey = None):
-    print ("\nPrinting Stats")
+    Stringf.COut ("\nPrinting Stats")
     if SelfKey != None:
       String += SelfKey + " "
-    for Key, Value in self.Children.iteritems() :
+    for Key, Value in self.Children.items() :
       Value.PrintStats(String, Key)
-    return String
-  
-  def PrintDetails(self, String = "", Indent = 0, SelfKey = None):
-    String += Stringf.Indent(Indent, "> ") + ".Details"
-    if SelfKey != None:
-      String += SelfKey
-    for Key, Value in self.Children.iteritems() :
-      Value.PrintDetails(String, Indent + 1, Key)
     return String
   
   # Prints a human-readable help string.
@@ -199,18 +195,11 @@ class SBNode:
   def Key(self):
     if self == self.Parent:
       return "><"
-    for Key, Value in self.Children.iteritems():
-      if (Value == self):
+    #Stringf.COut("\n> Searching for Key for NID:" + str(self.NID) + " <")
+    for Key, Value in self.Parent.Children.iteritems():
+      if Value == self:
         return Key
-    return ""
-  
-  # Gets the Path.
-  def Path(self, Result = ""):
-    if (self.Parent == self):
-      Key = "SickBay"
-    else:
-      Key = self.Key()
-    return Result + Key + "."
+    return "Error"
   
   # Gets the length of the path from the root.
   def PathLength(self, Length = 0):
@@ -222,17 +211,17 @@ class SBNode:
   def MetaSet(self, Key, Value):
     self.Parent.Meta[Key] = Value
 
-  def Path(self, Path = ""):
+  def Path(self, PathString = "><."):
     Parent = self.Parent
-    if self != Parent:
-      return Parent.Path(Path)
-    return Path + self.Key() + "."
+    if self == Parent:
+      return PathString
+    return Parent.Path(PathString) + self.Key() + "."
   
   # Returns a string with all of the Keys in the Meta and Children.
   def ListMeta(self, Indent = 0):
     Result = ""
     Index = len(self.Children)
-    for Key, Value in self.Meta.iteritems():
+    for Key, Value in self.Meta.items():
       Index += 1
       String = str(Index) + ". " + Key + ":" + Value.__class__.__name__
       Result += Stringf.Indent(Indent, String)
@@ -242,9 +231,9 @@ class SBNode:
   def ListChildren(self, Indent = 0):
     Index = 0
     Result = ""
-    for Key, Value in self.Children.iteritems():
+    for Key, Value in self.Children.items():
       Index += 1
-      String = str(Index) + ". " + Key + ":" + Value.__class__.__name__
+      String = str(Index) + ". " + Key + ":" + Value.__class__.__name__ + ":" + str(Value.NID)
       Result += Stringf.Indent(Indent, String)
     return Result
   
@@ -257,9 +246,9 @@ class SBNode:
     String +=  Stringf.Indent(Indent + 1, "<")
     String += Stringf.Indent(Indent, "<")
     return String
-
+  
   # Parses the string as either int, float, str, or None.
-  def CommandParseValue(self, Args):
+  def CommandArg(self, Args):
     try: 
       return int(Args)
     except ValueError:
@@ -268,32 +257,37 @@ class SBNode:
       return float(Args) # float(re.search('\d+\.*\d*', r).group(0))
     except ValueError:
       pass
-    Commands = Args.split("\"", 2)
-    if (len(Commands) == 3):
-      return Commands[1]
+    CommandArgs = Args.split("\"", 2)
+    if (len(CommandArgs) == 3):
+      return CommandArgs[1]
     return None
   
+  # The function that is called when a Duck typed member is created.
+  def CommandDuck(self, SickBay, Key, Command):
+    self.Children[Key] = SBNode(SickBay, "Node", SickBay.NIDNext(), Command)
+    
   # Initializes the Meta using a sequence of XML-style duck-typed setters.
   # Example: Name="John Doe" Foo="Bar" FooBar=4.20
-  def Commands(self, Args):
+  def CommandArgs(self, Args):
+    Stringf.COut("\n> Parsing Command Args <")
     Loop = True
     while Loop:
       Args = Args.split("=", 1)
       if (len(Args) == 1):
-        return ""
+        return None
       Key = Args[0].strip()
       if " " in Key:
-        return "ERROR: Spaces aren't allowed in Keys."
+        return "> Error Spaces aren't allowed in Keys. <"
       if "." in Key:
-        return "ERROR: Nested children are not implemented yet."
+        return "> Error Nested children are not implemented yet. <"
       Strings = Args[1].spilt("\"", 2)
       if len(Strings) == 3:
-        self.Add(Key, Strings[1])
-        return ""
+        self.Metadata(Key, Strings[1])
+        return None
       String = Args[1].lstrip()
       Args = Args.split(" ", 1)
       String = Args[0]
-      Item = CommandParseValue(Args)
+      Item = self.CommandArg(Args)
       Args = Args[1]
       if (len(Args[1]) == 0):
         Loop = False
@@ -309,8 +303,9 @@ class SBNode:
 
   # Runs the common commands and returns None if no commands were executed.
   def CommandSuper(self, SickBay, Command):
-    if Command == None: return ""
-    if Command == "":
+    Stringf.COut("\n> Commanding Super <")
+    if Command == None or Command == "": return None
+    if Command == "<":
       return SickBay.Pop()
     if Command[0] == ".":
       self.CommandPushCount = 0
@@ -318,13 +313,14 @@ class SBNode:
     if Command == "!":
       return self.PrintStats()
     if Command == "|":
-      return self.PrintDetails()
+      return self.ListDetails()
     if Command == "list":
       return self.List()
     if Command == "list meta":
       return self.List()
     if Command == "?":
       return self.PrintHelp()
+    Stringf.COut("\n> Checking if it's an index. <")
     try: 
       Index = int(Command)
       if Index < 0:
@@ -343,9 +339,14 @@ class SBNode:
     # Push items on the stack, creating them if they don't exist
     Tokens = Command.split(" ", 1)
     Key = Tokens[0]
+    Command = Tokens[1]
     if Key in self.Children:
+      Stringf.COut("\n> It was not hierarchial. <")
       return self.Push(SickBay, Tokens[1])
-    # Else it's hierarchial
+    Tokens = Key.split(".", 1)
+    if len(Tokens) == 1:
+      return self.CommandDuck(SickBay, Key, Command)
+    Stringf.COut("\n> Else it's hierarchial. <")
     Pushing = True
     while Pushing:
       if len(Tokens) == 1:
@@ -360,13 +361,16 @@ class SBNode:
     return self.Top.Command(SickBay, Command)
   
   # Issues a Console command to this node.
-  # ><.Intake.Add Foo="" Name="Harry" Description=""
+  # ><.Intake.Metadata Foo="" Name="Harry" Description=""
   def Command(self, SickBay, Args):
+    Stringf.COut("\n> Commanding <")
     Result = self.CommandSuper(SickBay, Args)
     if Result != None:
       return Result
     # At this point we can't push anymore Nodes on to the Crabs Stack.
     Tokens = Args.split(" ", 1)
+    if len(Tokens) == 1:
+      return None
     Args = Tokens[1]
     Key = Tokens[0]
     TokensLength = len(Tokens)
@@ -374,13 +378,13 @@ class SBNode:
       return "ERROR: Key, Index, or NID does not exist."
     Tokens = Key.split(".", 1)
     if len(Tokens) > 1:
-      return self.Commands(SickBay, Tokens[1])
+      return self.CommandArgs(SickBay, Tokens[1])
     if Key == "set":
       Tokens = Tokens[1].split(" ", 1)
       Key = Tokens[0]
       if (len(Tokens) == 1):
         return "ERROR: You have to have to type \"add Key Value\"."
-      self.Add(Key, self.CommandParseValue(Args))
+      self.Metadata(Key, self.CommandArg(Args))
       return ""
     if Key in self.Meta: # It's metadata
       return str(self.Meta[Key])
