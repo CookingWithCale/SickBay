@@ -24,7 +24,7 @@ class SBRoom(SBNode):
   def __init__(self, SickBay, Command = ""):
     SBNode.__init__(self, SickBay, Command)
     self.Meta["Directions"] = ""
-    SickBay.RoomCountNext()
+    SickBay.RIDNext()
 
   def Directions(self):
     return self.Meta["Directions"]
@@ -37,6 +37,6 @@ class SBRoom(SBNode):
     if Result != None:
       return Result
     Arg1 = Command.split(" ", 1)
-    if len(Args1 > 1):
+    if len(Arg1) > 1:
       Result = SBNode.Command(SickBay, Command)
     return ""
