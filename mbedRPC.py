@@ -27,6 +27,7 @@
 # >myled.write(1)
 # >
 
+from Stringf import *
 from future import standard_library
 standard_library.install_aliases()
 import serial, urllib.request, time
