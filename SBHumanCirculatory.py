@@ -25,7 +25,7 @@ class SBHumanCirculatory(SBNode):
   def __init__(self, SickBay, Command = " Name=\"Human "\
                     "circulatory system\" Description=\"The human circulatory "\
                     "system\""):
-    SBNode.__init__(self, SickBay, "HumanSystem", Command)
+    SBNode.__init__(self, "HumanSystem", 0, SickBay, Command)
     self.Meta["BloodPressure"] = 0.0               #< The heart pulse rate.
     self.Meta["BloodType"] = self.BloodTypeUnknown #< The patient's blood type.
     self.Meta["HeartRate"] = 0.0                   #< The heart pulse rate.

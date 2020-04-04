@@ -24,8 +24,8 @@ class SBHuman(SBNode):
   SexMale = 0             #< Sex is male.
   SexFemale = 1           #< Sex if female.
   
-  def __init__(self, SickBay, Command = ""):
-    SBNode.__init__(self, SickBay, "Human", SickBay.HIDNext(), Command)
+  def __init__(self, SickBay, Command = "", Type = "Human"):
+    SBNode.__init__(self, Type, SickBay.HIDNext(), SickBay, Command)
     self.Metadata("Sex", "")         #< The Sex of the person.
     self.Metadata("Height", 0.0)     #< The person's Height.
     self.Metadata("Weight", 0.0)     #< The person's Weight.

@@ -23,9 +23,9 @@ class SBHumanRespiratory(SBNode):
   RVMin = 0.0           # The min RV value.
   RVMax = 100.0         # The max RV value.
 
-  def __init__(self, SickBay, Sex):
-    SBNode.__init__(self, SickBay, "Respiratory", "Respiratory System",
-                          "The Human Respiratory System.")
+  def __init__(self, Sex, SickBay, Command = "Name=\"Respiratory System\" "\
+                          "Description=\"The Human Respiratory System.\""):
+    SBNode.__init__(self, "Respiratory", 1, Command)
     # Inspiratory reserve volume is the amount of air that can be forcefully 
     # inspired after a normal inspiration.
     self.IRV = 3.0

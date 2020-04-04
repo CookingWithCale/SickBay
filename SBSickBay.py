@@ -26,7 +26,8 @@ class SBSickBay(SBNode):
   StateMonitoring = 1     #< State: Monitoring.
   StateShuttingDown = 2   #< State: Shutting down.
   
-  def __init__(self):
+  def __init__(self, Command = "Type=\"SickBay\" Name=\"SickBay\" " \
+               "Description=\"Root Node with NID 0.\""):
     self.NIDCount = 0                 #< The total number of SBNodes.
     self.HumanCount = 0                #< The count of new Humans in the Room.
     self.DeviceCount = 0              #< The SBDevice count
@@ -38,8 +39,7 @@ class SBSickBay(SBNode):
     self.PushCount = 0                #< The number pushes since the of the Command.
     self.ModeStackRestore = False     #< Mode for Commands that start with a '.'
     self.Stack = []                   #< The stack of SBNodes.
-    SBNode.__init__(self, self, "Type=\"SickBay\" Name=\"SickBay\" " \
-                                "Description=\"Root Node with NID 0.\"")
+    SBNode.__init__(self, "SickBay", 0, self, Command)
     self.Pop()
     self.State = self.StateMonitoring #< The Process state.
     self.Add(self, "Intake", SBRoom(self, "Name=\"Patient Intake\" Description=\"The Intake Room where you wait get get into the Hospital.\""))
@@ -67,8 +67,9 @@ class SBSickBay(SBNode):
                  Top.Key () + "\" Path:\"" + Top.Path() + "\"")
     Top.COut(Top.List())
     
+    SBNode.COut(self, "> Attempting to add Patients to Path \"" + Top.Path() + "\". <")
     Top.Add (self, "DoeJohn1", SBHuman(self, "Sex=M Name=\"John Doe 1\" Weight=155.0 Height=70.0"))
-    SBNode.COut(self, "\nWorks here!.\n")
+    SBNode.COut(self, "> Works here! <")
     Top.Print()
     Top.Add (self, "DoeJohn2", SBHuman(self, "Name=\"John Doe 2\", Sex=M Weight=160.0 Height=75.0"))
     Top.Add (self, "DoeJohn3", SBHuman(self, "Name=\"John Doe 3\" Sex=M Weight=165.0 Height=80.0"))
@@ -87,7 +88,7 @@ class SBSickBay(SBNode):
     Top.Add (self, "DoeJane8", SBHuman(self, "Name=\"Jane Doe 8\" Sex=F Weight=155.0 Height=90.0"))
     Top.Add (self, "GHV1", GHVentilator(self, "Name=\"Gravity Hookah Ventilator 1\""))
     Top.Add (self, "GHV2", GHVentilator(self, "Name=\"Gravity Hookah Ventilator 2\""))
-    SBNode.COut(self, "\nDone adding test patients...\n")
+    SBNode.COut(self, "> Done adding test patients. <")
     #self.Command(self, "Intake.add")
     #self.Command(self, "Intake.add Sex=M")
     #self.Command(self, "Intake.add Weight=85")
@@ -98,17 +99,17 @@ class SBSickBay(SBNode):
     #self.Command(self, "0.list.*")
   
   # Pops a node off the stack.
-  def Pop(self, Command = ""):
-    SBNode.COut(self, "\n< > Popped -" + str(self.NID) + " <")
+  def Pop(self, Command = None):
     if len(self.Stack) == 0:
       return ""
     Top = self.Stack.pop()
+    Top.COut("< @" + str(datetime.datetime.now()).replace(" ", ";") + "\n")
     Top.Command(self, Command)
     self.Top = Top
     self.PushCount -= 1
 
-  # Pushes this node onto the Crabs stack.
-  def Push(self, Node, Command = ""):
+  # Pushes this node onto the stack.
+  def Push(self, Node, Command = None):
     if Node == None: return "> Error Attempted to push a nil Node. <"
     SBNode.COut(self, "\n> -" + str(Node.NID) + " ")
     self.Stack.append(self.Top)
@@ -118,8 +119,14 @@ class SBSickBay(SBNode):
     SBNode.COut(self, "> Pushed -" + str(Node.NID) + " <")
     return Result
 
-  # Pushes this node onto the Crabs stack.
-  def PushKey(self, Key, Command = ""):
+  # Pushes this node onto the stack.
+  def PushNID(self, NID, Command = None):
+    Node = self.FindNID(NID)
+    if Node == None: return "> Error NID:" + NID + " doesn't exist! <\n"
+    return self.Push(Node, Command)
+
+  # Pushes this node onto the stack.
+  def PushKey(self, Key, Command = None):
     #SBNode.COut(self, "\n> Pushing Key \"" + Key + "\" where Children are: " + self.Top.ListChildren())
     if Key in self.Children:
       Child = self.Children[Key]
@@ -127,7 +134,7 @@ class SBSickBay(SBNode):
       return self.Push(Child, Command)
     return "Key not found."
 
-  # Pushes this node onto the Crabs stack.
+  # Pushes this node onto the stack.
   def CommandStart(self, Node, Args = ""):
     if Args[0] == ".":
       self.TopStart = 0
