@@ -11,7 +11,7 @@
 
 from shlex import split
 import time
-from COut import COut
+from Stringf import *
   
 # A SickBay tree node with a unique Node ID (NID).
 # Example
@@ -26,7 +26,6 @@ from COut import COut
 class SBNode:
 
   def __init__(self, SickBay, Type = "", TID = 0, Command = ""):
-    COut.Indent(self.PathDepth(), "> SBNode TID=" + str(TID) + " Type=\"" + Type + "\" " + Command)
     self.NID = SickBay.NIDNext ()  #< The globally unique Node ID.
     self.TID = TID                 #< The class unique Type ID.
     self.Parent = SickBay.Top      #< This node's parent.
@@ -38,17 +37,25 @@ class SBNode:
     }
     self.Children = {}             #< The child SBNodes.
     self.Functions = {}            #< Callable Crabs functions.
+    self.COut("> SBNode TID=" + str(TID) + " Type=\"" + Type + "\" " + Command)
     Result = self.Command(SickBay, Command)
     if Result != None:
       self.Meta["Error"] = Result
-    Result = SickBay.Push(self)
-    COut.Indent(self.PathDepth(), "> Created Node <")
+    SickBay.Push(self)
+    self.COut("> Created Node <")
   
   # Gets the length of the path from the root.
   def PathDepth(self, Length = 0):
-    if self.Parent == self:
+    Parent = self.Parent
+    if Parent == self:
       return Length
-    return self.PathDepth(Length) + 1
+    return Parent.PathDepth(Length) + 1
+
+  def Path(self, PathString = "><."):
+    Parent = self.Parent
+    if self == Parent:
+      return PathString
+    return Parent.Path(PathString) + self.Key() + "."
     
   def FunctionsAdd(self, Key):
     self.Functions[Key] = None
@@ -94,10 +101,10 @@ class SBNode:
   
   # Adds a Key-Value pair to the Children or Meta
   def Add(self, SickBay, Key, Value):
-    COut.Indent(self.PathDepth(), "> Adding Key " + Key + " <")
+    self.COut("> Adding Key " + Key + " <")
     self.Children[Key] = Value
     SickBay.Pop()
-    COut.Indent(self.PathDepth(), "> Added Key " + Key + " <")
+    self.COut("> Added Key " + Key + " <")
     
   # Removes the given Key from the Meta
   def Remove(self, Key):
@@ -175,9 +182,18 @@ class SBNode:
   
   def DescriptionSet(self, Description):
     self.Meta["Description"] = Description
+    
+  # Prints the String indented the current Path depth.
+  def Print(self, String):
+    return Stringf.Indent(self.PathDepth() + 1, String)
+    
+  # Prints the String indented the current Path depth.
+  def COut(self, String):
+    return COut.Indent(self.PathDepth() + 1, String)
   
+  # Prints out the most important information.
   def PrintStats(self, String = "", SelfKey = None):
-    COut.Indent (self.PathDepth (), "> Printing Stats <")
+    self.COut("> Printing Stats <")
     if SelfKey != None:
       String += SelfKey + " "
     for Key, Value in self.Children.items() :
@@ -186,20 +202,16 @@ class SBNode:
   
   # Prints a human-readable help string.
   def PrintHelp(self, String = "", Indent = 0, SelfKey = None):
-    String += COut.Indent(Indent, "> ") + SelfKey + ".Help" + \
-              COut.Indent(Indent + 1, "") + self.Meta["Help"]
+    String += Stringf.Indent(Indent, "> ") + SelfKey + ".Help" + \
+              Stringf.Indent(Indent + 1, "") + self.Meta["Help"]
     for Child in self.Children:
       Child.PrintHelp(String, SelfKey, Indent + 1)
-  
-  # Prints the List() to the COut
-  def Print(self, Indent = 0):
-    COut.Indent(self.PathDepth(), self.List())
-  
+
   # Gets this node's Key.
   def Key(self):
     if self == self.Parent:
       return "><"
-    #COut.Indent(self.PathDepth(), "\n> Searching for Key for NID:" + str(self.NID) + " <")
+    #self.COut("> Searching for Key for NID:" + str(self.NID) + " <")
     for Key, Value in self.Parent.Children.iteritems():
       if Value == self:
         return Key
@@ -208,42 +220,48 @@ class SBNode:
   # Sets
   def MetaSet(self, Key, Value):
     self.Parent.Meta[Key] = Value
-
-  def Path(self, PathString = "><."):
-    Parent = self.Parent
-    if self == Parent:
-      return PathString
-    return Parent.Path(PathString) + self.Key() + "."
   
-  # Returns a string with all of the Keys in the Meta and Children.
-  def ListMeta(self, Indent = 0):
+  # Returns a string with all of the Keys in the Meta and Children indented to a custom indent.
+  def ListMetaIndented(self, Indent = 0):
     Result = ""
     Index = len(self.Children)
     for Key, Value in self.Meta.items():
       Index += 1
       String = str(Index) + ". " + Key + ":" + Value.__class__.__name__
-      Result += COut.Indent(Indent, String)
+      Result += Stringf.Indent(Indent, String)
     return Result
   
-  # Returns a string with all of the Keys in the Meta and Children.
-  def ListChildren(self, Indent = 0):
+  # Returns a string with all of the Keys in the Meta and Children indented to the PathDepth().
+  def ListMeta(self):
+    return ListMetaIndented(self.PathDepth())
+
+  # Returns a string with all of the Keys in the Meta and Children indented to a custom indent.
+  def ListChildrenIndented(self, Indent = 0):
     Index = 0
     Result = ""
     for Key, Value in self.Children.items():
       Index += 1
       String = str(Index) + ". " + Key + ":" + Value.__class__.__name__ + ":" + str(Value.NID)
-      Result += COut.Indent(Indent, String)
+      Result += Stringf.Indent(Indent, String)
     return Result
   
-  # Returns a string with all of the Keys in the Meta and Children.
-  def List(self, Indent = 0):
-    String = COut.Indent(Indent, "> " + self.Key())
-    String += self.ListChildren(Indent + 1)
-    String += COut.Indent(Indent + 1, "> Meta")
-    String += self.ListMeta (Indent + 2)
-    String +=  COut.Indent(Indent + 1, "<")
-    String += COut.Indent(Indent, "<")
+  # Returns a string with all of the Keys in the Meta and Children indented to the PathDepth().
+  def ListChildren(self, Indent = 0):
+    return self.ListChildrenIndented(self.PathDepth())
+  
+  # Returns a string with all of the Keys in the Meta and Children to the PathDepth().
+  def ListIndent(self, Indent = 0):
+    String = Stringf.Indent(Indent, "> " + self.Key())
+    String += self.ListChildrenIndented(Indent + 1)
+    String += Stringf.Indent(Indent + 1, "> Meta")
+    String += self.ListMetaIndented (Indent + 2)
+    String +=  Stringf.Indent(Indent + 1, "<")
+    String += Stringf.Indent(Indent, "<")
     return String
+  
+  # Returns a string with all of the Keys in the Meta and Children indented to the PathDepth().
+  def List(self):
+    return self.ListIndent(self.PathDepth())
   
   # Parses the string as either int, float, str, or None.
   def CommandArg(self, Args):
@@ -267,7 +285,7 @@ class SBNode:
   # Initializes the Meta using a sequence of XML-style duck-typed setters.
   # Example: Name="John Doe" Foo="Bar" FooBar=4.20
   def CommandArgs(self, Args):
-    COut.Indent(self.PathDepth(), "\n> Parsing Command Args <")
+    Stringf.Indent(self.PathDepth(), "> Parsing Command Args <")
     Loop = True
     while Loop:
       Args = Args.split("=", 1)
@@ -301,7 +319,7 @@ class SBNode:
 
   # Runs the common commands and returns None if no commands were executed.
   def CommandSuper(self, SickBay, Command):
-    COut.Indent(self.PathDepth(), "\n> Commanding Super <")
+    self.COut("> Commanding Super <")
     if Command == None or Command == "": return None
     if Command == "<":
       return SickBay.Pop()
@@ -318,7 +336,7 @@ class SBNode:
       return self.List()
     if Command == "?":
       return self.PrintHelp()
-    COut.Indent(self.PathDepth(), "\n> Checking if it's an index. <")
+    self.COut("> Checking if it's an index. <")
     try: 
       Index = int(Command)
       if Index < 0:
@@ -339,12 +357,12 @@ class SBNode:
     Key = Tokens[0]
     Command = Tokens[1]
     if Key in self.Children:
-      COut.Indent(self.PathDepth(), "\n> It was not hierarchial. <")
+      self.COut("> It was not hierarchial. <")
       return self.Push(SickBay, Tokens[1])
     Tokens = Key.split(".", 1)
     if len(Tokens) == 1:
       return self.CommandDuck(SickBay, Key, Command)
-    COut.Indent(self.PathDepth(), "\n> Else it's hierarchial. <")
+    self.COut("> Else it's hierarchial. <")
     Pushing = True
     while Pushing:
       if len(Tokens) == 1:
@@ -361,7 +379,7 @@ class SBNode:
   # Issues a Console command to this node.
   # ><.Intake.Metadata Foo="" Name="Harry" Description=""
   def Command(self, SickBay, Args):
-    COut.Indent(self.PathDepth(), "\n> Commanding <")
+    self.COut("> Commanding <")
     Result = self.CommandSuper(SickBay, Args)
     if Result != None:
       return Result

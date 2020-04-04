@@ -1,4 +1,4 @@
-#!/usr/bin/python
+# !/usr/bin/python
 # -*- coding: utf-8 -*-
 # SickBay @version 0.x
 # @link    https://github.com/KabukiStarship/SickBay.git
@@ -9,13 +9,13 @@
 # Public License, v. 2.0. If a copy of the MPL was not distributed with this 
 # file, you can obtain one at <https://mozilla.org/MPL/2.0/>. Process
  
-from COut import COut
+from Stringf import *
 from SBNode import SBNode
 from SBDevice import SBDevice
 from SBHuman import SBHuman
 from SBRoom import SBRoom
-from SBVentilator import SBVentilator
-from GHVentilator import GHVentilator
+from SBVentilator import *
+from GHVentilator import *
 import sched, time, datetime
 
 Scheduler = sched.scheduler(time.time, time.sleep)
@@ -57,18 +57,18 @@ class SBSickBay(SBNode):
 
   # Handler for the init Process state.
   def SetupTest (self):
-    COut.Indent(SBNode.PathDepth(self), "\n> Setting up test data... StackHeight:" + str(len(self.Stack)) + " <")
-    COut.Indent(SBNode.PathDepth(self), "\n> Printing root path (Should read \"><.\") \"" + self.Path() + "\" <")
+    SBNode.COut(self, "\n> Setting up test data... StackHeight:" + str(len(self.Stack)) + " <")
+    SBNode.COut(self, "\n> Printing root path (Should read \"><.\") \"" + self.Path() + "\" <")
     self.Print()
-    COut.Indent(SBNode.PathDepth(self), "\n> Pushing Intake onto the stack. <")
+    SBNode.COut(self, "\n> Pushing Intake onto the stack. <")
     self.PushKey("Intake")
     Top = self.Top
-    COut.Indent(SBNode.PathDepth(self), "\n> Printing Top (should be Intake) with Key \"" + 
+    SBNode.COut(self, "\n> Printing Top (should be Intake) with Key \"" + 
                  Top.Key () + "\" Path:\"" + Top.Path() + "\"")
-    Top.Print()
+    Top.COut(Top.List())
     
     Top.Add (self, "DoeJohn1", SBHuman(self, "Sex=M Name=\"John Doe 1\" Weight=155.0 Height=70.0"))
-    COut.Indent(SBNode.PathDepth(self), "\nWorks here!.\n")
+    SBNode.COut(self, "\nWorks here!.\n")
     Top.Print()
     Top.Add (self, "DoeJohn2", SBHuman(self, "Name=\"John Doe 2\", Sex=M Weight=160.0 Height=75.0"))
     Top.Add (self, "DoeJohn3", SBHuman(self, "Name=\"John Doe 3\" Sex=M Weight=165.0 Height=80.0"))
@@ -87,7 +87,7 @@ class SBSickBay(SBNode):
     Top.Add (self, "DoeJane8", SBHuman(self, "Name=\"Jane Doe 8\" Sex=F Weight=155.0 Height=90.0"))
     Top.Add (self, "GHV1", GHVentilator(self, "Name=\"Gravity Hookah Ventilator 1\""))
     Top.Add (self, "GHV2", GHVentilator(self, "Name=\"Gravity Hookah Ventilator 2\""))
-    COut.Indent(SBNode.PathDepth(self), "\nDone adding test patients...\n")
+    SBNode.COut(self, "\nDone adding test patients...\n")
     #self.Command(self, "Intake.add")
     #self.Command(self, "Intake.add Sex=M")
     #self.Command(self, "Intake.add Weight=85")
@@ -99,7 +99,7 @@ class SBSickBay(SBNode):
   
   # Pops a node off the stack.
   def Pop(self, Command = ""):
-    COut.Indent(SBNode.PathDepth(self), "\n< > Popped -" + str(self.NID) + " <")
+    SBNode.COut(self, "\n< > Popped -" + str(self.NID) + " <")
     if len(self.Stack) == 0:
       return ""
     Top = self.Stack.pop()
@@ -110,20 +110,20 @@ class SBSickBay(SBNode):
   # Pushes this node onto the Crabs stack.
   def Push(self, Node, Command = ""):
     if Node == None: return "> Error Attempted to push a nil Node. <"
-    COut.Indent(SBNode.PathDepth(self), "\n> -" + str(Node.NID) + " ")
+    SBNode.COut(self, "\n> -" + str(Node.NID) + " ")
     self.Stack.append(self.Top)
     self.Top = Node
     self.PushCount += 1
     Result = Node.Command(self, Command)
-    COut.Indent(SBNode.PathDepth(self), "> Pushed -" + str(Node.NID) + " <")
+    SBNode.COut(self, "> Pushed -" + str(Node.NID) + " <")
     return Result
 
   # Pushes this node onto the Crabs stack.
   def PushKey(self, Key, Command = ""):
-    #COut.Indent(SBNode.PathDepth(self), "\n> Pushing Key \"" + Key + "\" where Children are: " + self.Top.ListChildren())
+    #SBNode.COut(self, "\n> Pushing Key \"" + Key + "\" where Children are: " + self.Top.ListChildren())
     if Key in self.Children:
       Child = self.Children[Key]
-      #COut.Indent(SBNode.PathDepth(self), "\nFound " + Key + " in Path \"" + Child.Path() + "\"")
+      #SBNode.COut(self, "\nFound " + Key + " in Path \"" + Child.Path() + "\"")
       return self.Push(Child, Command)
     return "Key not found."
 
@@ -185,26 +185,26 @@ class SBSickBay(SBNode):
 
   # Console main loop.
   def ConsoleMain(self):
-    COut.Indent(SBNode.PathDepth(self), "\nWelcome to SickBay." + self.PrintStats() +\
+    COut.Print("\nWelcome to SickBay.\n" + self.PrintStats() +\
                   "\nEnter \"?\" at any time to get help " + \
                   "\nor press Enter on the keyboard to update the stats" + \
                   "\nor type \"exit\" to exit the console.\n")
     while True:
-      COut.Indent(SBNode.PathDepth(self), self.Top.Path())
+      COut.Print ("\n" + self.Top.Path())
       UserInput = raw_input("").lower()
       if UserInput == "exit":
         return
-      COut.Indent(SBNode.PathDepth(self), self.Top.CommandStart(self, self, UserInput))
+      COut.Print(self.Top.CommandStart(self, self, UserInput))
   
   # Enters the monitoring state.
   def MonitorBegin(self):
     Scheduler.enter(1, 1, self.Update, ())
     Scheduler.run()
-    COut.Indent(SBNode.PathDepth(self), "\nBeginning monitoring...")
+    SBNode.COut(self, "\nBeginning monitoring...")
   
-  def Print(self):
-    SBNode.Print(self)
-    COut.Indent(SBNode.PathDepth(self), " @" + str (datetime.datetime.now()))
+  # Prints the list of the members and followed by a timestamp
+  def Print(self, String = ""):
+    return SBNode.Print(self, String) + " @" + str (datetime.datetime.now())
   
   # Handler for the Monitor Process state.
   def StateMonitorHandle(self):
@@ -212,7 +212,7 @@ class SBSickBay(SBNode):
       Child.Children.PrintStats()
   
   def StateShutDownHandle(self):
-    COut.Indent(SBNode.PathDepth(self), "\nShutting down...")
+    SBNode.COut(self, "\nShutting down...")
  
   # Function that is called every x seconds to update everything.
   def Update(self):
