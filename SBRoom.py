@@ -23,7 +23,7 @@ from SBNode import SBNode
 class SBRoom(SBNode):
   
   def __init__(self, SickBay, Command = ""):
-    SBNode.__init__(self, SickBay, Command)
+    SBNode.__init__(self, "Room", SickBay.RIDNext(), SickBay, Command)
     self.Meta["Directions"] = ""
     SickBay.RIDNext()
 
@@ -35,9 +35,6 @@ class SBRoom(SBNode):
   
   def Command(self, SickBay, Command = ""):
     Result = SBNode.CommandSuper(self, SickBay, Command)
-    if Result != None:
+    if Result == None:
       return Result
-    Arg1 = Command.split(" ", 1)
-    if len(Arg1) > 1:
-      Result = SBNode.Command(SickBay, Command)
     return ""

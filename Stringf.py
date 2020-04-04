@@ -11,7 +11,7 @@
 import sys
 
 # Constants
-StringfTabSize = 2  #< The number of spaces per indentation level.
+StringfTabSize = 1  #< The number of spaces per indentation level.
 
 # String formating utilities
 class Stringf:
@@ -19,7 +19,10 @@ class Stringf:
   @staticmethod
   def Repeat(Repeat = 0, Item = " ", StartingString = ""):
     return StartingString + Item * Repeat
-
+  
+  # Indents to Item the given IndentLevel * StringfTabSize.
+  # @param StartingString The string to print first that starts with a new line 
+  #   char.
   @staticmethod
   def Indent(IndentLevel = 0, Item = "", StartingString = "\n"):
     SpaceCount = int(IndentLevel * StringfTabSize)

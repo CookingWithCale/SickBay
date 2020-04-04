@@ -14,4 +14,4 @@ from SBHuman import SBHuman
 class SBHumanPatient(SBHuman):
   
   def __init__(self, SickBay, Command = ""):
-    SBNode.__init__(self, SickBay, "HumanPatient", SickBay.ProcessCountNext(), Command)
+    SBNode.__init__(self, SickBay.HIDNext(), SickBay, Command, "HumanPatient")
