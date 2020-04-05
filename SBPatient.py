@@ -14,7 +14,6 @@ from SBHuman import SBHuman
 # A SickBay patient.
 class SBPatient(SBHuman):
   
-  def __init__(self, SickBay, Command = "Name=\"Intake Room\" Description=\""\
-      "A SickBay Patient."):
-    SBNode.__init__(self, SickBay, "Patient", Command)
+  def __init__(self, SickBay, Command = None, Type = "Human.Patient"):
+    SBNode.__init__(self, SickBay, Command, Type)
   

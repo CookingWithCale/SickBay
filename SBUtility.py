@@ -14,4 +14,4 @@ from SBNode import SBNode
 class SBUtility(SBNode):
   
   def __init__(self, SickBay, Type = "Utility", Command = ""):
-    SBNode.__init__(self, SickBay, Type, 0, Command)
+    SBNode.__init__(self, SickBay, Command, Type, 0)

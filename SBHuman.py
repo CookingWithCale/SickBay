@@ -13,7 +13,6 @@ from Stringf import *
 from SBNode import SBNode
 from SBHumanCirculatory import SBHumanCirculatory
 from SBHumanRespiratory import SBHumanRespiratory
-import sys
 
 # A model of a human.
 class SBHuman(SBNode):
@@ -25,7 +24,7 @@ class SBHuman(SBNode):
   SexFemale = 1           #< Sex if female.
   
   def __init__(self, SickBay, Command = "", Type = "Human"):
-    SBNode.__init__(self, Type, SickBay.HIDNext(), SickBay, Command)
+    SBNode.__init__(self, SickBay, Command, Type, SickBay.HIDNext())
     self.Metadata("Sex", "")         #< The Sex of the person.
     self.Metadata("Height", 0.0)     #< The person's Height.
     self.Metadata("Weight", 0.0)     #< The person's Weight.

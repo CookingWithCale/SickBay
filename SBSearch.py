@@ -15,10 +15,9 @@ import time
 # A SickBay search results.
 class SBSearch(SBNode):
   
-  def __init__(self, SickBay, SickBay.SearchCountNext(), Key = "Search", 
-              Name = "Untitled search", Description = "Search results", Help = ""):
+  def __init__(self, SickBay, Command = "Name=\"Untitled search\"", Type = "Search"):
     TimeOfSearch = time.time()
     self.Members["Created"] = TimeOfSearch
-    SBNode.__init__(self, SickBay, Key, "Search", Name, Description, Help)
+    SBNode.__init__(self, SickBay, Command, Type, SickBay.SIDNext())
     SickBay.Push(self)
   

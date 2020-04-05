@@ -1,4 +1,4 @@
-#!/usr/bin/python
+# !/usr/bin/python
 # -*- coding: utf-8 -*-
 # SickBay @version 0.x
 # @link    https://github.com/KabukiStarship/sickbay.git
@@ -11,9 +11,8 @@
 
 from SBNode import SBNode
 
-# A SickBay Device.
+# A SickBay Device with a Device ID (DID)
 class SBDevice(SBNode):
   
-  def __init__(self, SickBay, Type = "Device", Command = ""):
-    SBNode.__init__(self, SickBay, Type, SickBay.DeviceCountNext(), Command)
-    pass
+  def __init__(self, SickBay, Command = "", Type = "Device"):
+    SBNode.__init__(self, SickBay, Command, Type, SickBay.DIDNext())

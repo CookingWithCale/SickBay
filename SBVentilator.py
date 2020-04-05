@@ -48,9 +48,9 @@ class SBVentilator(SBDevice):
   # if that pressure is exceeded.
   EIPPMax = 30.0
 
-  def __init__(self, SickBay, Type = "DeviceVentilator", Arguments = "Name=\"Generic\" "\
+  def __init__(self, SickBay, Type = "Device.Ventilator", Command = "Name=\"Generic\" "\
                "Description=\"A meta model for RespiratoryVentilator.\""):
-    SBDevice.__init__(self, SickBay, Type, Arguments)
+    SBDevice.__init__(self, Command, SickBay, Type)
     # The breath duty cycle where 0.5 is 50% duty cycle.
     self.Members["BreathDutyCycle"] = 0.5
     # The breath period in seconds.
@@ -91,3 +91,7 @@ class SBVentilator(SBDevice):
     if (EIPP >= self.EIPPMin and
         EIPP <= self.EIPPMax):
       self.self.Members["EIPP"] = EIPP
+  
+  # Does nothing
+  def Bang(self, SickBay):
+    return None 

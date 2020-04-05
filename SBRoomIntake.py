@@ -14,11 +14,16 @@ from SBRoom import SBRoom
 # A Room in real life you put put SBNodes into.
 class SBRoomIntake(SBRoom):
   
-  def __init__(self, SickBay, Command = "Name=\"Intake Room\" Description=\""\
-      "An intake room that creates Patients by default."):
-    SBNode.__init__(self, SickBay, "RoomIntake", Command)
+  def __init__(self, SickBay, Command = None, Type="Room.Intake"):
+    SBNode.__init__(self, SickBay, Type, Command)
   
-  def Add(self, SickBay, Arguments):
+  def Command(self, SickBay, Command):
+    Result = self.CommandSuper(SickBay, Command)
+    if Result == None: return Result
+    while Result[0] == '>':
+      Result = self.CommandSuper(SickBay, Command)
+      if Result == None: return Result
+
     Patient = SBPatient(self)
     if not SBSickBay.IsValidKey(Key):
       return

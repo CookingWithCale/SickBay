@@ -1,3 +1,5 @@
+# !/usr/bin/python
+# -*- coding: utf-8 -*-
 # SickBay @version 0.x
 # @link    https://github.com/KabukiStarship/sickbay.git
 # @file    /SBHumanCirculatory.py
@@ -9,7 +11,6 @@
 
 from SBNode import SBNode
 from Stringf import *
-import sys
 
 # A model of a human Circulatory system.
 class SBHumanCirculatory(SBNode):
@@ -22,10 +23,8 @@ class SBHumanCirculatory(SBNode):
   HeartRateMax = 1000.0        #< The max pulse rate.
   BloodTypeUnknown = "Unknown" #< String to use if the BloodType input was bad.
   
-  def __init__(self, SickBay, Command = " Name=\"Human "\
-                    "circulatory system\" Description=\"The human circulatory "\
-                    "system\""):
-    SBNode.__init__(self, "HumanSystem", 0, SickBay, Command)
+  def __init__(self, SickBay, Command = None, Type = "Human.Circulatory"):
+    SBNode.__init__(self, SickBay, Command, "Human.System", 0)
     self.Meta["BloodPressure"] = 0.0               #< The heart pulse rate.
     self.Meta["BloodType"] = self.BloodTypeUnknown #< The patient's blood type.
     self.Meta["HeartRate"] = 0.0                   #< The heart pulse rate.

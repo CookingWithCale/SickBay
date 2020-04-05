@@ -10,10 +10,12 @@
 # file, you can obtain one at <https://mozilla.org/MPL/2.0/>. Process
  
 from Stringf import *
-from SBNode import SBNode
-from SBDevice import SBDevice
-from SBHuman import SBHuman
-from SBRoom import SBRoom
+from SBNode import *
+from SBDevice import *
+from SBHuman import *
+from SBRoom import *
+from SBRoomIntakePatient import *
+from SBRoomIntakeStaff import *
 from SBVentilator import *
 from GHVentilator import *
 import sched, time, datetime
@@ -21,25 +23,25 @@ import sched, time, datetime
 Scheduler = sched.scheduler(time.time, time.sleep)
   
 # The SickBay Process object.
-class SBSickBay(SBNode):
+class SBSickBay(SBRoom):
   # Constants
   StateMonitoring = 1     #< State: Monitoring.
   StateShuttingDown = 2   #< State: Shutting down.
   
-  def __init__(self, Command = "Type=\"SickBay\" Name=\"SickBay\" " \
+  def __init__(self, Command = "Name=\"SickBay\" " \
                "Description=\"Root Node with NID 0.\""):
     self.NIDCount = 0                 #< The total number of SBNodes.
     self.HumanCount = 0                #< The count of new Humans in the Room.
     self.DeviceCount = 0              #< The SBDevice count
-    self.RoomCount = 0                #< The SBRoom count
+    self.RoomCount = 1                #< The SBRoom count
     self.SearchCount = 0              #< The SBSearch count
-    self.OperationCount = 0           #< The Procedure count
+    self.MissionCount = 0             #< The Operation count
     self.ProcessCount = 0             #< The Process count
     self.Top = self                   #< The currently selected node.
     self.PushCount = 0                #< The number pushes since the of the Command.
     self.ModeStackRestore = False     #< Mode for Commands that start with a '.'
     self.Stack = []                   #< The stack of SBNodes.
-    SBNode.__init__(self, "SickBay", 0, self, Command)
+    SBNode.__init__(self, self, Command, "SickBay", 0)
     self.Pop()
     self.State = self.StateMonitoring #< The Process state.
     self.Add(self, "Intake", SBRoom(self, "Name=\"Patient Intake\" Description=\"The Intake Room where you wait get get into the Hospital.\""))
@@ -47,7 +49,7 @@ class SBSickBay(SBNode):
     self.Add(self, "ICU", SBRoom(self, "Name=\"Intensive Care Unit\" Description=\"The room for Patients in need of critical care.\""))
     self.Add(self, "Rooms", SBRoom(self, "Name=\"Patient Rooms\" Description=\"The Rooms where the Patients are in who aren't in the ER or ICU.\""))
     self.Add(self, "Guests", SBRoom(self, "Name=\"Guest Room\" Description=\"The Room where guests start out in.\""))
-    self.Add(self, "Staff", SBRoom(self, "Name=\"Staff Room\" Description=\"The Room where all the Staff start out in.\""))
+    self.Add(self, "Staff", SBRoomIntakeStaff(self, "Name=\"Staff Room\" Description=\"The Room where all the Staff start out in.\""))
     self.Add(self, "Devices", SBRoom(self, "Name=\"Device Room\" Description=\"The Room where all of the unused devices are stored in.\""))
     self.SetupTest()
     self.ConsoleMain()
@@ -178,10 +180,10 @@ class SBSickBay(SBNode):
     self.SearchCount = Result + 1
     return Result
   
-  # Generates the next unique Search Id by incrementing OperationCount
-  def OIDCount(self):
-    Result = self.OperationCount
-    self.OperationCount = Result + 1
+  # Generates the next unique Search Id by incrementing MissionCount
+  def MIDNext(self):
+    Result = self.MissionCount
+    self.MissionCount = Result + 1
     return Result
   
   # Generates the next unique Process Id by incrementing ProcessCount

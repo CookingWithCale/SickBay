@@ -1,8 +1,8 @@
-#!/usr/bin/python
+# !/usr/bin/python
 # -*- coding: utf-8 -*-
 # SickBay @version 0.x
 # @link    https://github.com/KabukiStarship/SickBay.git
-# @file    /SBDevice.py
+# @file    /SBRoomOperating.py
 # @author  Cale McCollough <https://cale-mccollough.github.io>
 # @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>; all rights 
 # reserved (R). This Source Code Form is subject to the terms of the Mozilla 
@@ -11,9 +11,12 @@
 
 from SBRoom import SBRoom
 
-# A SickBay Operating Room to perform Procedures.
+# A SickBay Operating Room to that performs a Bang when popped.
 class SBRoomOperating(SBRoom):
   
-  def __init__(self, SickBay, Command="Name=\"Device " + SickBay.DeviceCountNext() + "\""):
-    SBRoom.__init__(self, SickBay, SickBay.ProcedureCountNext(), "RoomOperating", Command)
-    pass
+  def __init__(self, SickBay, Command = None, Type="Room.Operating"):
+    SBRoom.__init__(self, SickBay, Command, Type)
+
+  def Pop(self, SickBay, Command = ""):
+    Bang = SBNode.Bang(self,SickBay)
+    SBRoom.Pop(self, SickBay, Bang + Command)

@@ -29,7 +29,7 @@ class SBNode:
   ScanningChildKey = 1             #< Scanning a Child key.
   ScanningMetaKey = 2              #< Scanning a metadata key.
 
-  def __init__(self, Type, TID, SickBay, Command = ""):
+  def __init__(self, SickBay, Command, Type, TID):
     self.NID = SickBay.NIDNext ()  #< The globally unique Node ID.
     self.TID = TID                 #< The class unique Type ID.
     self.Parent = SickBay.Top      #< This node's parent.
@@ -40,19 +40,26 @@ class SBNode:
       "Help": ""                   #< The help string.
     }
     self.Children = {}             #< The child SBNodes.
-
     # Callable Crabs functions.
     self.Functions = {
       "<":  "Pop",
+      "*":  "Bang",
       ".":  "PushCountReset",
       "!":  "ListDetails",
       "\"": "PrintStats",
-      "@":  "List",
+      "?":  "List",
       "#":  "ListMeta",
       "$":  "ListChildren",
-      "?":  "PrintHelp",
       "help":  "PrintHelp",
     }
+    
+    # Pushes this node on the SickBay stack.
+    def Push(self, SickBay, Command = ""):
+      return SickBay.Push(self, Command)
+    
+    # Pops this node off of the SickBay stack.
+    def Pop(self, SickBay, Command = ""):
+      return SickBay.Pop(Command)
     
     self.COut("> " + self.Key())
     Result = self.Command(SickBay, Command)
@@ -448,6 +455,12 @@ class SBNode:
         elif Key in self.Meta:
             return "<> Error The Key:\"" + Key + "\" is a Metadata value and is not hierarchial. <\n"
     return self.Top.Command(SickBay, Command)
+  
+  # Triggers all of the children to Bang.
+  def Bang(self, SickBay, Result):
+    for Child in self.Children:
+      Child.Bang(Bang)
+    return Bang
   
   # Issues a Console command to this node.
   # ><.Intake.Metadata Foo="" Name="Harry" Description=""

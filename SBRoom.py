@@ -22,8 +22,8 @@ from SBNode import SBNode
 # ```
 class SBRoom(SBNode):
   
-  def __init__(self, SickBay, Command = ""):
-    SBNode.__init__(self, "Room", SickBay.RIDNext(), SickBay, Command)
+  def __init__(self, SickBay, Command = "", Type ="Room"):
+    SBNode.__init__(self, SickBay, Command, Type, SickBay.RIDNext())
     self.Meta["Directions"] = ""
     SickBay.RIDNext()
 

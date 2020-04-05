@@ -9,9 +9,9 @@
 # Public License, v. 2.0. If a copy of the MPL was not distributed with this 
 # file, you can obtain one at <https://mozilla.org/MPL/2.0/>.
 
-from SBHuman import SBHuman
+from SBHuman import *
 
 class SBHumanPatient(SBHuman):
   
-  def __init__(self, SickBay, Command = ""):
-    SBNode.__init__(self, SickBay.HIDNext(), SickBay, Command, "HumanPatient")
+  def __init__(self, SickBay, Command = None, Type="Human.Patient"):
+    SBNode.__init__(self, SickBay, Command, Type)

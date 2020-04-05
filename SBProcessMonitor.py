@@ -13,5 +13,5 @@ from SBNode import SBNode
 
 class SBProcess(SBNode):
   
-  def __init__(self, SickBay, Type = "Process", Command = ""):
-    SBNode.__init__(self, SickBay, Type, SickBay.ProcessCountNext(), Command)
+  def __init__(self, SickBay, Command = "", Type = "Process"):
+    SBNode.__init__(self, SickBay, Command, Type, SickBay.PIDNext())

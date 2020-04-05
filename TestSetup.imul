@@ -1,11 +1,13 @@
-><> Rooms.Intake.Intake Path="~" Description="The Intake Room where you wait get get into the Hospital."
-><> Rooms.Intake.Guests Path="~" Name="Guest Room" Description="The Room where guests start out in."
-><> Rooms.Intake.Staff Path="~" Name="Staff Room" Description="The Room where all the Staff start out in."
+><> Room.Intake.Intake Path="~" Description="The Intake Room where you wait get get into the Hospital."
+><> Room.Intake.Guest Path="~" Name="Guest Room" Description="The Room where guests start out in."
+><> Room.Intake.Staff Path="~" Name="Staff Room" Description="The Room where all the Staff start out in."
 
-><> Rooms.Operating ER Name="Emergency Room" Description="The room with Patients who may need critical care."
-><> Rooms.Operating ICU Name="Intensive Care Unit" Description="The room for Patients in need of critical care."
+><> Room.Operating ER Name="Emergency Room" Description="The room with Patients who may need critical care."
+><> Room.Operating ICU Name="Intensive Care Unit" Description="The room for Patients in need of critical care."
 
-<>>
+> Error This is an error message <
+
+><>
  > Intake
    DoeJohn1 Sex=M Name="John Doe 1" Weight=155.0 Height=70.0
    DoeJohn2 Name="John Doe 2", Sex=M Weight=160.0 Height=75.0
@@ -28,8 +30,10 @@
                                    Weight=155.0 Height=90.0
    Alvin Name="Alvin Chipmunk" < Simon Sex=M Name="Simon Chipmunk"
  <
- > Devices
-      GHV1 Name="Gravity Hookah Ventilator 1" Path="~Rooms.Guest.FranksRoom"
+ > Device
+      GHV1 Name="Gravity Hookah Ventilator 1" Path="~Room.Guest.FranksRoom"
       GHV2 Name="Gravity Hookah Ventilator 2"
  <
 <
+
+><.Room.Operating.OperatingRoom1 Path="~ER" Name="Operating Room 1"
