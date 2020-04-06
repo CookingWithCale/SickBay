@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# SickBay @version 0.x
-# @link    https://github.com/KabukiStarship/sickbay.git
+# Crabs @version 0.x
+# @link    https://github.com/KabukiStarship/Crabs.git
 # @file    /SBProcess.py
 # @author  Cale McCollough <https://cale-mccollough.github.io>
 # @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>; all rights 
@@ -13,5 +13,6 @@ from SBNode import SBNode
 
 class SBProcess(SBNode):
   
-  def __init__(self, SickBay, Type = "Process", Command = ""):
-    SBNode.__init__(self, SickBay, Type, SickBay.ProcessCountNext(), Command)
+  # Creates a Duck.
+  def __init__(self, Crabs, TID, Type = "Process"):
+    SBNode.__init__(self, Crabs, TID, Type)

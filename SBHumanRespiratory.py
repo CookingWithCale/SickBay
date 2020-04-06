@@ -1,7 +1,7 @@
 # !/usr/bin/python
 # -*- coding: utf-8 -*-
-# SickBay @version 0.x
-# @link    https://github.com/KabukiStarship/SickBay.git
+# Crabs @version 0.x
+# @link    https://github.com/KabukiStarship/Crabs.git
 # @file    /SBHumanRespiratory.py
 # @author  Cale McCollough <https://cale-mccollough.github.io>
 # @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>; all rights 
@@ -23,9 +23,9 @@ class SBHumanRespiratory(SBNode):
   RVMin = 0.0           # The min RV value.
   RVMax = 100.0         # The max RV value.
 
-  def __init__(self, Sex, SickBay, Command = "Name=\"Respiratory System\" "\
-                          "Description=\"The Human Respiratory System.\""):
-    SBNode.__init__(self, "Respiratory", 1, Command)
+  # Creates a Duck.
+  def __init__(self, Crabs, TID, Type="Human.Respiratory"):
+    SBNode.__init__(self, Crabs, TID, Type)
     # Inspiratory reserve volume is the amount of air that can be forcefully 
     # inspired after a normal inspiration.
     self.IRV = 3.0
@@ -54,7 +54,7 @@ class SBHumanRespiratory(SBNode):
       self.IC = 2.4
       self.FRC = 1.8
       self.TLC = 4.2
-    SickBay.Push(self)
+    Crabs.Push(self)
     
   def IRVSet(self, IRV):
     if (IRV >= self.IRVMin and

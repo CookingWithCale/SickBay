@@ -1,7 +1,7 @@
 # !/usr/bin/python
 # -*- coding: utf-8 -*-
-# SickBay @version 0.x
-# @link    https://github.com/KabukiStarship/SickBay.git
+# Crabs @version 0.x
+# @link    https://github.com/KabukiStarship/Crabs.git
 # @file    /SBNode.py
 # @author  Cale McCollough <https://cale-mccollough.github.io>
 # @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>; all rights 
@@ -10,11 +10,10 @@
 # file, you can obtain one at <https://mozilla.org/MPL/2.0/>.
 
 from shlex import split
-import time
-from Stringf import *
 import re
+from Stringf import *
   
-# A SickBay tree node with a unique Node ID (NID).
+# A Crabs tree node with a unique Node ID (NID).
 # Example
 # ```Script2
 # ><.Intake CaptainKabuki Name="Cale McCollough" DoB="4/1/2020"
@@ -29,37 +28,53 @@ class SBNode:
   ScanningChildKey = 1             #< Scanning a Child key.
   ScanningMetaKey = 2              #< Scanning a metadata key.
 
-  def __init__(self, Type, TID, SickBay, Command = ""):
-    self.NID = SickBay.NIDNext ()  #< The globally unique Node ID.
-    self.TID = TID                 #< The class unique Type ID.
-    self.Parent = SickBay.Top      #< This node's parent.
-    self.Meta = {                  #< The Meta members
-      "Type": "",                  #< The node Type in UpperCaseCamel.
-      "Name": "",                  #< The Node name in any format.
-      "Description": "",           #< The description of this Device.
-      "Help": ""                   #< The help string.
+  def __init__(self, Crabs, TypeID = 0, Type = ""):
+    self.Parent = Crabs.Top    #< This node's parent.
+    self.NID = Crabs.NIDNext() #< The globally unique Node ID.
+    self.TID = TypeID          #< The class unique Type ID.
+    self.Meta = {              #< The Meta members
+      "Type": Type,            #< The Type of the SBNode.
+      "Name": "",              #< The Node name in any format.
+      "Description": "",       #< The description of this Device.
+      "Help": ""               #< The help string.
     }
-    self.Children = {}             #< The child SBNodes.
-
+    self.Children = {}      #< The child SBNodes.
     # Callable Crabs functions.
     self.Functions = {
-      "<":  "Pop",
-      ".":  "PushCountReset",
-      "!":  "ListDetails",
-      "\"": "PrintStats",
-      "@":  "List",
-      "#":  "ListMeta",
-      "$":  "ListChildren",
-      "?":  "PrintHelp",
-      "help":  "PrintHelp",
-    }
+      ">":    SBNode.Push,
+      "<":    SBNode.Pop,
+      ">><<": SBNode.PopAll,
+      "*":    SBNode.Bang,
+      "$":    SBNode.DepthCounterReset,
+      "`":    SBNode.PrintStats,
+      "?":    SBNode.List,
+      "^":    SBNode.PushParent,
+      ".":    SBNode.ListChildren,
+      "#":    SBNode.ListMeta,
+      "!":    SBNode.ListDetails,
+      "help": SBNode.PrintHelp,
+    } 
+    Crabs.Push(self)
+
+  # Function resest the DepthCounter.
+  def DepthCounterReset(self, Crabs, Command, Cursor):
+    return Crabs.DepthCounterReset
     
-    self.COut("> " + self.Key())
-    Result = self.Command(SickBay, Command)
-    if Result != None:
-      self.Meta["Error"] = Result
-    SickBay.Push(self)
-    self.COut("> Created Node <\n")
+  # Pushes this node on the Crabs stack.
+  def Push(self, Crabs, Command, Cursor):
+    return Crabs.Push(self, Command, Cursor)
+    
+  # Pushes this node on the Crabs stack.
+  def PushParent(self, Crabs, Command, Cursor):
+    return Crabs.Push(self.Parent, Command, Cursor)
+  
+  # Pops this node off of the Crabs stack.
+  def Pop(self, Crabs, Command, Cursor):
+    return Crabs.Pop(Command, Cursor)
+  
+  # Pops this node off of the Crabs stack.
+  def PopAll(self, Crabs, Command, Cursor):
+    return Crabs.PopAll(Command, Cursor)
   
   # Resets the push count.
   def PushCountReset(self):
@@ -76,10 +91,10 @@ class SBNode:
     Parent = self.Parent
     if self == Parent:
       return PathString
-    return Parent.Path(PathString) + self.Key() + "."
+    return Parent.Path(PathString) + self.Key() + '.'
     
-  def FunctionsAdd(self, Key):
-    self.Functions[Key] = None
+  def FunctionsAdd(self, Key, Mapping):
+    self.Functions[Key] = Mapping
 
   def FunctionsRemove(self, Key):
     del(self.Functions[Key])
@@ -125,11 +140,12 @@ class SBNode:
       self.Meta[Key] = Value
   
   # Adds a Key-Value pair to the Children or Meta
-  def Add(self, SickBay, Key, Value):
-    self.COut("> Adding Key " + Key + " <\n")
+  def Add(self, Crabs, Key, Value, Command = None):
+    self.COut("? Adding Key " + Key + " <\n")
     self.Children[Key] = Value
-    SickBay.Pop()
-    self.COut("> Added Key " + Key + " <\n")
+
+    Crabs.Pop()
+    self.COut("? Added Key " + Key + " <\n")
     
   # Removes the given Key from the Meta
   def Remove(self, Key):
@@ -182,8 +198,8 @@ class SBNode:
       return self.Children[Key]
     return None    
   
-  # Searchs the SickBay for the Query.
-  def Search(self, SickBay, Query):
+  # Searchs the Crabs for the Query.
+  def Search(self, Crabs, Query):
     Results = []
     for Node in self.Children:
       if (Node.NID == str(Node.NID) or
@@ -192,9 +208,6 @@ class SBNode:
           self.Meta["Key"].find(Query) == 0):
         Results.append(Node)
     return Results
-  
-  def TypeSet(self, Type):
-    self.Type = Type
   
   def HandleSet(self, Key):
     self.Key = Key
@@ -209,16 +222,28 @@ class SBNode:
     self.Meta["Description"] = Description
     
   # Prints the String indented the current Path depth.
-  def Print(self, String):
+  def Print(self, String = ""):
     return Stringf.Indent(self.PathDepth() + 1, String)
     
   # Prints the String indented the current Path depth.
-  def COut(self, String):
+  def PrintError(self, String):
+    return Stringf.Indent(">< Error " + String + " <")
+    
+  # Prints the String indented the current Path depth.
+  def COut(self, String= ""):
     return COut.Indent(self.PathDepth() + 1, String)
+    
+  # Prints the String indented the current Path depth.
+  def CCOutHint(self, String):
+    return self.COut("? " + String + " <")
+  
+  # Prints the path to the 
+  def COutPath(self):
+    return COut.PrintLn(self.Path ())
   
   # Prints out the most important information.
   def PrintStats(self, String = "", SelfKey = None):
-    self.COut("> Printing Stats <\n")
+    self.COut("? Printing Stats <\n")
     if SelfKey != None:
       String += SelfKey + " "
     for Key, Value in self.Children.items() :
@@ -236,79 +261,56 @@ class SBNode:
   def Key(self):
     if self == self.Parent:
       return "><"
-    #self.COut("> Searching for Key for NID:" + str(self.NID) + " <\n")
+    #self.COut("? Searching for Key for NID:" + str(self.NID) + " <\n")
     for Key, Value in self.Parent.Children.iteritems():
       if Value == self:
         return Key
     return "MissingKey"
   
-  # Sets
-  def MetaSet(self, Key, Value):
-    self.Parent.Meta[Key] = Value
-  
-  # Returns a string with all of the Keys in the Meta and Children indented to a custom indent.
-  def ListMetaIndented(self, Indent = 0):
+  # Returns a string with all of the Keys in the Meta and Children indented to the PathDepth().
+  def ListMeta(self, SickBay, Command, Cursor):
     Result = ""
     Index = len(self.Children)
     for Key, Value in self.Meta.items():
       Index += 1
       String = str(Index) + ". " + Key + ":" + Value.__class__.__name__
-      Result += Stringf.Indent(Indent, String)
+      Result += Stringf.Indent(self.PathDepth() + 1, String)
     return Result
   
   # Returns a string with all of the Keys in the Meta and Children indented to the PathDepth().
-  def ListMeta(self):
-    return ListMetaIndented(self.PathDepth())
-
-  # Returns a string with all of the Keys in the Meta and Children indented to a custom indent.
-  def ListChildrenIndented(self, Indent = 0):
+  def ListChildren(self, SickBay, Command, Cursor):
     Index = 0
     Result = ""
     for Key, Value in self.Children.items():
       Index += 1
       String = str(Index) + ". " + Key + ":" + Value.__class__.__name__ + ":" + str(Value.NID)
-      Result += Stringf.Indent(Indent, String)
+      Result += Stringf.Indent(self.PathDepth() + 1, String)
     return Result
   
   # Returns a string with all of the Keys in the Meta and Children indented to the PathDepth().
-  def ListChildren(self, Indent = 0):
-    return self.ListChildrenIndented(self.PathDepth())
-  
-  # Returns a string with all of the Keys in the Meta and Children to the PathDepth().
-  def ListIndent(self, Indent = 0):
-    String = Stringf.Indent(Indent, "> " + self.Key())
-    String += self.ListChildrenIndented(Indent + 1)
-    String += Stringf.Indent(Indent + 1, "> Meta")
-    String += self.ListMetaIndented (Indent + 2)
-    String +=  Stringf.Indent(Indent + 1, "<")
-    String += Stringf.Indent(Indent, "<")
+  def List(self, SickBay, Command, Cursor):
+    Depth = self.PathDepth ()
+    String = Stringf.Indent(Depth, "> " + self.Key())
+    String += self.ListChildren(SickBay, Command, Cursor)
+    String += Stringf.Indent(Depth + 1, "> Meta")
+    String += self.ListMeta (SickBay, Command, Cursor)
+    String += Stringf.Indent(Depth + 1, "<")
+    String += Stringf.Indent(Depth, "<")
     return String
   
   # Returns a string with all of the Keys in the Meta and Children indented to the PathDepth().
-  def List(self):
-    return self.ListIndent(self.PathDepth())
-  
-  # Parses the string as either int, float, str, or None.
-  def CommandArg(self, Args):
-    try: 
-      return int(Args)
-    except ValueError:
-      pass
-    try: 
-      return float(Args) # float(re.search('\d+\.*\d*', r).group(0))
-    except ValueError:
-      pass
-    CommandArgs = Args.split("\"", 2)
-    if (len(CommandArgs) == 3):
-      return CommandArgs[1]
-    return None
+  def ListDetails(self, SickBay, Command, Cursor):
+     self.List(SickBay, Command, Cursor)
   
   # The function that is called when a Duck typed member is created.
-  def CommandDuck(self, SickBay, Key, Command):
+  def PushDuck(self, Crabs, Key, Command, Cursor):
     self.COut("#Duck " + Command)
-    self.Children[Key] = SBNode("Node", 0, SickBay, Command)
-  
-  def CommandKeyNext(self, SickBay, Args):
+    NID = Crabs.NIDNext()
+    Node = SBNode(Crabs)
+    self.Children[Key] = Node
+    return Crabs.Push(Node.Command(Crabs, Command, Cursor))
+
+  def CommandKeyNext(self, Crabs, Args):
     Tokens = Args.split(".", 1)
     if Tokens[0] in self.Children: return Tokens
     return None
@@ -316,176 +318,110 @@ class SBNode:
   # The number of Meta plus the number of children.
   def MemberCount(self):
     return len(self.Meta) + len(self.Children)
-
+  
   # Runs the common commands and returns None if no commands were executed.
-  def CommandSuper(self, SickBay, Command):
-    if Command == None or Command == "": return None
+  def CommandSuper(self, Crabs, Command, Cursor):
+    if Command == None or Cursor >= len(Command): return None
+    if Command == "": return None
     self.COut("#Super " + Command)
-    
-    self.COut("> Skipping whitespace. <")
-    Char = Command[0]
-    Cursor = 1
-    while Char <= " ":
+    Char = Command[Cursor]
+    while Char <= ' ':
+      self.COut("? Skipping leading whitespace and pushing non-printable "\
+                "nodes. <")
       # IMUL is a superset of Script2, and Char ASCII C0 Codes 0-8 push NID0 
       # through NID8 onto the stack and ASCII C0 Codes 11-31 push on child 0-20.
-      if Char == 0:
-        return None
-      if Char == 1:
-        return "<> Error Byte compresson not available the Python version of Script2 and IMUL. <"
+      if Char == 0: return None
+      if Char == 1: return ">< Error Byte compresson not implemented. <"
       if Char < '\t':
-        return SickBay.PushNID(int(Char - 2), Command[Cursor:])
+        return Crabs.PushChildNumber(Char, Command, Cursor)
       if Char > '\n':
-        if Char != " ":
-          return SickBay.Push(self.ChildNumber(int(Char - '\n')), Command[Cursor:])
-      Char = Command[Cursor]
+        if Char != ' ':
+          return Crabs.Push(self.ChildNumber(int(Char - '\n')),
+                              Command, Cursor)
       Cursor += 1
-    if Char == '-' or Char >= '0' and Char <= '9':
-      CursorStart = Cursor
-      Cursor += 1
+      if Cursor >= len(Command): return None
       Char = Command[Cursor]
-      while Char >= '0' and Char <= '9':
-        Cursor += 1
-        Char = Command[Cursor]
-      Index = int(Command[CursorStart:Cursor])
-      if Index < 0:
-        return SickBay.PushNID(Index * -1, Command[Cursor:])
-      return SickBay.Push(self.ChildNumber(Index), Command[Cursor:])
-    
-    if Cursor != 1: Command = Command[Cursor:] # Skip any whitespace.
-
+      
+    Cursor = Stringf.PeekNumber(Command, Cursor)
+    if Cursor > 0:
+      Index = int(Command[CursorStart: Cursor])
+      self.COut("? Pushing " + str(Index))
+      return Crabs.Push(self.ChildNumber(Index), Command, Cursor)
+    elif Cursor < 0:
+        return Crabs.PushNID(Index * -1, Command, -Cursor)
+    self.COut("? Scanning a Key. <")
     Arg = 0
     ParsingsArguments = 0
     while ParsingsArguments == 0:
       Arg += 1
-      self.COut("> Parsing Argument " + str(Arg) + " <\n")
-      self.COut("> Scanning until we get to a '.', ' ', '\t', or '\n', "\
-                "or '='. <\n")
+      self.COut("? Parsing Argument " + str(Arg) + " <")
       CursorStart = Cursor
-      ScanningLoop = 0
-      ScanningMultiLineCommand = False
-      while ScanningLoop == 0:
-        # No non-printable characters in keys.
-        if Char == 0: return None
-        if Char < " " and Char != '\n' and Char != '\t': \
-          return "<> Error Keys may not have non-printable characters in it. <"
-        if Char == '.':
-          Key = Command[CursorStart:Cursor]
-          ScanningLoop = SBNode.ScanningChildKey
-        elif Char == '\\':
-          ScanningMultiLineCommand = True
-        elif Char == '\n':
-          if ScanningMultiLineCommand:
-            ScanningMultiLineCommand = False
-          else:
-            return Command[Cursor:]
-        elif Char == ' ' or Char == '\t':
-          self.COut("> Scanning whitespace.")
-          Cursor += 1
-          Char = Command[Cursor]
-          while Char == ' ' or Char == '\t':
-            Cursor += 1
-            Char = Command[Cursor]
-        Cursor += 1
-        Char = Command[Cursor]
-      
-
-      # Push items on the stack, creating them if they don't exist
-      Scanning = 0
-      Cursor = 0
+      TokenEnd = Stringf.TokenNext(Command, Cursor)
+      if TokenEnd == Cursor: return None
+      Key = Command[Cursor: TokenEnd]
+      self.COut("? Found Key " + Key + " <")
+      Cursor = TokenEnd
+      if Cursor >= len(Command): 
+        if Key in self.Functions:
+          Function = self.Functions[Key]
+          self.COut("? Found Function " + Key + " <")
+          Result = Function(self, Crabs, Command, Cursor)
+          if Result:
+            self.COut("? Found result: <\n")
+            self.COut(Result)
+        return self.PushDuck(Crabs, Key, Command, Cursor)
       Char = Command[Cursor]
-      while Scanning == 0:
-        Cursor += 1
-        if Char == ".":
-          self.COut("> Found a period. <")
-          Key = Command[0:Arg]
-          if Key in self.Children:
-            return SickBay.Push(self.Children[Key], Command[Arg:])
-          return self.CommandDuck(SickBay, Command[0:Arg], Command[Arg:])
-        if Char == " ":
-          self.COut("> Found a space. <")
-          Key = Command[0:Arg]
-          Arg += 1
-          Char = Command[Arg]
-          while Char == " ":
-            Arg += 1
-            Char = Command[Arg]
-          
-          Scanning = 1
-        elif Char == "=":
-          self.COut("> Found a =. <")
-          Scanning = 1
+      if Char == '=':
+        self.COut("? Found meta key. <")
+        Value = None
+        Delta = Stringf.PeekNumber(String, Cursor)
+        if Delta > 0:
+          TokenEnd = Cursor + Delta
+          Value = int(Command[Cursor: TokenEnd])
+        elif Delta < 0:
+          TokenEnd = Cursor - Delta
+          Value = float(Command[Cursor: TokenEnd])
         else:
-          Char = Command[Arg]
-
-      self.COut("> Tokens " + str(Tokens))
-      Key = Tokens[0].rstrip()
-      Command = Tokens[1]
-      self.COut("> Parsed Key \"" + Key + "\" Command=\"" + Command + "\" <\n")
-      
-      if Key in self.Children:
-        self.COut("> Parsed an existing child Key. <\n")
-        return SickBay.Push(self, Command)
-
-      if Key in self.Meta:
-        self.COut("> Parsed an existing metadata Key. <\n")
-        Tokens = Command.split(" ", 1)
-        self.Meta[Key] = self.CommandArg(Tokens[0])
-
-      
-      Tokens = Key.split(".", 1)
-      if len(Tokens) == 1:
-        self.COut("> The Key doesn't exist, it's a Duck! <\n")
-        return self.CommandDuck(SickBay, Key, Command)
-
-      self.COut("> The Key is hierarchial because it has at least one '.' in it. <\n")
-      if len(Tokens) == 1:
-        Pushing = False
-      else:
-        Tokens = Command.split(".", 1)
-        Key = Tokens[0]
-        if Key in self.Children:
-          SickBay.Push(self.Children[Key], Command)
-        elif Key in self.Meta:
-            return "<> Error The Key:\"" + Key + "\" is a Metadata value and is not hierarchial. <\n"
-    return self.Top.Command(SickBay, Command)
+          Delta = Stringf.PeekString(String, Cursor)
+          if Delta > 0:
+            TokenEnd = Cursor + Delta
+            Value = Command[Cursor: TokenEnd]
+          elif Delta < 0:
+            TokenEnd = Cursor - Delta
+            Value = Command[Cursor:TokenEnd - 1]
+          else:
+            return None
+        self.Meta[Key] = Value
+      self.COut("? Key was not meta value. <")
+    return None
+  
+  # Triggers all of the children to Bang!
+  def Bang(self, Crabs, Result):
+    for Child in self.Children:
+      Child.Bang(Result)
+    return Result
   
   # Issues a Console command to this node.
   # ><.Intake.Metadata Foo="" Name="Harry" Description=""
-  def Command(self, SickBay, Command):
-    Result = self.CommandSuper(SickBay, Command)
+  def Command(self, Crabs, Command, Cursor):
+    Result = self.CommandSuper(Crabs, Command, Cursor)
     if Result == None: return Result
     if Result[0] == '<': return Result
     
-    self.COut("#Self " + Command)
+    self.COut("#Self " + Command, Cursor)
     if Result != None:
       return Result
-    # At this point we can't push anymore Nodes on to the Crabs Stack.
-    Tokens = Command.split(" ", 1)
-    if len(Tokens) == 1:
-      return None
-    Command = Tokens[1]
-    Key = Tokens[0]
-    TokensLength = len(Tokens)
-    if TokensLength == 1:
-      return "<> Error Key, Index, or NID does not exist. <\n"
-    Tokens = Key.split(".", 1)
-    if len(Tokens) > 1:
-      return self.CommandArgs(SickBay, Tokens[1])
-    if Key == "set":
-      Tokens = Tokens[1].split(" ", 1)
-      Key = Tokens[0]
-      if (len(Tokens) == 1):
-        return "<> Error You have to have to type \"add Key Value\". <\n"
-      self.Metadata(Key, self.CommandArg(Command))
-      return ""
-    if Key in self.Meta: # It's metadata
-      return str(self.Meta[Key])
-    return ""
+    return None
+  
+  # Runs a command from a file.
+  def CommandRun(self, Crabs, Cursor, Filename):
+    File = open(Filename, "r")
+    return self.Command(Crabs, 0, File.read(1))
   
   # Function to call when starting a command.
-  def CommandStart(self, SickBay, Command):
-    self.Command(SickBay, Command)
+  def CommandStart(self, Crabs, Command, Cursor):
+    self.Command(Crabs, Command, Cursor)
     if self.ModeStackRestore:
       for X in range(self.StackPushCount):
-        self.Pop(SickBay)
+        self.Pop(Crabs)
       self.StackPushCount = 0
