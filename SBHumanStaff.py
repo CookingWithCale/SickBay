@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# SickBay @version 0.x
-# @link    https://github.com/KabukiStarship/sickbay.git
+# Crabs @version 0.x
+# @link    https://github.com/KabukiStarship/Crabs.git
 # @file    /SBRoomIntake.py
 # @author  Cale McCollough <https://cale-mccollough.github.io>
 # @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>; all rights 
@@ -14,6 +14,7 @@ from SBHuman import *
 # A Human staff member.
 class SBHumanStaff(SBHuman):
   
-  def __init__(self, SickBay, Command = None, Type="Room.Intake.Staff"):
-    SBRoom.__init__(self, SickBay, Command, Type)
+  # Creates a Duck.
+  def __init__(self, Crabs, TID, Type="Room.Intake.Staff"):
+    SBRoom.__init__(self, Crabs, TID, Type)
   

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# SickBay @version 0.x
-# @link    https://github.com/KabukiStarship/sickbay.git
+# Crabs @version 0.x
+# @link    https://github.com/KabukiStarship/Crabs.git
 # @file    /SBHuman.py
 # @author  Cale McCollough <https://cale-mccollough.github.io>
 # @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>; all rights 
@@ -23,17 +23,17 @@ class SBHuman(SBNode):
   SexMale = 0             #< Sex is male.
   SexFemale = 1           #< Sex if female.
   
-  def __init__(self, SickBay, Command = "", Type = "Human"):
-    SBNode.__init__(self, SickBay, Command, Type, SickBay.HIDNext())
+  # Creates a Duck.
+  def __init__(self, Crabs, TID, Type = "Human"):
+    SBNode.__init__(self, Crabs, TID, Type)
     self.Metadata("Sex", "")         #< The Sex of the person.
     self.Metadata("Height", 0.0)     #< The person's Height.
     self.Metadata("Weight", 0.0)     #< The person's Weight.
     
     # The human's Circulatory system.
-    self.Circulatory = SBHumanCirculatory(SickBay)
-
+    self.Circulatory = SBHumanCirculatory(self, )
     # The human's Respiratory system.
-    self.Respiratory = SBHumanRespiratory(SickBay, self.Meta["Sex"])
+    self.Respiratory = SBHumanRespiratory(Crabs, self.Meta["Sex"])
 
   def NameSet (self, Name):
     self.Name = Name

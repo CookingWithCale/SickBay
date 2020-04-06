@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# SickBay @version 0.x
-# @link    https://github.com/KabukiStarship/SickBay.git
+# Crabs @version 0.x
+# @link    https://github.com/KabukiStarship/Crabs.git
 # @file    /GHVentilatorChannel.py
 # @author  Cale McCollough <https://cale-mccollough.github.io>
 # @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>; all rights 
@@ -13,5 +13,7 @@ from SBVentilator import *
 from mbedRPC import *
 
 class GHVentilatorChannel(SBVentilator):
-  def __init__(self, SickBay, Command = "", Type = "Device.Ventilator.GHVentilator.Channel"):
-    SBVentilator.__init__(self, SickBay, Command, Type)
+  
+  # Creates a Duck.
+  def __init__(self, Crabs, TID, Type = "Device.Ventilator.GHVentilator.Channel"):
+    SBVentilator.__init__(self, Crabs, TID, Type)

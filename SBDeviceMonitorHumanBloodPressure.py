@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# SickBay @version 0.x
-# @link    https://github.com/KabukiStarship/sickbay.git
+# Crabs @version 0.x
+# @link    https://github.com/KabukiStarship/Crabs.git
 # @file    /SBDeviceHumanMonitorBloodPressure.py
 # @author  Cale McCollough <https://cale-mccollough.github.io>
 # @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>; all rights 
@@ -11,8 +11,8 @@
 
 from SBDevice import *
 
-# A SickBay Device.
+# A Crabs Device.
 class SBDeviceMonitorHumanBloodPressure(SBDevice):
   
-  def __init__(self, SickBay, Command = None, Type = "Device.Monitor.Human.BloodPressure"):
-    SBDevice.__init__(self, SickBay, Command, Type)
+  def __init__(self, Crabs, Command = None, Cursor = 0, Type = "Device.Monitor.Human.BloodPressure"):
+    SBDevice.__init__(self, Crabs, Command, Cursor, Type)

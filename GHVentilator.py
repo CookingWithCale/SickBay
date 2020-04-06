@@ -1,7 +1,7 @@
-#!/usr/bin/python
+# !/usr/bin/python
 # -*- coding: utf-8 -*-
-# SickBay @version 0.x
-# @link    https://github.com/KabukiStarship/SickBay.git
+# Crabs @version 0.x
+# @link    https://github.com/KabukiStarship/Crabs.git
 # @file    /GHVentilator.py
 # @author  Cale McCollough <https://cale-mccollough.github.io>
 # @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>; all rights 
@@ -11,6 +11,9 @@
 
 from GHVentilatorChannel import *
 
+# A Gravity Hookah Ventilator
 class GHVentilator(SBDevice):
-  def __init__(self, SickBay, Command = None, Type="Device.Ventilator.GHVentilator"):
-    SBDevice.__init__(self, SickBay, Command, Type)
+
+  # Creates a Duck.
+  def __init__(self, Crabs, TID, Type ="Device.Ventilator.GHVentilator"):
+    SBDevice.__init__(self, Crabs, TID, Type)

@@ -1,7 +1,7 @@
 # !/usr/bin/python
 # -*- coding: utf-8 -*-
-# SickBay @version 0.x
-# @link    https://github.com/KabukiStarship/SickBay.git
+# Crabs @version 0.x
+# @link    https://github.com/KabukiStarship/Crabs.git
 # @file    /SBRoom.py
 # @author  Cale McCollough <https://cale-mccollough.github.io>
 # @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>; all rights 
@@ -9,8 +9,8 @@
 # Public License, v. 2.0. If a copy of the MPL was not distributed with this 
 # file, you can obtain one at <https://mozilla.org/MPL/2.0/>. """
 
-from COut import COut
-from SBNode import SBNode
+from Stringf import *
+from SBNode import *
 
 # A Room in real life you put put SBNodes into.
 # Example
@@ -22,10 +22,10 @@ from SBNode import SBNode
 # ```
 class SBRoom(SBNode):
   
-  def __init__(self, SickBay, Command = "", Type ="Room"):
-    SBNode.__init__(self, SickBay, Command, Type, SickBay.RIDNext())
+  # Constructs a Duck 
+  def __init__(self, Crabs, Type ="Room"):
+    SBNode.__init__(self, Crabs, Crabs.RIDNext (), Type)
     self.Meta["Directions"] = ""
-    SickBay.RIDNext()
 
   def Directions(self):
     return self.Meta["Directions"]
@@ -33,8 +33,9 @@ class SBRoom(SBNode):
   def DirectionsSet(self, Directions):
     self.Add("Directions", Directions)
   
-  def Command(self, SickBay, Command = ""):
-    Result = SBNode.CommandSuper(self, SickBay, Command)
+  def Command(self, Crabs, Command = None, Cursor = 0):
+    Result = SBNode.CommandSuper(self, Crabs, Command, Cursor)
     if Result == None:
       return Result
     return ""
+  

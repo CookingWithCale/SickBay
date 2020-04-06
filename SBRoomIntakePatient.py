@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# SickBay @version 0.x
-# @link    https://github.com/KabukiStarship/SickBay.git
+# Crabs @version 0.x
+# @link    https://github.com/KabukiStarship/Crabs.git
 # @file    /SBRoomStaff.py
 # @author  Cale McCollough <https://cale-mccollough.github.io>
 # @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>; all rights 
@@ -13,5 +13,10 @@ from SBRoom import *
 
 class SBRoomIntakePatient(SBRoom):
   
-  def __init__(self, SickBay, Command = None, Type = "Room.Intake.Staff"):
-    SBNode.__init__(self, SickBay, Command, Type)
+  # Creates a Duck.
+  def __init__(self, Crabs, Type = "Room.Intake.Patient"):
+    SBNode.__init__(self, Crabs, Type)
+  
+  # Adds a new child Duck.
+  def PushDuck(self, Crabs, Key, Command):
+    Child = SBHumanPatient(Crabs)

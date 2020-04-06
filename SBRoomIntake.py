@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# SickBay @version 0.x
-# @link    https://github.com/KabukiStarship/sickbay.git
+# Crabs @version 0.x
+# @link    https://github.com/KabukiStarship/Crabs.git
 # @file    /SBRoomIntake.py
 # @author  Cale McCollough <https://cale-mccollough.github.io>
 # @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>; all rights 
@@ -14,20 +14,24 @@ from SBRoom import SBRoom
 # A Room in real life you put put SBNodes into.
 class SBRoomIntake(SBRoom):
   
-  def __init__(self, SickBay, Command = None, Type="Room.Intake"):
-    SBNode.__init__(self, SickBay, Type, Command)
+  # Creates a Duck.
+  def __init__(self, Crabs, Type="Room.Intake"):
+    SBNode.__init__(self, Crabs, Type)
   
-  def Command(self, SickBay, Command):
-    Result = self.CommandSuper(SickBay, Command)
+  def PushDuck(self, Crabs, Key, Command):
+    NewNode = SBHumanPatient
+  
+  def Command(self, Crabs, Command = None, Cursor = 0):
+    Result = self.CommandSuper(Crabs, Command, Cursor)
     if Result == None: return Result
     while Result[0] == '>':
-      Result = self.CommandSuper(SickBay, Command)
+      Result = self.CommandSuper(Crabs, Command, Cursor)
       if Result == None: return Result
 
     Patient = SBPatient(self)
-    if not SBSickBay.IsValidKey(Key):
+    if not SBCrabs.IsValidKey(Key):
       return
-    Child = SBHuman(SickBay, Arguments)
+    Child = SBHuman(Crabs, Command, Cursor)
     self.Children.Add(Child)
-  
+    return 
   

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# SickBay @version 0.x
-# @link    https://github.com/KabukiStarship/SickBay.git
+# Crabs @version 0.x
+# @link    https://github.com/KabukiStarship/Crabs.git
 # @file    /SBRoomStaff.py
 # @author  Cale McCollough <https://cale-mccollough.github.io>
 # @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>; all rights 
@@ -14,11 +14,11 @@ from SBRoom import *
 # An HumanStaff factory Room
 class SBRoomIntakeStaff(SBRoom):
   
-  def __init__(self, SickBay, Command = "", Type = "Room.Intake.Staff"):
-    SBNode.__init__(self, SickBay, Command, Type)
+  def __init__(self, Crabs, Type = "Room.Intake.Staff"):
+    SBNode.__init__(self, Crabs, Type)
   
-  def CommandDuck(self, SickBay, Key, Command):
+  def PushDuck(self, Crabs, Key, Command):
     Children = SBNode.Chidren
-    Child = SBHumanStaff(SickBay, )
+    Child = SBHumanStaff(Crabs, Type)
     Children[Key] = Child
     return None

@@ -1,7 +1,7 @@
 # !/usr/bin/python
 # -*- coding: utf-8 -*-
-# SickBay @version 0.x
-# @link    https://github.com/KabukiStarship/sickbay.git
+# Crabs @version 0.x
+# @link    https://github.com/KabukiStarship/Crabs.git
 # @file    /SBHumanCirculatory.py
 # @author  Cale McCollough <https://cale-mccollough.github.io>
 # @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>; all rights 
@@ -23,12 +23,13 @@ class SBHumanCirculatory(SBNode):
   HeartRateMax = 1000.0        #< The max pulse rate.
   BloodTypeUnknown = "Unknown" #< String to use if the BloodType input was bad.
   
-  def __init__(self, SickBay, Command = None, Type = "Human.Circulatory"):
-    SBNode.__init__(self, SickBay, Command, "Human.System", 0)
+  # Creates a Duck.
+  def __init__(self, Crabs, TID, Type = "Human.Circulatory"):
+    SBNode.__init__(self, Crabs, TID, Type)
     self.Meta["BloodPressure"] = 0.0               #< The heart pulse rate.
     self.Meta["BloodType"] = self.BloodTypeUnknown #< The patient's blood type.
     self.Meta["HeartRate"] = 0.0                   #< The heart pulse rate.
-    SickBay.Push(self)
+    Crabs.Push(self)
 
   def BloodPressure (self):
     return self.Meta["BloodPressure"]

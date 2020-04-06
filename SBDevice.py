@@ -1,7 +1,7 @@
 # !/usr/bin/python
 # -*- coding: utf-8 -*-
-# SickBay @version 0.x
-# @link    https://github.com/KabukiStarship/sickbay.git
+# Crabs @version 0.x
+# @link    https://github.com/KabukiStarship/Crabs.git
 # @file    /SBDevice.py
 # @author  Cale McCollough <https://cale-mccollough.github.io>
 # @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>; all rights 
@@ -11,8 +11,9 @@
 
 from SBNode import SBNode
 
-# A SickBay Device with a Device ID (DID)
+# A Crabs Device with a Device ID (DID)
 class SBDevice(SBNode):
   
-  def __init__(self, SickBay, Command = "", Type = "Device"):
-    SBNode.__init__(self, SickBay, Command, Type, SickBay.DIDNext())
+  # Creates a Duck.
+  def __init__(self, Crabs, TID, Type = "Device"):
+    SBNode.__init__(self, Crabs, TID, Type)

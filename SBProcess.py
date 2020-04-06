@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# SickBay @version 0.x
-# @link    https://github.com/KabukiStarship/SickBay.git
+# Crabs @version 0.x
+# @link    https://github.com/KabukiStarship/Crabs.git
 # @file    /SBProcess.py
 # @author  Cale McCollough <https://cale-mccollough.github.io>
 # @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>; all rights 
@@ -9,9 +9,10 @@
 # Public License, v. 2.0. If a copy of the MPL was not distributed with this 
 # file, you can obtain one at <https://mozilla.org/MPL/2.0/>.
 
-from SBNode import SBNode
+from SBNode import *
 
 class SBProcess(SBNode):
   
-  def __init__(self, SickBay, Command = "", Type = "Process"):
-    SBNode.__init__(self, SickBay, Command, Type, SickBay.PIDNext())
+  # Creates a Duck.
+  def __init__(self, Crabs, TID, Type = "Process"):
+    SBNode.__init__(self, SRoot, TID, Type)

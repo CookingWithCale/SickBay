@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# SickBay @version 0.x
-# @link    https://github.com/KabukiStarship/sickbay.git
+# Crabs @version 0.x
+# @link    https://github.com/KabukiStarship/Crabs.git
 # @file    /SBVentilator.py
 # @author  Cale McCollough <https://cale-mccollough.github.io>
 # @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>; all rights 
@@ -48,9 +48,8 @@ class SBVentilator(SBDevice):
   # if that pressure is exceeded.
   EIPPMax = 30.0
 
-  def __init__(self, SickBay, Type = "Device.Ventilator", Command = "Name=\"Generic\" "\
-               "Description=\"A meta model for RespiratoryVentilator.\""):
-    SBDevice.__init__(self, Command, SickBay, Type)
+  def __init__(self, Crabs, Type = "Device.Ventilator"):
+    SBDevice.__init__(self, Crabs, Type)
     # The breath duty cycle where 0.5 is 50% duty cycle.
     self.Members["BreathDutyCycle"] = 0.5
     # The breath period in seconds.
@@ -93,5 +92,5 @@ class SBVentilator(SBDevice):
       self.self.Members["EIPP"] = EIPP
   
   # Does nothing
-  def Bang(self, SickBay):
+  def Bang(self, Crabs):
     return None 

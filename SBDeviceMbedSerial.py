@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# SickBay @version 0.x
-# @link    https://github.com/KabukiStarship/SickBay.git
+# Crabs @version 0.x
+# @link    https://github.com/KabukiStarship/Crabs.git
 # @file    /SBDeviceMbedSerial.py
 # @author  Cale McCollough <https://cale-mccollough.github.io>
 # @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>; all rights 
@@ -32,8 +32,9 @@ import serial
 # s.close()
 class SBDeviceMbedSerial(SBNode):
   
-  def __init__(self, SickBay, Command = "", Type = "Device.Mbed.Serial"):
-    SBDevice.__init__(self, SickBay, Command, Type)
+  # Creates a Duck.
+  def __init__(self, Crabs, TID, Type = "Device.Mbed.Serial"):
+    SBDevice.__init__(self, Crabs, TID, Type)
     self.Meta["Port"] = 15
     pass
   
