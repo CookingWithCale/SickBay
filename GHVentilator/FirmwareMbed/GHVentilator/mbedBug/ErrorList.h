@@ -12,30 +12,30 @@ namespace mbedBug {
 
 /* An array of error strings.
 @code
-ErrorList<5> errors;
+ErrorList<5> Errors;
 
 @endcode
 */
-template<unsigned int cErrorCountMax>
+template<unsigned int ErrorCountMax>
 class ErrorList {
   public:
 
     /* Default simple constructor. */
     ErrorList ()
-    :   error_count (0) {
+    :   ErrorCount (0) {
         /// Nothing to do here! :-)
     }
 
     /* Clears the error list. */
-    void Clears () { error_count = 0; }
+    void Clears () { ErrorCount = 0; }
 
-    /* Gets the number of errors. */
-    unsigned int GetNumErrors () { return error_count; }
+    /* Gets the number of Errors. */
+    unsigned int ErrorCountGet () { return ErrorCount; }
 
     /* Reports an error with the given message. */
     void Report (const char* Error) {
-        if (error_count >= cErrorCountMax) return;
-        errors[error_count++] = Error;
+        if (ErrorCount >= ErrorCountMax) return;
+        Errors[ErrorCount++] = Error;
         return this;
     }
 
@@ -46,18 +46,18 @@ class ErrorList {
     }
 
     virtual void Print () {
-        for (int i = 0; i < error_count; ++i)
-            printf ("\r\n%s", errors[i]);
+        for (int i = 0; i < ErrorCount; ++i)
+            printf ("\r\n%s", Errors[i]);
     }
 
-    /* Returns the list of errors. */
-    const char* GetErrors () { return errors; }
+    /* Returns the list of Errors. */
+    const char* ErrorsGet () { return Errors; }
 
   private:
 
-    unsigned int error_count;
+    unsigned int ErrorCount;
 
-    const char* errors[cErrorCountMax];
+    const char* Errors[ErrorCountMax];
 };
 
-}   //< namespace mbedBug {
+}   //< namespace mbedBug

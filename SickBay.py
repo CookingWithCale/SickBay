@@ -18,30 +18,54 @@ class SickBay(SBCrabs):
     SBCrabs.__init__(self)
     self.Meta["Name"] = "Crabs"
     self.Meta["Description"] ="Crabs Node with NID 0."
+    self.COut("? Added Crabs, adding Intake. <")
     N = SBRoomIntakePatient(self)
     N.Meta["Name"] = "Patient Intake"
-    N.Meta["Description"] = "The Intake Room where you wait get get into the Hospital."
+    N.Meta["Description"] = "The Intake Room where you wait get get into " \
+                            "the Hospital."
     self.Add(self, "Intake", N)
-    self.Add(self, "Staff", SBRoomIntakeStaff(self), 
-             '"Name="Staff Room" Description="The Room where all the Staff start out in."') 
-    self.Add(self, "ER", SBRoom(self),
-             'Name="Emergency Room" Description="The room with Patients who may need critical care."')
-    self.Add(self, "ICU", SBRoom(self),
-             'Name="Intensive Care Unit" Description="The room for Patients in need of critical care."')
-    self.Add(self, "Rooms", SBRoom(self),
-             '"Name="Patient Rooms" Description="The Rooms where the Patients are in who aren\'t in the ER or ICU."')
-    self.Add(self, "Guests", SBRoom(self),
-             '"Name="Guest Room" Description="The Room where guests start out in."')
-    self.Add(self, "Devices", SBRoom(self), 
-             '"Name="Device Room" Description="The Room where all of the unused devices are stored in."')
+    self.ListDetails(self)
+    self.COut("? Added Crabs, adding Intake. <")
+    N = SBRoomIntakePatient(self)
+    N.Meta["Name"] = "Staff Room"
+    N.Meta["Description"] = "The room with Patients who may need critical " \
+                            "care."
+    self.Add(self, "Staff", N) 
+    self.COut("? Added Crabs, adding Intake. <")
+    N = SBRoom(self)
+    N.Meta["Name"] = "Emergency Room"
+    N.Meta["Description"] = "The main Hospital Emergency Room."
+    self.Add(self, "ER", N)
+    self.COut("? Added Crabs, adding Intake. <")
+    N = SBRoom(self)
+    N.Meta["Name"] = "Intensive Care Unit"
+    N.Meta["Description"] = "The room for Patients in need of critical care."
+    self.Add(self, "ICU", SBRoom(self))
+    self.COut("? Added Crabs, adding Intake. <")
+    N = SBRoom(self)
+    N.Meta["Name"] = "Emergency Room"
+    N.Meta["Description"] = "The Rooms where the Patients are in who aren\'t " \
+                            "in the ER or ICU."
+    self.Add(self, "Rooms", N)
+    N = SBRoom(self)
+    self.COut("? Added Crabs, adding Intake. <")
+    N.Meta["Name"] = "Guest Rooms"
+    N.Meta["Description"] = "The Room where guests start out in."
+    self.Add(self, "Guests", N)
+    self.COut("? Added Crabs, adding Intake. <")
+    N = SBRoom(self)
+    N.Meta["Name"] = "Devices"
+    N.Meta["Description"] = "The Room where all of the unused devices are "\
+                            "stored in."
+    self.Add(self, "Devices", N)
     self.Test()
     self.ConsoleMain()
   
   def Test(self):
     SBCrabs.Test(self)
-    self.COut ('> SickBay Test')
-    self.Do("Intake > ?")
-    self.COut ('\n<')
+    self.COut ("> SickBay Test")
+    #self.Do("Intake > ?")
+    self.COut ("< ? Done testing SickBay Test")
   
 if __name__ == '__main__':
   SickBay = SickBay()

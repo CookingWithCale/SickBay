@@ -34,7 +34,7 @@ class SBCrabs(SBRoom):
     self.DeviceCount = 0              #< The SBDevice count.
     self.RoomCount = 1                #< The SBRoom count.
     self.MissionCount = 0             #< The Mission count.
-    self.DepthCounter = 0                #< The number pushes since the of the Command.
+    self.DepthCounter = 0             #< The number pushes since the of the Command.
     self.ModeStackRestore = False     #< Mode for Commands that start with a '.'
     self.Top = self                   #< The currently selected node.
     self.Stack = []                   #< The stack of SBNodes.
@@ -68,8 +68,6 @@ class SBCrabs(SBRoom):
     self.Stack.clear ()
     self.StackHeight = 0
     self.DepthCounter = 0
-      
-
 
   # Pushes this node onto the stack.
   def Push(self, Node, Command = None, Cursor = 0):
@@ -78,9 +76,7 @@ class SBCrabs(SBRoom):
     self.Stack.append(self.Top)
     self.Top = Node
     self.DepthCounter += 1
-    Result = Node.Command(self, Command, Cursor)
-    self.COut(">< Pushed -" + str(Node.NID) + " <")
-    return Result
+    return Node.Command(self, Command, Cursor)
 
   # Pushes this node onto the stack.
   def PushNID(self, NID, Command = None):
@@ -155,10 +151,11 @@ class SBCrabs(SBRoom):
 
   # Console main loop.
   def ConsoleMain(self):
-    COut.Indent(100, "\nWelcome to Crabs.\n" + \
-                  "\nEnter '?' at any time to get help " + \
-                  "or press Enter on the keyboard to update the stats" + \
-                   "or type 'exit' to exit the console.\n", "\n", "\n")
+    COut.Indent(100, "> ><", '\n', '\n')
+    self.COut("? Welcome to SickBay and the Chinese Room Abstract Stack (Crabs) Machine. <")
+    self.COut("Enter '?' at any time to get help ")
+    self.COut("or press '!'")
+    self.COut("or type 'exit' to exit the console.")
     while True:
       COut.Print2 ("\n", self.Top.Path())
       UserInput = raw_input("")#.lower()
@@ -205,5 +202,5 @@ class SBCrabs(SBRoom):
     return self.Command(self, Command, Cursor)
   
   def Test(self):
-    print("Testing Crabs")
-    self.Do("?")
+    self.COut("? Testing Crabs <\n\n")
+    self.COut("? Done testing Crabs <\n\n")

@@ -140,12 +140,10 @@ class SBNode:
       self.Meta[Key] = Value
   
   # Adds a Key-Value pair to the Children or Meta
-  def Add(self, Crabs, Key, Value, Command = None):
-    self.COut("? Adding Key " + Key + " <\n")
+  def Add(self, Crabs, Key, Value, Command = None, Cursor = 0):
+    self.COut("? Adding Key " + Key + " <")
     self.Children[Key] = Value
-
-    Crabs.Pop()
-    self.COut("? Added Key " + Key + " <\n")
+    return self.Pop(Crabs, Command, Cursor)
     
   # Removes the given Key from the Meta
   def Remove(self, Key):
@@ -243,7 +241,7 @@ class SBNode:
   
   # Prints out the most important information.
   def PrintStats(self, String = "", SelfKey = None):
-    self.COut("? Printing Stats <\n")
+    self.COut("? Printing Stats <")
     if SelfKey != None:
       String += SelfKey + " "
     for Key, Value in self.Children.items() :
@@ -261,14 +259,15 @@ class SBNode:
   def Key(self):
     if self == self.Parent:
       return "><"
-    #self.COut("? Searching for Key for NID:" + str(self.NID) + " <\n")
+    self.COut("? Searching for Key for NID:" + str(self.NID) + " <")
     for Key, Value in self.Parent.Children.iteritems():
+      self.COut("? comparing to Key \"" + Key + "\" NID " + str(Value.NID))
       if Value == self:
         return Key
     return "MissingKey"
   
   # Returns a string with all of the Keys in the Meta and Children indented to the PathDepth().
-  def ListMeta(self, SickBay, Command, Cursor):
+  def ListMeta(self, SickBay, Command = None, Cursor = 0):
     Result = ""
     Index = len(self.Children)
     for Key, Value in self.Meta.items():
@@ -278,7 +277,7 @@ class SBNode:
     return Result
   
   # Returns a string with all of the Keys in the Meta and Children indented to the PathDepth().
-  def ListChildren(self, SickBay, Command, Cursor):
+  def ListChildren(self, SickBay, Command = None, Cursor = 0):
     Index = 0
     Result = ""
     for Key, Value in self.Children.items():
@@ -288,7 +287,7 @@ class SBNode:
     return Result
   
   # Returns a string with all of the Keys in the Meta and Children indented to the PathDepth().
-  def List(self, SickBay, Command, Cursor):
+  def List(self, SickBay, Command = None, Cursor = 0):
     Depth = self.PathDepth ()
     String = Stringf.Indent(Depth, "> " + self.Key())
     String += self.ListChildren(SickBay, Command, Cursor)
@@ -299,7 +298,7 @@ class SBNode:
     return String
   
   # Returns a string with all of the Keys in the Meta and Children indented to the PathDepth().
-  def ListDetails(self, SickBay, Command, Cursor):
+  def ListDetails(self, SickBay, Command = None, Cursor = 0):
      self.List(SickBay, Command, Cursor)
   
   # The function that is called when a Duck typed member is created.
@@ -341,7 +340,7 @@ class SBNode:
       Cursor += 1
       if Cursor >= len(Command): return None
       Char = Command[Cursor]
-      
+    
     Cursor = Stringf.PeekNumber(Command, Cursor)
     if Cursor > 0:
       Index = int(Command[CursorStart: Cursor])
@@ -367,8 +366,9 @@ class SBNode:
           self.COut("? Found Function " + Key + " <")
           Result = Function(self, Crabs, Command, Cursor)
           if Result:
-            self.COut("? Found result: <\n")
+            self.COut("> ? Function result: <")
             self.COut(Result)
+            self.COut("<")
         return self.PushDuck(Crabs, Key, Command, Cursor)
       Char = Command[Cursor]
       if Char == '=':
