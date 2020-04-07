@@ -7,11 +7,11 @@ reserved (R). This Source Code Form is subject to the terms of the Mozilla
 Public License, v. 2.0. If a copy of the MPL was not distributed with this file,
 You can obtain one at <https://mozilla.org/MPL/2.0/>. */
 #include "morse_code.h"
-namespace mbedbug {
-const char* SMorseCode (char code) {
-    static const char* space = " "; //<
+namespace mbedBug {
+const char* MorseCode (char code) {
+    Space = " "; //<
 
-    static const char* cypher[] = {
+    static const char* Cypher[] = {
         ".-.-.",        //< ASCII: NUL, Morse code: End of message.
         0,              //< ASCII: SOH.
         "-.-.-",        //< ASCII: STX, Morse code: Start copying.
@@ -21,7 +21,7 @@ const char* SMorseCode (char code) {
         "...-.",        //< ASCII: ACK, Morse code: Understood.
         "...---...",    //< ASCII: BEL, Morse code: SOS distress signal.
         "........",     //< ASCII: BS,  Morse code: Prosign error.
-        space,          //< ASCII: HT,  Morse code: non-standard space.
+        Space,          //< ASCII: HT,  Morse code: non-standard space.
         ".-.-",         //< ASCII: LF,  Morse code: New Line
         "-...-",        //< ASCII: VT,  Morse code: New paragraph.
         ".-.-.",        //< ASCII: FF,  Morse code: New Page
@@ -44,7 +44,7 @@ const char* SMorseCode (char code) {
         0,              //< ASCII: GS
         0,              //< ASCII: RS
         0,              //< ASCII: US
-        space,          //< ASCII: ' '
+        Space,          //< ASCII: ' '
         ".-..-.",       //< ASCII: '!'
         ".-..-.",       //< ASCII: '\"'
         0,              //< ASCII: '#'
@@ -106,10 +106,10 @@ const char* SMorseCode (char code) {
     };
 
     ///if (code < 0) return 0;  //< Uncomment if your compiler uses signed char.
-    if (code >= 'a' && code <= 'z') code -= 'a' - 'A';   //< Covert from lowercase to upper case if need be.
-    if (code > 'Z')
+    if (Code >= 'a' && Code <= 'z') Code -= 'a' - 'A';   //< Covert from lowercase to upper case if need be.
+    if (Code > 'Z')
     {
-        switch (code)
+        switch (Code)
         {
           case -4: return ".-.-";   //< 132
           case -5: return ".--.-";  //< 133
@@ -121,7 +121,7 @@ const char* SMorseCode (char code) {
           default:  return 0;
         }
     }
-    return cypher[code];
+    return Cypher[Code];
 }
 
 }   //< namespace mbedbug

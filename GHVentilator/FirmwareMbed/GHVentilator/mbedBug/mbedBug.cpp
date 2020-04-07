@@ -6,19 +6,19 @@
 reserved (R). This Source Code Form is subject to the terms of the Mozilla 
 Public License, v. 2.0. If a copy of the MPL was not distributed with this file,
 You can obtain one at <https://mozilla.org/MPL/2.0/>. */
-#include "mbedbug.h"
-namespace mbedbug {
+#include "mbedBug.h"
+namespace mbedBug {
 
-void PrintLine (int numColumns, char token) {
-    char buffer[numColumns + 1];
-    memset (&buffer[0], token, numColumns);
-    printf ("\r\n%s\r\n", buffer);
+void PrintLine (int Count, char Token) {
+    char Buffer[Count + 1];
+    memset (&Buffer[0], Token, Count);
+    printf ("\r\n%s\r\n", Buffer);
 }
 
-void printLine (char numRows) {
-    char buffer[numRows + 1];
-    memset (&buffer[0], '\n', numRows);
-    printf ("\r%s", buffer);
+void PrintIndent (const char* String, char Count, char Token) {
+    char Buffer[Count + 1];
+    memset (&Buffer[0], Token, Count);
+    printf ("\r%s", Buffer);
 }
 
-}   //< namespace mbedbug
+}   //< namespace mbedBug
