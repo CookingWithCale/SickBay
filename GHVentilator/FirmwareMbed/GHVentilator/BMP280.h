@@ -15,7 +15,7 @@
 #ifndef MbedBME280Decl
 #define MbedBME280Decl
 
-#include "mbed.h"
+#include <mbedBug.h>
 
 //#define _DEBUG
 // default address with SDO High 0x77

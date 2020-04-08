@@ -19,6 +19,9 @@ using namespace mbedBug;
 #define GHVentilatorChannelsCount 1
 #endif
 
+#define GHVentilatorPressureHysteresis 0.000001f
+#define GHVentilatorPressureTemperature 0.000001f
+
 volatile int CurrentChannel = -1;
 volatile bool TooMuchAir = false;
 
@@ -32,9 +35,12 @@ class GHVentilatorChannel {
         TicksInhale,         //< The ticks in the inhale duty half-period.
         TicksExhale;         //< The period of the breathing.
     volatile int TicksFlowLast, //< The previous saved count.
-        TicksFlow;          //< Flow sensor pulse count.
+        TicksFlow;           //< Flow sensor pulse count.
+    int TicksFlowInhale,     //< Number of flow sensor ticks on the last exhale.
+        ServoClosed,         //< The min servo duty cycle of no air flow.
+        ServoOpen;           //< The max servo duty cycle of an open tube.
     float ReferencePressure, //< The pressure in the mask at one atmosphere.
-          ReferenceTemperature; //< The refernce temperature.
+          ReferenceTemperature; //< The refernce temperature,
     BMP280 Atmosphere;       //< The air Atmosphere going to the patient.
     InterruptIn Sensor;      //< The flow sensor pin.
     DigitalOut Valve,        //< The Solenoid valve.
@@ -53,11 +59,8 @@ class GHVentilatorChannel {
     /* Returns a pointer to this. */
     GHVentilatorChannel* This();
     
-    /* Sets the Breath period in seconds. */
-    void BreathPeriodSet(float Period);
-    
-    /* Sets the Breath duty cycle between a 1-to-1 and 1-to-3 ratio. */
-    void DutyCycleSet(float Period);
+    /* Sets the number of ticks on the inhale and exhale. */
+    void TicksInhaleExhaleSet (int NewTicksInhale, int NewTicksExhale);
       
     /* BreatheStarts to the begining of the watering cycle. */
     void BreatheStart (int Index);
@@ -79,6 +82,9 @@ class GHVentilatorChannel {
     
     /* Closes the solenoid valve. */
     void Exhale ();
+    
+    /* Handles any errors. */
+    void HandleError ();
     
     /* Samples the Atmospheric pressure and temperature. */
     void Tare ();
