@@ -11,7 +11,7 @@ one at <https://mozilla.org/MPL/2.0/>. */
 
 #include <mbedBug.h>
  
-#include "GHVentilatorChannel.h"
+#include "GHVentilator.h"
 using namespace SickBay;
 
 int main () {
@@ -19,15 +19,16 @@ int main () {
                   // + ------------------------ Number of updates per second.
                   // v
   GHVentilator GHV (250, I2CBus, address,
-                      //  +-------------------- Flow sensor interrupt pin.
-                      //  |   +---------------- Pulse oximiter pin.
-                      //  |   |   +------------ Solenoid Vavle.
-                      //  |   |   |   +-------- Status LED/Alarm.
-                      //  |   |   |   |    +--- PWM Servo
-                      //  v   v   v   v    v
-    GHVentilatorChannel (D0, A0, D4, D8,  D12).This(),
-    GHVentilatorChannel (D1, A1, D5, D9,  D13).This(),
-    GHVentilatorChannel (D2, A2, D6, D10, D14).This(),
-    GHVentilatorChannel (D3, A3, D7, D11, D15).This())
+                      // +------------------------- Updates per second.
+                      // |    +-------------------- Flow sensor interrupt pin.
+                      // |    |   +---------------- Pulse oximiter pin.
+                      // |    |   |   +------------ Solenoid Vavle.
+                      // |    |   |   |   +-------- Status LED/Alarm.
+                      // |    |   |   |   |    +--- PWM Servo
+                      // v    v   v   v   v    v
+    GHVentilatorChannel (200, D0, A0, D4, D8,  D12).This(),
+    GHVentilatorChannel (200, D1, A1, D5, D9,  D13).This(),
+    GHVentilatorChannel (200, D2, A2, D6, D10, D14).This(),
+    GHVentilatorChannel (200, D3, A3, D7, D11, D15).This())
   );
 }

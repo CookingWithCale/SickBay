@@ -14,7 +14,6 @@
  *    http://ae-bst.resource.bosch.com/media/products/dokumente/BMP280/BST-BMP280_DS001-10.pdf
  */
 
-#include <mbedBug.h>
 #include "BMP280.h"
 
 BMP280::BMP280(PinName sda, PinName scl, char slave_adr)
@@ -137,7 +136,7 @@ float BMP280::Temperature()
  
 float BMP280::Pressure()
 {
-    uint32_t press_raw;
+    uint32_t PressureRaw;
     float pressf;
     char cmd[4];
  
@@ -145,7 +144,7 @@ float BMP280::Pressure()
     i2c.write(address, cmd, 1);
     i2c.read(address, &cmd[1], 3);
  
-    press_raw = (cmd[1] << 12) | (cmd[2] << 4) | (cmd[3] >> 4);
+    PressureRaw = (cmd[1] << 12) | (cmd[2] << 4) | (cmd[3] >> 4);
  
     int32_t var1, var2;
     uint32_t press;
@@ -159,7 +158,7 @@ float BMP280::Pressure()
     if (var1 == 0) {
         return 0;
     }
-    press = (((1048576 - press_raw) - (var2 >> 12))) * 3125;
+    press = (((1048576 - PressureRaw) - (var2 >> 12))) * 3125;
     if(press < 0x80000000) {
         press = (press << 1) / var1;
     } else {

@@ -28,57 +28,107 @@ static volatile int SecondCount = 0;
 
 namespace SickBay {
 
+void UpdateHandler() {
+}
 
 GHVentilatorChannel::GHVentilatorChannel (PinName SensorPin, 
     AnalogIn PulseOximeterPin, PinName SolenoidValvePin, PinName Status, 
-    PinName Servo)
-:   DutyCycle     (0.0f),
-    Period        (0.0f),
-    PulseTarget   (0),
+    PinName Servo) :
+    Ticks         (0),
+    TicksInhale   (1),
+    TicksExhale   (2),
+    TicksFlowLast (0),
+    TicksFlow     (0),
+    TicksFlowInhale (0),
+    ReferencePressure (Atmosphere.Pressure()),
+    ReferenceTemperature (Atmosphere.Temperature()),
+    ServoClosed   (0),
+    ServoOpen     (0),
     Sensor        (SensorPin),
     Valve         (SolenoidValvePin),
     PulseOximeter (PulseOximeterPin),
     CountLast     (0),
-    TicksFlow    (0),
+    TicksFlow     (0),
     PulseTarget   (CalcPulseTarget ()) {
+    Tare ();
     Sensor.rise(callback(this, &GHVentilatorChannel::PulseFlowSensor));
-    
 }
 
 GHVentilatorChanel* GHVentilatorChanel::This(){ return this; }
+
+void GHVentilatorChanel::TicksInhaleExhaleSet (int NewTicksInhale, 
+                                               int NewTicksExhale) {
+  Tick = Ticks;
+  if (Tick == 0) {
+    TicksInhale = NewTicksInhale;
+    TicksExhale = NewTicksExhale;
+  }
+  TicksInhale = NewTicksInhale;
+  TicksExhale = NewTicksExhale;
+  if (Tick > 0) { // We're inhaling.
+    if (Ticks > NewTicksInhale) {
+        Ticks = NewTicksInhale;
+        Exhale ();
+    }
+    
+    return;
+  }
+  if (Tick < 0) { // We're exhaling.
+    if (Ticks > NewTicksExhale) {
+        Ticks = NewTicksExhale;
+        Inhale ();
+    }
+  }
+}
 
 void GHVentilatorChannel::PulseFlowSensor () {
   ++TicksFlow;
 }
 
 void GHVentilatorChannel::Inhale () {
-  D_PRINTF ("\n? Checking PEEP. <");
+  DPrintf ("\n? Checking PEEP. <");
   float Pressure = Atmosphere.Pressure();
   if (Pressure > ReferencePressure) {
-    D_PRINTF ("\n? Over pressure. <");
+    DPrintf ("\n? Over pressure. <");
+    return;
   }
-  D_PRINTF ("\n? Inhaling. <");
+  DPrintf ("\n? Inhaling. <");
   Ticks = (Tick >= TicksExhale) ? Ticks : 0;
-  Ticks = 0;
+  Ticks = 1;
   Valve = 1;
 }
 
+void GHVentilator::HandleError () {
+  Status = 0
+}
+
 void GHVentilatorChannel::Exhale () {
-    D_PRINTF ("? Exhaling. <");
-    Ticks = 0;
-    Valve = 0;
-    PrintLine ();
+  DPrintf ("\n? Exhaling. <");
+  Ticks = -1;
+  Valve = 0;
+  PrintLine ();
+  TicksInhaleLast = TicksFlowInhale;
+  if (TicksInHale < TicksInhaleLast >> 1) {
+    DPrintf ("\n? The air flow has been cut in half! <");
+    HandleError();
+  }
 }
 
 void GHVentilatorChannel::Tare () {
-  ReferencePressure = Atmosphere.Pressure ()
-  ReferenceTemperature = Atmosphere.Temperature ()
+  ReferencePressure = Atmosphere.Pressure () + 
+                      GHVentilatorPressureHysteresis
+  ReferenceTemperature = Atmosphere.Temperature () + 
+                         GHVentilatorTemperatureHysteresis
 }
 
 void GHVentilatorChannel::Update() {
-  auto Tick = ++Ticks;
-  if (Tick > TicksExhale) Inhale ();
-  else if (Tick > TicksInhale) Exhale ();
+  int Tick = Ticks;
+  if (Tick < 0)
+    if (--Tick < TicksExhale) Inhale (Tick);
+  else if (Tick > 0)
+    if (++Tick > TicksInhale) Exhale (Tick); ++Tick;
+  else return;
+  Ticks = Tick;
 }
 
 }   //< namespace SickBay

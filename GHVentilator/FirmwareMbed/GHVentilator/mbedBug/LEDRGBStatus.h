@@ -28,7 +28,7 @@ typedef enum {
     ColorPresetRed     = 1,
     ColorPresetYellow  = 2,
     ColorPresetGreen   = 3,
-    cColorPresetCyan    = 4,
+    cColorPresetCyan   = 4,
     ColorPresetBlue    = 5,
     ColorPresetMagenta = 6,
     cColorPresetWhite   = 7
