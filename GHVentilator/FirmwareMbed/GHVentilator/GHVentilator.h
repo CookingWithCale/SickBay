@@ -9,15 +9,10 @@ one at <https://mozilla.org/MPL/2.0/>. */
 #pragma once
 #ifndef GHVentilatorDecl
 #define GHVentilatorDecl
-#include <mbedBug.h>
-using namespace mbedBug;
 #include "GHVentilatorChannel.h"
 namespace SickBay {
-    
-#define GHVentilatorPressureHysteresisPercent 0.25f //< +/- 25% histesis.
 
 /* A Gravity Hookah Ventilator. */
-template<int ChannelCount>
 class GHVentilator {
   public:
   
@@ -29,78 +24,75 @@ class GHVentilator {
   
   // The tick and negative calibrating positive running states.
   int Ticks,
-    TicksMax,        //< The max tick count before it gets reset.
-    TicksSecond,     //< The number of Ticks per Second.
-    TicksInhaleMin,  //< The min inhale ticks.
-    TicksInhaleMax,  //< The max breath period of 20 seconds.
-    TicksExhaleMin,  //< The min ticks in an exhale.
-    TicksExhaleMax,  //< The max ticks in an exhale.
-    TicksCalibration;//< The number of ticks in the calibration state.
-  float PressureMin, //< The min Pressure.
-    PressureMax,     //< The max Pressure.
-    Pressure,        //< The Pressure in the tank.
-    ServoMin,        //< The min servo value.
-    ServoMax;        //< The max servo value.
-  /* The amount the Pressure needs to change to count as having changed. */
-  float PressureChangeDelta;
-  //< The GHV channels.
-  GHVentilatorChannel Channels[ChannelCountMax];
-  BMP280 Atmosphere;   //< Pressure sensor for the air tank.
-  DigitalOut Blower;   //< A blower powered by a Solid State Relay.
+    TicksMax,            //< The max tick count before it gets reset.
+    TicksSecond,         //< The number of Ticks per Second.
+    TicksInhaleMin,      //< The min inhale ticks.
+    TicksInhaleMax,      //< The max breath period of 20 seconds.
+    TicksExhaleMin,      //< The min ticks in an exhale.
+    TicksExhaleMax,      //< The max ticks in an exhale.
+    TicksCalibration,    //< The number of ticks in the calibration state.
+    ChannelsCount;       //< The number of GHVentilatorChannels.
+  GHVentilatorChannel* Channels[ChannelCountMax];
+  BMP280 Atmosphere;     //< Pressure sensor for the air tank.
+  float Pressure,        //< The Pressure in the tank.
+    PressureMin,         //< The min Pressure.
+    PressureMax,         //< The max Pressure.
+    PressureHysteresis;  //< The percent hystersis for the Pressure chamber.
+  DigitalOut Blower;     //< A blower powered by a Solid State Relay.
+  DigitalOut Status;     //< Status pin for outputing the Device status.
+  Ticker UpdateTicker;   //< The x times per second update ticker.
   
+  /* Constructs a GHV with 1 channel. */
   GHVentilator (int TicksPerSecond, int TicksCalibration,
-                I2C& I2CBus, char SlaveAddress,
-      PinName BlowerPin, PinName StatusPin,
-      GHVentilatorChannel A);
+                I2C& AtmosphereBus, char AtmosphereAddress,
+                float PressureHysteresis,
+                PinName BlowerPin, PinName StatusPin,
+                GHVentilatorChannel* A);
       
+  /* Constructs a GHV with 2 channels. */
   GHVentilator (int TicksPerSecond, int TicksCalibration,
-      I2C& I2CBus, char SlaveAddress,
-      PinName BlowerPin, PinName StatusPin,
-      GHVentilatorChannel A,
-      GHVentilatorChannel B);
+                I2C& AtmosphereBus, char AtmosphereAddress,
+                float PressureHysteresis,
+                PinName BlowerPin, PinName StatusPin,
+                GHVentilatorChannel* A,
+                GHVentilatorChannel* B);
       
+  /* Constructs a GHV with 3 channels. */
   GHVentilator (int TicksPerSecond, int TicksCalibration,
-      I2C& I2CBus, char SlaveAddress,
-      PinName BlowerPin, PinName StatusPin,
-      GHVentilatorChannel A,
-      GHVentilatorChannel B,
-      GHVentilatorChannel C);
+                I2C& AtmosphereBus, char AtmosphereAddress,
+                float PressureHysteresis,
+                PinName BlowerPin, PinName StatusPin,
+                GHVentilatorChannel* A,
+                GHVentilatorChannel* B,
+                GHVentilatorChannel* C);
       
-  GHVentilator (int TicksPerSecond, I2C& I2CBus, char SlaveAddress,
-      PinName BlowerPin, PinName StatusPin,
-      GHVentilatorChannel A,
-      GHVentilatorChannel B,
-      GHVentilatorChannel C,
-      GHVentilatorChannel D);
+  /* Constructs a GHV with 4 channels. */
+  GHVentilator (int TicksPerSecond, int TicksCalibration,
+                I2C& AtmosphereBus, char AtmosphereAddress,
+                float PressureHysteresis,
+                PinName BlowerPin, PinName StatusPin,
+                GHVentilatorChannel* A,
+                GHVentilatorChannel* B,
+                GHVentilatorChannel* C,
+                GHVentilatorChannel* D);
 
   /* Gets the GHVentilatorChannel with the given Index. \
   @return Nil if the Index is out of bounds. */
   GHVentilatorChannel* Channel(int Index);
-      
-  void ChannelSet (int ChannelIndex, float DutyCycle = 0.0f, 
-       float Period = 0.0f);
+  
   /* Reads the Atmospher.Pressure() and Atmospher.Temperature () */
   void TarePressure(); 
   
-  int TicksInhaleExhaleSet (int TicksInhale, int TicksExhale);
+  /* Sets the inhale and exhale ticks for the give channel Index. */
+  int TicksInhaleExhaleSet (int Index, int TicksInhale, int TicksExhale);
   
   /* Starts the system. */   
-  int Run ();
+  void Run ();
   
   /* Updates the main device and it's channels. */
   void Update ();
 };
 
-void HanleTicksSecondSet(Arguments* input, Reply* output);
-void HanleInhaleTicksSet(Arguments* input, Reply* output);
-
-RPCFunction TicksSecondSet(&DoGetData, "TicksSecondSet"),
-            InhaleTicksSet(&DoGetData, "InhaleTicksSet"),
-            ExhaleTicksSet(&DoGetData, "ExhaleTicksSet");
- 
-void RemoteTicksSecondSetHandle(Arguments* input, Reply* output);
- 
-void HandleTicksInhaleExhaleSet(Arguments* input, Reply* output);
-
 }   //< namespace SickBay
 #endif
+#undef GHVentilatorChannelsCount

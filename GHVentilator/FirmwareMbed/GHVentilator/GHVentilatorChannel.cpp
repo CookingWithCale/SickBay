@@ -9,49 +9,32 @@ one at <https://mozilla.org/MPL/2.0/>. */
 
 #include "GHVentilatorChannel.h"
 
-#if _DebugSickBay
-static const float HoursBetweenWateringTimes = 0.0020;   //f;  //< This is 3.6 seconds.
-#else
-static const float HoursBetweenWateringTimes = 0.5f;   //0.0015f;  //< This is 3.6 seconds.
-#endif
-
-enum {
-  MaxLitersPerCycle = 4,      //< The max amount of liters per cycle
-  PulsesPerLiter = 450,       //< The number of flow sensor pulses per liter.
-  MaxPulsesPerCycle = MaxLitersPerCycle * PulsesPerLiter,
-}
-#include <mbedbug.h>
+#include <mbedBug.h>
 using namespace mbedBug;
-Ticker UpdateTicker;
-
-static volatile int SecondCount = 0;
 
 namespace SickBay {
 
-void UpdateHandler() {
-}
-
-GHVentilatorChannel::GHVentilatorChannel (PinName SensorPin, 
-    AnalogIn PulseOximeterPin, PinName SolenoidValvePin, PinName Status, 
-    PinName Servo) :
-    Ticks         (0),
-    TicksInhale   (1),
-    TicksExhale   (2),
-    TicksFlowLast (0),
-    TicksFlow     (0),
-    TicksFlowInhale (0),
-    ReferencePressure (Atmosphere.Pressure()),
-    ReferenceTemperature (Atmosphere.Temperature()),
-    ServoClosed   (0),
-    ServoOpen     (0),
-    Sensor        (SensorPin),
-    Valve         (SolenoidValvePin),
-    PulseOximeter (PulseOximeterPin),
-    CountLast     (0),
-    TicksFlow     (0),
-    PulseTarget   (CalcPulseTarget ()) {
+GHVentilatorChannel::GHVentilatorChannel (PinName PulseOximeterPin, 
+    PinName FlowSensorPin, PinName SolenoidValvePin, PinName StatusPin, 
+    PinName ServoPin, I2C& AtmosphereBus, char AtmosphereAddress,
+    float PressureHysteresis) :
+    Ticks                (0),
+    TicksExhale          (2),
+    TicksInhale          (1),
+    TicksFlowInhale      (0),
+    TicksFlowLast        (0),
+    TicksFlow            (0),
+    Atmosphere           (AtmosphereBus, AtmosphereAddress),
+    PressureReference    (Atmosphere.Pressure() * PressureHysteresis),
+    TemperatureReference (Atmosphere.Temperature()),
+    PulseOximeter        (PulseOximeterPin),
+    FlowSensor           (FlowSensorPin),
+    Valve                (SolenoidValvePin),
+    Servo                (ServoPin),
+    ServoClosed          (0),
+    ServoOpen            (0) {
     Tare ();
-    Sensor.rise(callback(this, &GHVentilatorChannel::PulseFlowSensor));
+    FlowSensor.rise(callback(this, &GHVentilatorChannel::PulseFlowSensor));
 }
 
 GHVentilatorChanel* GHVentilatorChanel::This(){ return this; }
@@ -88,7 +71,7 @@ void GHVentilatorChannel::PulseFlowSensor () {
 void GHVentilatorChannel::Inhale () {
   DPrintf ("\n? Checking PEEP. <");
   float Pressure = Atmosphere.Pressure();
-  if (Pressure > ReferencePressure) {
+  if (Pressure > PressureReference) {
     DPrintf ("\n? Over pressure. <");
     return;
   }
@@ -99,6 +82,7 @@ void GHVentilatorChannel::Inhale () {
 }
 
 void GHVentilator::HandleError () {
+  DPrintf ("> Error <");
   Status = 0
 }
 
@@ -115,9 +99,9 @@ void GHVentilatorChannel::Exhale () {
 }
 
 void GHVentilatorChannel::Tare () {
-  ReferencePressure = Atmosphere.Pressure () + 
+  PressureReference = Atmosphere.Pressure () + 
                       GHVentilatorPressureHysteresis
-  ReferenceTemperature = Atmosphere.Temperature () + 
+  TemperatureReference = Atmosphere.Temperature () + 
                          GHVentilatorTemperatureHysteresis
 }
 

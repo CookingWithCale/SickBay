@@ -9,26 +9,24 @@ one at <https://mozilla.org/MPL/2.0/>. */
 
 #define GHVDebug     1   //< Set to 0 or 1 to enable or disable debugging.
 
-#include <mbedBug.h>
- 
 #include "GHVentilator.h"
 using namespace SickBay;
 
 int main () {
+  int UpdatesPerSecond = 250;
   I2C I2CBus(A4, A5);
-                  // + ------------------------ Number of updates per second.
-                  // v
-  GHVentilator GHV (250, I2CBus, address,
+  GHVentilator GHV (UpdatesPerSecond, UpdatesPerSecond * 10, 
+                    I2CBus, address, 0.25f, //<---- Pressure chamber hysteresis.
                       // +------------------------- Updates per second.
-                      // |    +-------------------- Flow sensor interrupt pin.
-                      // |    |   +---------------- Pulse oximiter pin.
+                      // |    +-------------------- Pulse oximiter pin.
+                      // |    |   +---------------- Flow sensor interrupt pin.
                       // |    |   |   +------------ Solenoid Vavle.
                       // |    |   |   |   +-------- Status LED/Alarm.
                       // |    |   |   |   |    +--- PWM Servo
                       // v    v   v   v   v    v
-    GHVentilatorChannel (200, D0, A0, D4, D8,  D12).This(),
-    GHVentilatorChannel (200, D1, A1, D5, D9,  D13).This(),
-    GHVentilatorChannel (200, D2, A2, D6, D10, D14).This(),
-    GHVentilatorChannel (200, D3, A3, D7, D11, D15).This())
+    GHVentilatorChannel (200, A0, D0, D4, D8,  D12).This(),
+    GHVentilatorChannel (200, A1, D1, D5, D9,  D13).This(),
+    GHVentilatorChannel (200, A2, D2, D6, D10, D14).This(),
+    GHVentilatorChannel (200, A3, D3, D7, D11, D15).This())
   );
 }

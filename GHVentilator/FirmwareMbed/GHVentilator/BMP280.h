@@ -11,16 +11,16 @@
  *  For more information about the BME280:
  *    http://ae-bst.resource.bosch.com/media/products/dokumente/bme280/BST-BME280_DS001-10.pdf
  */
- 
-#ifndef MbedBME280Decl
-#define MbedBME280Decl
+#pragma once
+#ifndef BME280MbedDecl
+#define BME280MbedDecl
 
 #include <mbedBug.h>
 
 //#define _DEBUG
 // default address with SDO High 0x77
 // address with SDO LOW 0x76
-#define SlaveAddressDefault (0x77)
+#define BMP280SlaveAddressDefault (0x77)
 
  
 /** A BME280 environmental sensor
@@ -30,36 +30,38 @@ class BMP280 {
   public:
   
     enum {
-      SlaveAddress = SlaveAddressDefault  //< The default I2C slave address.
+      // The default I2C slave address.
+      SlaveAddress = BMP280SlaveAddressDefault
     };
 
     /* Creates a BME280 instance connected to specified I2C pins and address.
     @param SDA I2C-bus SDA pin
     @param SCL I2C-bus SCL pin
     @param SlaveAddress (option) I2C-bus address (default: 0x77) */
-    BMP280(PinName SDA, PinName SCK, char SlaveAddress = SlaveAddressDefault);
+    BMP280(PinName SDA, PinName SCK, 
+           char SlaveAddress = BMP280SlaveAddressDefault);
 
     /* Creates a BME280 instance connected to the I2C pins and address.
      *
      * @param i2c_obj I2C object (instance)
      * @param SlaveAddress (option) I2C-bus address (default: 0x77)
      */
-    BMP280(I2C &i2c_obj, char SlaveAddress = SlaveAddressDefault);
+    BMP280(I2C &i2c_obj, char SlaveAddress = BMP280SlaveAddressDefault);
 
     ~BMP280();
 
     /* Initializa BME280 sensor
     Configure sensor setting and read parameters for calibration */
-    void Initialize(void);
+    void Initialize();
 
     /* Read the current temperature value (degree Celsius) from BME280 sensor */
-    float Temperature(void);
+    float Temperature();
 
     /* Read the current pressure value (hectopascal)from BME280 sensor */
-    float Pressure(void);
+    float Pressure();
 
     /* Read the current humidity value (humidity %) from BME280 sensor */
-    //float HumidityGet(void);
+    //float HumidityGet();
 
 private:
 
@@ -77,4 +79,4 @@ private:
 };
 
 #undef SlaveAddressDefault
-#endif //< MbedBME280Decl
+#endif
