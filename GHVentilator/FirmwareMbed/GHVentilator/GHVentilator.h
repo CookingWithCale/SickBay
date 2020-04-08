@@ -18,8 +18,6 @@ class GHVentilator {
   
   enum {
     ChannelCountMax = 4,
-    StateCalibratingPressureSensor = 0,
-    StateRunning = 1,
   };
   
   // The tick and negative calibrating positive running states.
@@ -37,7 +35,8 @@ class GHVentilator {
   float Pressure,        //< The Pressure in the tank.
     PressureMin,         //< The min Pressure.
     PressureMax,         //< The max Pressure.
-    PressureHysteresis;  //< The percent hystersis for the Pressure chamber.
+    HysteresisChamber,   //< The pressure chamber hystersis +/- percent.
+    HysteresisPatient;   //< The patient Hystersis percent muliplier.
   DigitalOut Blower;     //< A blower powered by a Solid State Relay.
   DigitalOut Status;     //< Status pin for outputing the Device status.
   Ticker UpdateTicker;   //< The x times per second update ticker.
@@ -46,12 +45,14 @@ class GHVentilator {
   GHVentilator (int TicksPerSecond, int TicksCalibration,
                 I2C& AtmosphereBus, char AtmosphereAddress,
                 float PressureHysteresis,
+                float HysteresisPatient,
                 PinName BlowerPin, PinName StatusPin,
                 GHVentilatorChannel* A);
       
   /* Constructs a GHV with 2 channels. */
   GHVentilator (int TicksPerSecond, int TicksCalibration,
                 I2C& AtmosphereBus, char AtmosphereAddress,
+                float HysteresisChamber,
                 float PressureHysteresis,
                 PinName BlowerPin, PinName StatusPin,
                 GHVentilatorChannel* A,
@@ -61,6 +62,7 @@ class GHVentilator {
   GHVentilator (int TicksPerSecond, int TicksCalibration,
                 I2C& AtmosphereBus, char AtmosphereAddress,
                 float PressureHysteresis,
+                float HysteresisPatient,
                 PinName BlowerPin, PinName StatusPin,
                 GHVentilatorChannel* A,
                 GHVentilatorChannel* B,
@@ -70,6 +72,7 @@ class GHVentilator {
   GHVentilator (int TicksPerSecond, int TicksCalibration,
                 I2C& AtmosphereBus, char AtmosphereAddress,
                 float PressureHysteresis,
+                float HysteresisPatient,
                 PinName BlowerPin, PinName StatusPin,
                 GHVentilatorChannel* A,
                 GHVentilatorChannel* B,
@@ -81,7 +84,7 @@ class GHVentilator {
   GHVentilatorChannel* Channel(int Index);
   
   /* Reads the Atmospher.Pressure() and Atmospher.Temperature () */
-  void TarePressure(); 
+  void Tare(); 
   
   /* Sets the inhale and exhale ticks for the give channel Index. */
   int TicksInhaleExhaleSet (int Index, int TicksInhale, int TicksExhale);

@@ -6,10 +6,10 @@
 reserved (R). This Source Code Form is subject to the terms of the Mozilla 
 Public License, v. 2.0. If a copy of the MPL was not distributed with this file,
 You can obtain one at <https://mozilla.org/MPL/2.0/>. */
-#include "morse_code.h"
+#include "MorseCode.h"
 namespace mbedBug {
-const char* MorseCode (char code) {
-    Space = " "; //<
+const char* MorseCode (char Code) {
+    static const char* Space = " "; //<
 
     static const char* Cypher[] = {
         ".-.-.",        //< ASCII: NUL, Morse code: End of message.

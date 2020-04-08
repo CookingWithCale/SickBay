@@ -15,18 +15,23 @@ using namespace SickBay;
 int main () {
   int UpdatesPerSecond = 250;
   I2C I2CBus(A4, A5);
-  GHVentilator GHV (UpdatesPerSecond, UpdatesPerSecond * 10, 
-                    I2CBus, address, 0.25f, //<---- Pressure chamber hysteresis.
-                      // +------------------------- Updates per second.
-                      // |    +-------------------- Pulse oximiter pin.
-                      // |    |   +---------------- Flow sensor interrupt pin.
-                      // |    |   |   +------------ Solenoid Vavle.
-                      // |    |   |   |   +-------- Status LED/Alarm.
-                      // |    |   |   |   |    +--- PWM Servo
-                      // v    v   v   v   v    v
-    GHVentilatorChannel (200, A0, D0, D4, D8,  D12).This(),
-    GHVentilatorChannel (200, A1, D1, D5, D9,  D13).This(),
-    GHVentilatorChannel (200, A2, D2, D6, D10, D14).This(),
-    GHVentilatorChannel (200, A3, D3, D7, D11, D15).This())
+  int Address = BMP280SlaveAddressDefault;
+  GHVentilator GHV (UpdatesPerSecond, 
+                    UpdatesPerSecond * 10, //<-- Calibration tick count.
+                    I2CBus, Address, 
+                    0.25f, //<------------------ Pressure chamber hysteresis %.
+                    0.01f, // <----------------- Patient pressure hysteresis,
+                    D0,    // <----------------- Blower pin.
+                    D1,    // <----------------- Status pin.
+                      // +---------------------- Pulse oximiter pin.
+                      // |   +------------------ Flow sensor interrupt pin.
+                      // |   |    +------------- Solenoid Vavle.
+                      // |   |    |    +-------- Status LED/Alarm.
+                      // |   |    |    |    +--- PWM Servo
+                      // v   v    v    v    v
+    GHVentilatorChannel (A0, D3,  D4,  D5,  D6,  I2CBus,Address+1).This(),
+    GHVentilatorChannel (A1, D7,  D8,  D9,  D10, I2CBus,Address+2).This(),
+    GHVentilatorChannel (A2, D11, D12, D13, D14, I2CBus,Address+3).This(),
+    GHVentilatorChannel (A3, D15, PC_8, PC_6, PC_5, I2CBus,Address+4).This()
   );
 }
