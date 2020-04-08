@@ -13,9 +13,6 @@ one at <https://mozilla.org/MPL/2.0/>. */
 #include "GHVentilatorConfig.h"
 #include "BMP280.h"
 
-volatile int CurrentChannel = -1;
-volatile bool TooMuchAir = false;
-
 namespace SickBay {
 
 /* A Gravity Hookah Ventilator channel for one patient. */
@@ -41,12 +38,11 @@ class GHVentilatorChannel {
 
   /* Constructs a smart waterer. */
   GHVentilatorChannel (PinName PulseOximeterPin,
-                       PinName SensorPin,
+                       PinName FlowSensorPin,
                        PinName SolenoidPin,
                        PinName StatusPin,
                        PinName ServoPin,
-                       I2C& AtmosphereAddress, char I2CAddress,
-                       float PressureHysteresis);
+                       I2C& AtmosphereAddress, char I2CAddress);
     
   /* Returns a pointer to this. */
   GHVentilatorChannel* This();
@@ -79,7 +75,7 @@ class GHVentilatorChannel {
   void HandleError ();
     
   /* Samples the Atmospheric pressure and temperature. */
-  void Tare ();
+  void Tare (float HysteresisPatient);
     
   /* Updates the channel with the DeviceTick. */
   void Update();

@@ -10,6 +10,7 @@ You can obtain one at <https://mozilla.org/MPL/2.0/>. */
 #define MBEDBUG_CONFIG_DECL
 #include <mbed.h>
 #include <cstdint>
-typedef uint8_t Byte;
-typedef unsigned int UInt;
+#ifndef nullptr
+#define nullptr 0
+#endif
 #endif 
