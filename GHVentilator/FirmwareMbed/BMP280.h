@@ -46,7 +46,7 @@ class BMP280 {
      * @param i2c_obj I2C object (instance)
      * @param SlaveAddress (option) I2C-bus address (default: 0x77)
      */
-    BMP280(I2C &i2c_obj, char SlaveAddress = BMP280SlaveAddressDefault);
+    BMP280(I2C &Bus, char SlaveAddress = BMP280SlaveAddressDefault);
 
     ~BMP280();
 

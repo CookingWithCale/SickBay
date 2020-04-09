@@ -18,34 +18,49 @@ namespace SickBay {
 /* A Gravity Hookah Ventilator channel for one patient. */
 class GHVentilatorChannel {
   public:
+  
+  enum {
+    StateInhaling = 1,         //< The value for the init Ticks inhale value.
+    StateExhaling = -1,        //< The value for the init Ticks exhale value.
+  };
     
-  int    Ticks,                //< Ticks since the beginning of the inhale.
-         TicksExhale,          //< The period of the breathing.
+  volatile int Ticks;          //< Ticks since the beginning of the inhale.
+  int    TicksExhale,          //< The period of the breathing.
          TicksInhale,          //< The tick count in the inhale duty cycle.
-         TicksFlowInhale;      //< Flow sensor tick count on the last exhale.
-  volatile int TicksFlowLast,  //< The previous saved count.
-         TicksFlow;            //< Flow sensor pulse count.
+         TicksPeep;            //< The max ticks between an exhale and inhale.
+  volatile int TicksFlowLast,  //< The previous inhale TicksFlow count.
+         TicksFlow;            //< Flow sensor pulse TicksFlow count.
   BMP280 Atmosphere;           //< The air Atmosphere going to the patient.
-  float  PressureReference,    //< The pressure in the mask at one atmosphere.
-         TemperatureReference; //< The refernce temperature,
+  float  Temperature,          //< The Temperature of the patients breath.
+         TemperatureReference, //< The refernce temperature,
+         Pressure,             //< The pressure in the patient's mask.
+         PressureReference;    //< The pressure in the mask at one atmosphere.
   AnalogIn   PulseOximeter;    //< The 7-pin pulse oximeter pin.
   InterruptIn FlowSensor;      //< The flow sensor pin.
-  DigitalOut Valve,            //< The Solenoid valve.
-             Status;           //< The Status LED and optional alarm.
+  DigitalOut Valve;            //< The Status LED and optional alarm.
   PwmOut     Servo;            //< The Servo for reducing the pressrue.
   int        ServoClosed,      //< The min servo duty cycle of no air flow.
-             ServoOpen;        //< The max servo duty cycle of an open tube.
-
+             ServoOpen,        //< The max servo duty cycle of an open tube.
+             Status;           //< The channel Status.
+             
   /* Constructs a smart waterer. */
   GHVentilatorChannel (PinName PulseOximeterPin,
                        PinName FlowSensorPin,
                        PinName SolenoidPin,
-                       PinName StatusPin,
                        PinName ServoPin,
-                       I2C& AtmosphereAddress, char I2CAddress);
+                       I2C& Bus, char BusAddress);
     
   /* Returns a pointer to this. */
   GHVentilatorChannel* This();
+  
+  /* Turns off this channel. */
+  void TurnOff ();
+  
+  /* Turns on the this chanel. */
+  void TurnOn ();
+  
+  /* Polls the hardware for changes. */
+  void Poll();
     
   /* Sets the number of ticks on the inhale and exhale. */
   void TicksInhaleExhaleSet (int NewTicksInhale, int NewTicksExhale);
@@ -54,13 +69,10 @@ class GHVentilatorChannel {
   void BreatheStart (int Index);
     
   /* Increments theflow rate sensor pulse counter. */
-  void PulseFlowSensor ();
+  void TickFlow ();
     
   /* Prints the state of object to the debug stream. */
   void Print (int Index);
-    
-  /* Polls the PulseOximeter and updates the target flow. */
-  void Update (int Index);
     
   /* Updates the float rate. */
   bool CheckIfDoneBreathing (int Index);
@@ -71,11 +83,11 @@ class GHVentilatorChannel {
   /* Closes the solenoid valve. */
   void Exhale ();
     
-  /* Handles any errors. */
-  void HandleError ();
-    
   /* Samples the Atmospheric pressure and temperature. */
-  void Tare (float HysteresisPatient);
+  void Tare (float PressureHysteresis);
+  
+  /* Monitor the channel for if errors. */
+  int Monitor ();
     
   /* Updates the channel with the DeviceTick. */
   void Update();
