@@ -27,7 +27,7 @@ class GHVentilatorChannel {
   volatile int Ticks;          //< Ticks since the beginning of the inhale.
   int    TicksExhale,          //< The period of the breathing.
          TicksInhale,          //< The tick count in the inhale duty cycle.
-         TicksPeep;            //< The max ticks between an exhale and inhale.
+         TicksPEEP;            //< The max ticks between an exhale and inhale.
   volatile int TicksFlowLast,  //< The previous inhale TicksFlow count.
          TicksFlow;            //< Flow sensor pulse TicksFlow count.
   BMP280 Atmosphere;           //< The air Atmosphere going to the patient.
@@ -52,6 +52,9 @@ class GHVentilatorChannel {
     
   /* Returns a pointer to this. */
   GHVentilatorChannel* This();
+  
+  /* Sets the TicksPEEP. */
+  void TicksPEEPSet (int NewTicksPEEP, int TicksSecond);
   
   /* Turns off this channel. */
   void TurnOff ();

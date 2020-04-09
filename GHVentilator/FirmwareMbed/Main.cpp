@@ -16,7 +16,8 @@ int main () {
   int UpdatesPerSecond = 250;
   I2C I2CBus(A4, A5);
   int Address = BMP280SlaveAddressDefault;
-  GHVentilator GHV (UpdatesPerSecond, 
+  GHVentilator GHV (UpdatesPerSecond,
+                    UpdatesPerSecond >> 4, //<-- Max PEEP ticks before inhale.
                     UpdatesPerSecond * 10, //<-- Calibration state tick count.
                     I2CBus, Address, 
                     0.25f, //<-------------- Pressure chamber hysteresis %.

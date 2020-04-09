@@ -47,7 +47,7 @@ class GHVentilator {
   Ticker UpdateTicker;    //< The x times per second update ticker.
   
   /* Constructs a GHV with 1 channel. */
-  GHVentilator (int TicksPerSecond, int TicksCalibration,
+  GHVentilator (int TicksPerSecond, int TicksPEEP, int TicksCalibration,
                 I2C& Bus, char BusAddress,
                 float PressureHysteresis,
                 float HysteresisPatient,
@@ -55,7 +55,7 @@ class GHVentilator {
                 GHVentilatorChannel* A);
       
   /* Constructs a GHV with 2 channels. */
-  GHVentilator (int TicksPerSecond, int TicksCalibration,
+  GHVentilator (int TicksPerSecond, int TicksPEEP, int TicksCalibration,
                 I2C& Bus, char BusAddress,
                 float HysteresisChamber,
                 float PressureHysteresis,
@@ -64,7 +64,7 @@ class GHVentilator {
                 GHVentilatorChannel* B);
       
   /* Constructs a GHV with 3 channels. */
-  GHVentilator (int TicksPerSecond, int TicksCalibration,
+  GHVentilator (int TicksPerSecond, int TicksPEEP, int TicksCalibration,
                 I2C& Bus, char BusAddress,
                 float PressureHysteresis,
                 float HysteresisPatient,
@@ -74,7 +74,7 @@ class GHVentilator {
                 GHVentilatorChannel* C);
       
   /* Constructs a GHV with 4 channels. */
-  GHVentilator (int TicksPerSecond, int TicksCalibration,
+  GHVentilator (int TicksPerSecond, int TicksCalibration, int TicksPEEP,
                 I2C& Bus, char BusAddress,
                 float PressureHysteresis,
                 float HysteresisPatient,
@@ -83,6 +83,9 @@ class GHVentilator {
                 GHVentilatorChannel* B,
                 GHVentilatorChannel* C,
                 GHVentilatorChannel* D);
+  
+  /* Sets the TicksPEEP given 1/64 second > NewTicksPEEP < 1 second. */
+  void TicksPEEPSet (int NewTicksPEEP);
   
   /* Enters the Calibration State. */
   void StateCalibrateEnter ();
