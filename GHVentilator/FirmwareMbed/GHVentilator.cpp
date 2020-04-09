@@ -242,11 +242,10 @@ void GHVentilator::Update() {
   }
   
   // 1.) Turn off or on the blower.
-  float PressureNow = Atmosphere.Pressure();
-  if (PressureNow < PressureMin) Blower = 1;
-  else if (PressureNow > PressureMax) Blower = 0;
-  Pressure = PressureNow;
-    
+  float Pressure = this->Pressure;
+  if (Pressure < PressureMin) Blower = 1;
+  else if (Pressure > PressureMax) Blower = 0;
+  
   for (int Index = ChannelsCount - 1; Index >= 0; --Index)
     Channels[Index]->Update();
 }
