@@ -16,21 +16,21 @@
 
 #include "BMP280.h"
 
-BMP280::BMP280(PinName sda, PinName scl, char slave_adr)
+BMP280::BMP280(PinName SDAPin, PinName SCLPin, char BusAddress)
     :
-    i2c_p(new I2C(sda, scl)), 
+    i2c_p(new I2C(SDAPin, SCLPin)), 
     i2c(*i2c_p),
-    address(slave_adr<<1),
+    address(BusAddress<<1),
     t_fine(0)
 {
     Initialize();
 }
 
-BMP280::BMP280(I2C &i2c_obj, char slave_adr)
+BMP280::BMP280(I2C &Bus, char BusAddress)
     :
     i2c_p(NULL), 
-    i2c(i2c_obj),
-    address(slave_adr<<1),
+    i2c(Bus),
+    address(BusAddress<<1),
     t_fine(0)
 {
     Initialize();

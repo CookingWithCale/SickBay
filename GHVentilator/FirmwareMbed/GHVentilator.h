@@ -18,32 +18,37 @@ class GHVentilator {
   
   enum {
     ChannelCountMax = 4,
+    StateCalibrateEnterTicks = -1,
+    StateRunningEnter = 1,
   };
   
   // The tick and negative calibrating positive running states.
-  int Ticks,
-    TicksMax,            //< The max tick count before it gets reset.
-    TicksSecond,         //< The number of Ticks per Second.
-    TicksInhaleMin,      //< The min inhale ticks.
-    TicksInhaleMax,      //< The max breath period of 20 seconds.
-    TicksExhaleMin,      //< The min ticks in an exhale.
-    TicksExhaleMax,      //< The max ticks in an exhale.
-    TicksCalibration,    //< The number of ticks in the calibration state.
-    ChannelsCount;       //< The number of GHVentilatorChannels.
+  volatile int Ticks;
+  int TicksMonitor,       //< The max ticks between the Device monitors.
+    TicksSecond,          //< The number of Ticks per Second.
+    TicksInhaleMin,       //< The min inhale ticks.
+    TicksInhaleMax,       //< The max breath period of 20 seconds.
+    TicksExhaleMin,       //< The min ticks in an exhale.
+    TicksExhaleMax,       //< The max ticks in an exhale.
+    TicksCalibration,     //< The number of ticks in the calibration state.
+    ChannelsCount;        //< The number of GHVentilatorChannels.
   GHVentilatorChannel* Channels[ChannelCountMax];
-  BMP280 Atmosphere;     //< Pressure sensor for the air tank.
-  float Pressure,        //< The Pressure in the tank.
-    PressureMin,         //< The min Pressure.
-    PressureMax,         //< The max Pressure.
-    HysteresisChamber,   //< The pressure chamber hystersis +/- percent.
-    HysteresisPatient;   //< The patient Hystersis percent muliplier.
-  DigitalOut Blower;     //< A blower powered by a Solid State Relay.
-  DigitalOut Status;     //< Status pin for outputing the Device status.
-  Ticker UpdateTicker;   //< The x times per second update ticker.
+  BMP280 Atmosphere;      //< Pressure sensor for the air tank.
+  float Temperature,      //< The Temperature in the tank.
+    TemperatureReference, //< The Temperature in the tank.
+    Pressure,             //< The Pressure in the tank.
+    PressureReference,    //< The Pressure when the device is tared.
+    PressureMin,          //< The min Pressure.
+    PressureMax,          //< The max Pressure.
+    HysteresisChamber,    //< The pressure chamber hystersis +/- percent.
+    HysteresisPatient;    //< The patient Hystersis percent muliplier.
+  DigitalOut Blower,      //< A blower powered by a Solid State Relay.
+             Status;      //< Status pin for outputing the Device status.
+  Ticker UpdateTicker;    //< The x times per second update ticker.
   
   /* Constructs a GHV with 1 channel. */
   GHVentilator (int TicksPerSecond, int TicksCalibration,
-                I2C& AtmosphereBus, char AtmosphereAddress,
+                I2C& Bus, char BusAddress,
                 float PressureHysteresis,
                 float HysteresisPatient,
                 PinName BlowerPin, PinName StatusPin,
@@ -51,7 +56,7 @@ class GHVentilator {
       
   /* Constructs a GHV with 2 channels. */
   GHVentilator (int TicksPerSecond, int TicksCalibration,
-                I2C& AtmosphereBus, char AtmosphereAddress,
+                I2C& Bus, char BusAddress,
                 float HysteresisChamber,
                 float PressureHysteresis,
                 PinName BlowerPin, PinName StatusPin,
@@ -60,7 +65,7 @@ class GHVentilator {
       
   /* Constructs a GHV with 3 channels. */
   GHVentilator (int TicksPerSecond, int TicksCalibration,
-                I2C& AtmosphereBus, char AtmosphereAddress,
+                I2C& Bus, char BusAddress,
                 float PressureHysteresis,
                 float HysteresisPatient,
                 PinName BlowerPin, PinName StatusPin,
@@ -70,7 +75,7 @@ class GHVentilator {
       
   /* Constructs a GHV with 4 channels. */
   GHVentilator (int TicksPerSecond, int TicksCalibration,
-                I2C& AtmosphereBus, char AtmosphereAddress,
+                I2C& Bus, char BusAddress,
                 float PressureHysteresis,
                 float HysteresisPatient,
                 PinName BlowerPin, PinName StatusPin,
@@ -78,6 +83,24 @@ class GHVentilator {
                 GHVentilatorChannel* B,
                 GHVentilatorChannel* C,
                 GHVentilatorChannel* D);
+  
+  /* Enters the Calibration State. */
+  void StateCalibrateEnter ();
+  
+  /* Enters the Calibration State. */
+  void StateCalibrateExit ();
+  
+  /* Polls the hardware for changes. */ 
+  void Poll();
+  
+  /* Monitors this Device and it's channels. */
+  void Monitor ();
+  
+  /* Turns off the Device and all of it's chanels. */
+  void TurnOff ();
+  
+  /* Turns on the Device and all of it's chanels to the Inhale state. */
+  void TurnOnAll ();
 
   /* Gets the GHVentilatorChannel with the given Index. \
   @return Nil if the Index is out of bounds. */

@@ -12,13 +12,13 @@ one at <https://mozilla.org/MPL/2.0/>. */
 namespace SickBay {
 
 GHVentilator::GHVentilator (int TicksSecond, int TicksCalibration, 
-                            I2C& AtmosphereBus, char AtmosphereAddress,
+                            I2C& Bus, char BusAddress,
                             float HysteresisChamber,
                             float HysteresisPatient,
                             PinName BlowerPin, PinName StatusPin,
                             GHVentilatorChannel* A):
-    Ticks              (-1),
-    TicksMax           (0),
+    Ticks              (StateCalibrateEnterTicks),
+    TicksMonitor       (TicksSecond),
     TicksSecond        (TicksSecond),
     TicksInhaleMin     (TicksSecond),
     TicksInhaleMax     (TicksSecond * 10),
@@ -26,7 +26,8 @@ GHVentilator::GHVentilator (int TicksSecond, int TicksCalibration,
     TicksExhaleMax     (TicksSecond * 10),
     TicksCalibration   (TicksCalibration),
     ChannelsCount      (1),
-    Atmosphere         (AtmosphereBus, AtmosphereAddress),
+    Atmosphere         (Bus, BusAddress),
+    Temperature        (Atmosphere.Temperature()),
     Pressure           (Atmosphere.Pressure()),
     PressureMin        (Pressure),
     PressureMax        (Pressure),
@@ -39,22 +40,23 @@ GHVentilator::GHVentilator (int TicksSecond, int TicksCalibration,
 }
 
 GHVentilator::GHVentilator (int TicksSecond, int TicksCalibration,
-                            I2C& AtmosphereBus, char AtmosphereAddress,
+                            I2C& Bus, char BusAddress,
                             float HysteresisChamber,
                             float HysteresisPatient,
                             PinName BlowerPin, PinName StatusPin,
                             GHVentilatorChannel* A,
                             GHVentilatorChannel* B):
-    Ticks              (-1),
-    TicksMax           (0),
+    Ticks              (StateCalibrateEnterTicks),
+    TicksMonitor       (TicksSecond),
     TicksSecond        (TicksSecond),
     TicksInhaleMin     (TicksSecond),
     TicksInhaleMax     (TicksSecond * 10),
     TicksExhaleMin     (TicksSecond),
     TicksExhaleMax     (TicksSecond * 10),
     TicksCalibration   (TicksCalibration),
-    ChannelsCount      (1),
-    Atmosphere         (AtmosphereBus, AtmosphereAddress),
+    ChannelsCount      (2),
+    Atmosphere         (Bus, BusAddress),
+    Temperature        (Atmosphere.Temperature()),
     Pressure           (Atmosphere.Pressure()),
     PressureMin        (Pressure),
     PressureMax        (Pressure),
@@ -67,23 +69,24 @@ GHVentilator::GHVentilator (int TicksSecond, int TicksCalibration,
 }
 
 GHVentilator::GHVentilator (int TicksSecond, int TicksCalibration,
-                            I2C& AtmosphereBus, char AtmosphereAddress,
+                            I2C& Bus, char BusAddress,
                             float HysteresisChamber,
                             float HysteresisPatient,
                             PinName BlowerPin, PinName StatusPin,
                             GHVentilatorChannel* A,
                             GHVentilatorChannel* B,
                             GHVentilatorChannel* C):
-    Ticks              (-1),
-    TicksMax           (0),
+    Ticks              (StateCalibrateEnterTicks),
+    TicksMonitor       (TicksSecond),
     TicksSecond        (TicksSecond),
     TicksInhaleMin     (TicksSecond),
     TicksInhaleMax     (TicksSecond * 10),
     TicksExhaleMin     (TicksSecond),
     TicksExhaleMax     (TicksSecond * 10),
     TicksCalibration   (TicksCalibration),
-    ChannelsCount      (1),
-    Atmosphere         (AtmosphereBus, AtmosphereAddress),
+    ChannelsCount      (3),
+    Atmosphere         (Bus, BusAddress),
+    Temperature        (Atmosphere.Temperature()),
     Pressure           (Atmosphere.Pressure()),
     PressureMin        (Pressure),
     PressureMax        (Pressure),
@@ -97,7 +100,7 @@ GHVentilator::GHVentilator (int TicksSecond, int TicksCalibration,
 }
 
 GHVentilator::GHVentilator (int TicksSecond, int TicksCalibration,
-                            I2C& AtmosphereBus, char AtmosphereAddress,
+                            I2C& Bus, char BusAddress,
                             float HysteresisChamber,
                             float HysteresisPatient,
                             PinName BlowerPin, PinName StatusPin,
@@ -105,16 +108,17 @@ GHVentilator::GHVentilator (int TicksSecond, int TicksCalibration,
                             GHVentilatorChannel* B,
                             GHVentilatorChannel* C,
                             GHVentilatorChannel* D):
-    Ticks              (-1),
-    TicksMax           (0),
+    Ticks              (StateCalibrateEnterTicks),
+    TicksMonitor       (TicksSecond),
     TicksSecond        (TicksSecond),
     TicksInhaleMin     (TicksSecond),
     TicksInhaleMax     (TicksSecond * 10),
     TicksExhaleMin     (TicksSecond),
     TicksExhaleMax     (TicksSecond * 10),
     TicksCalibration   (TicksCalibration),
-    ChannelsCount      (1),
-    Atmosphere         (AtmosphereBus, AtmosphereAddress),
+    ChannelsCount      (4),
+    Atmosphere         (Bus, BusAddress),
+    Temperature        (Atmosphere.Temperature()),
     Pressure           (Atmosphere.Pressure()),
     PressureMin        (Pressure),
     PressureMax        (Pressure),
@@ -129,21 +133,80 @@ GHVentilator::GHVentilator (int TicksSecond, int TicksCalibration,
   Run ();
 }
 
+void GHVentilator::StateCalibrateEnter () {
+  TurnOff ();
+  Poll ();
+  Blower = 1;
+  Ticks = StateCalibrateEnterTicks; //< Make sure to set this last.
+}
+  
+void GHVentilator::StateCalibrateExit () {
+  float HysteresisPatient = this->HysteresisPatient;
+  for (int Index = ChannelsCount - 1; Index >= 0; --Index)
+    Channels[Index]->Tare (HysteresisPatient);
+  PressureMax = Atmosphere.Pressure ();
+  float HysteresisChamber = this->HysteresisChamber,
+        PressureMid = (PressureMax - PressureMin) / 2,
+        HysteresisPercent = HysteresisChamber,
+        PressureDelta = PressureMid * HysteresisPercent,
+        PressureMidPoint = PressureMid + PressureMin;
+  PressureMin = PressureMidPoint - PressureDelta;
+  PressureMax = PressureMidPoint + PressureDelta;
+  TurnOnAll ();
+  DPrintf ("\n? Done calibrating. <");
+}
+
+void GHVentilator::Poll() {
+  Pressure = Atmosphere.Pressure();
+  Temperature = Atmosphere.Temperature ();
+  for (int Index = ChannelsCount; Index >= 0; --Index)
+    Channels[Index]->Poll ();
+}
+
+void GHVentilator::Monitor () { 
+  for (int Index = ChannelsCount - 1; Index >= 0; --Index) {
+    DPrintf ("\n> Channel %d"); 
+    GHVentilatorChannel* Channel = Channels[Index];
+    int Ticks = Channel->Monitor();
+    if (Ticks == GHVentilatorChannel::StateInhaling) {
+      DPrintf ("\n  ? Inhaling state. <");
+    }
+    else if (Ticks == GHVentilatorChannel::StateExhaling) {
+      DPrintf ("\n  ? Exhaling state. <");
+    }
+    else if (Ticks >= Channel->TicksExhale) {
+      DPrintf ("\n  ? PEEP state. <");
+    }
+  }
+}
+
+void GHVentilator::TurnOff () {
+  for (int Index = ChannelsCount; Index >= 0; --Index)
+    Channels[Index]->TurnOff();
+}
+
+void GHVentilator::TurnOnAll () {
+  for (int Index = ChannelsCount; Index >= 0; --Index)
+    Channels[Index]->Inhale();
+}
+
 GHVentilatorChannel* GHVentilator::Channel(int Index) {
   if (Index < 0 || Index >= ChannelsCount) return nullptr;
   return Channels[Index];
 }
 
 void GHVentilator::Tare () {
-  float HysteresisChamberCopy = HysteresisChamber;
+  TemperatureReference = Atmosphere.Temperature ();
+  PressureReference = Atmosphere.Pressure();
+  float HysteresisPatient = this->HysteresisPatient;
   for (int Index = ChannelsCount; Index >= 0; --Index)
-    Channels[Index]->Tare(HysteresisChamberCopy);
+    Channels[Index]->Tare(HysteresisPatient);
 }
 
 int GHVentilator::TicksInhaleExhaleSet (int Index, 
                                         int TicksInhale,
                                         int TicksExhale) {
-  if (Index < 0) return -1;
+  if (Index < 0) return StateCalibrateEnterTicks;
   if (TicksInhale <= TicksInhaleMax) return -2;
   if (TicksInhale >= TicksInhaleMin) return -3;
   if (Index >= ChannelsCount) return 1;
@@ -156,31 +219,27 @@ int GHVentilator::TicksInhaleExhaleSet (int Index,
   
 void GHVentilator::Update() {
   int Tick = Ticks;
-  if (Ticks == 0) return;
+  if (Tick == 0) return;
   if (Tick < 0) {
     if (--Tick <= TicksCalibration) {
-      float HysteresisPatient = this->HysteresisPatient;
-      for (int Index = ChannelsCount - 1; Index >= 0; --Index)
-        Channels[Index]->Tare (HysteresisPatient);
-      PressureMax = Atmosphere.Pressure ();
-      float HysteresisChamberPercent = HysteresisChamber,
-            PressureMid = (PressureMax - PressureMin) / 2,
-            HysteresisPercent = HysteresisChamberPercent,
-            PressureDelta = PressureMid * HysteresisPercent,
-            PressureMidPoint = PressureMid + PressureMin;
-      PressureMin = PressureMidPoint - PressureDelta;
-      PressureMax = PressureMidPoint + PressureDelta;
-      Ticks = 1;
-      
-      DPrintf ("\n? Done calibrating. <");
+      StateCalibrateExit ();
       return;
+    }
+    int Pressure = this->Pressure;
+    if (Pressure >= PressureMax) {
+        this->PressureMax = Pressure;
     }
     Ticks = Tick;
     return;
   }
-  int TicksMax = TicksMax;
-  if (++Ticks >= TicksMax) Ticks = Tick = 0;
-  else Ticks = Tick;
+  // else Tick > 0
+  if (++Ticks >= TicksMonitor) {
+    Ticks = StateRunningEnter;
+    Monitor ();
+  }
+  else {
+    Ticks = Tick;
+  }
   
   // 1.) Turn off or on the blower.
   float PressureNow = Atmosphere.Pressure();
@@ -198,11 +257,7 @@ void GHVentilator::Run(){
   UpdateTicker.attach (callback(this, &GHVentilator::Update), 
                        1.0f / float (TicksSecond));
     
-  #if GHVDebug
-  DebugTicker.attach (&DemoTickerISR, 1.0f/200.0f);
-  #endif
-    
-  while (1);  //< This is an IRQ driven application.
+  while (1) Poll ();
 }
 /*
 void RemoteTicksSecondSetHandle(Arguments* input, Reply* output) {
