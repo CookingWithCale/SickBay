@@ -20,6 +20,7 @@ GHVentilatorChannel::GHVentilatorChannel (PinName PulseOximeterPin,
     Ticks                (0),
     TicksExhale          (2),
     TicksInhale          (1),
+    TicksPEEP            (0),
     TicksFlowLast        (0),
     TicksFlow            (0),
     Atmosphere           (Bus, BusAddress),
@@ -43,6 +44,11 @@ void GHVentilatorChannel::TurnOff () {
   Ticks = 0;
 }
 
+void GHVentilatorChannel::TicksPEEPSet (int NewTicksPEEP, int TicksSecond) {
+  TicksPEEP = NewTicksPEEP;
+  if (Ticks < TicksExhale) Inhale ();
+}
+
 void GHVentilatorChannel::TicksInhaleExhaleSet (int NewTicksInhale, 
                                                int NewTicksExhale) {
   int Tick = Ticks;
@@ -52,19 +58,19 @@ void GHVentilatorChannel::TicksInhaleExhaleSet (int NewTicksInhale,
   }
   TicksInhale = NewTicksInhale;
   TicksExhale = NewTicksExhale;
-  if (Tick > 0) { // We're inhaling.
+  if (Tick < 0) { // We're exhaling.
+    if (Ticks > NewTicksExhale) {
+        Ticks = NewTicksExhale;
+        Inhale ();
+    }
+  }
+  else if (Tick > 0) { // We're inhaling.
     if (Ticks > NewTicksInhale) {
         Ticks = NewTicksInhale;
         Exhale ();
     }
     
     return;
-  }
-  if (Tick < 0) { // We're exhaling.
-    if (Ticks > NewTicksExhale) {
-        Ticks = NewTicksExhale;
-        Inhale ();
-    }
   }
 }
 
@@ -78,21 +84,22 @@ void GHVentilatorChannel::TickFlow () {
 }
 
 void GHVentilatorChannel::Inhale () {
-  DPrintf ("\n? Checking PEEP. <");
   Pressure = this->Pressure;
-  if (Pressure > PressureReference) {
-    DPrintf ("\n? Over pressure. <");
-    return;
+  if (Ticks < TicksExhale) { // We're in the PEEP state.
+    if (Pressure > PressureReference) {
+      DPrintf ("\n  ? Over pressure; entering PEEP state. <");
+      if (Ticks < TicksExhale - TicksPEEP) Inhale ();
+      return;
+    }
+    DPrintf ("\n  ? Exiting PEEP state. <");
   }
-  DPrintf ("\n? Inhaling. <");
-  int Tick = Ticks;
-  Ticks = (Tick >= TicksExhale) ? Tick : 0;
+  DPrintf ("\n  ? Inhaling. <");
   Ticks = StateInhaling;
   Valve = 0;
 }
 
 void GHVentilatorChannel::Exhale () {
-  DPrintf ("\n? Exhaling. <");
+  DPrintf ("\n  ? Exhaling. <");
   Ticks = StateExhaling;
   Valve = 1;
   PrintLine ();
@@ -111,7 +118,10 @@ int GHVentilatorChannel::Monitor () {
 void GHVentilatorChannel::Update() {
   int Tick = Ticks;
   if (Tick < 0)
-    if (--Tick < TicksExhale) Inhale ();
+    if (--Tick < TicksExhale) {
+      Ticks = Tick;
+      Inhale ();
+    }
   else if (Tick > 0)
     if (++Tick > TicksInhale) Exhale ();
   else return;

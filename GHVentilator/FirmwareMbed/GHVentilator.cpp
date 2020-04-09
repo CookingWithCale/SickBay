@@ -11,7 +11,8 @@ one at <https://mozilla.org/MPL/2.0/>. */
 
 namespace SickBay {
 
-GHVentilator::GHVentilator (int TicksSecond, int TicksCalibration, 
+GHVentilator::GHVentilator (int TicksSecond, int TicksPEEP,
+                            int TicksCalibration, 
                             I2C& Bus, char BusAddress,
                             float HysteresisChamber,
                             float HysteresisPatient,
@@ -35,11 +36,13 @@ GHVentilator::GHVentilator (int TicksSecond, int TicksCalibration,
     HysteresisPatient  (HysteresisPatient + 1.0f),
     Blower             (BlowerPin),
     Status             (StatusPin) {
+  TicksPEEPSet(TicksPEEP);
   Channels[0] = A;
   Run ();
 }
 
-GHVentilator::GHVentilator (int TicksSecond, int TicksCalibration,
+GHVentilator::GHVentilator (int TicksSecond, int TicksPEEP,
+                            int TicksCalibration,
                             I2C& Bus, char BusAddress,
                             float HysteresisChamber,
                             float HysteresisPatient,
@@ -63,12 +66,14 @@ GHVentilator::GHVentilator (int TicksSecond, int TicksCalibration,
     HysteresisChamber (HysteresisChamber + 1.0f),
     Blower             (BlowerPin),
     Status             (StatusPin) {
+  TicksPEEPSet(TicksPEEP);
   Channels[0] = A;
   Channels[1] = B;
   Run ();
 }
 
-GHVentilator::GHVentilator (int TicksSecond, int TicksCalibration,
+GHVentilator::GHVentilator (int TicksSecond, int TicksPEEP,
+                            int TicksCalibration,
                             I2C& Bus, char BusAddress,
                             float HysteresisChamber,
                             float HysteresisPatient,
@@ -90,16 +95,18 @@ GHVentilator::GHVentilator (int TicksSecond, int TicksCalibration,
     Pressure           (Atmosphere.Pressure()),
     PressureMin        (Pressure),
     PressureMax        (Pressure),
-    HysteresisChamber (HysteresisChamber + 1.0f),
+    HysteresisChamber  (HysteresisChamber + 1.0f),
     Blower             (BlowerPin),
     Status             (StatusPin) {
+  TicksPEEPSet(TicksPEEP);
   Channels[0] = A;
   Channels[1] = B;
   Channels[2] = C;
   Run ();
 }
 
-GHVentilator::GHVentilator (int TicksSecond, int TicksCalibration,
+GHVentilator::GHVentilator (int TicksSecond, int TicksPEEP,
+                            int TicksCalibration,
                             I2C& Bus, char BusAddress,
                             float HysteresisChamber,
                             float HysteresisPatient,
@@ -126,11 +133,23 @@ GHVentilator::GHVentilator (int TicksSecond, int TicksCalibration,
     HysteresisPatient  (HysteresisPatient + 1.0f),
     Blower             (BlowerPin),
     Status             (StatusPin) {
+  TicksPEEPSet(TicksPEEP);
   Channels[0] = A;
   Channels[1] = B;
   Channels[2] = C;
   Channels[3] = D;
   Run ();
+}
+
+void GHVentilator::TicksPEEPSet (int NewTicksPEEP) {
+  int TicksPEEPMin = TicksSecond >> 5; //< This divides by 2^5.
+  if (NewTicksPEEP < TicksPEEPMin || NewTicksPEEP > TicksSecond) {
+    DPrintf("\n  > Error PEEP must be betwen 1/32 of a second to 1 second. <");
+    return;
+  }
+  int TicksSecond = this->TicksSecond;
+  for (int Index = ChannelsCount; Index >= 0; --Index)
+    Channels[Index]->TicksPEEPSet (NewTicksPEEP, TicksSecond);
 }
 
 void GHVentilator::StateCalibrateEnter () {
