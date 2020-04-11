@@ -1,25 +1,24 @@
-/** Gravity Hookah Ventilator @version 0.x
+/** SickBay Tek @version 0.x
 @link    https://github.com/KabukiStarship/SickBay.git
-@file    /GHVentilatorChannel.h
+@file    /SBVentilatorChannel.h
 @author  Cale McCollough <https://cale-mccollough.github.io>
 @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>.
 This Source Code Form is subject to the terms of the Mozilla Public License, 
 v. 2.0. If a copy of the MPL was not distributed with this file, you can obtain 
 one at <https://mozilla.org/MPL/2.0/>. */
 #pragma once
-#ifndef GHVentilatorChannelDecl
-#define GHVentilatorChannelDecl
-#include <stdint.h>
-#ifndef GHVentilatorChannelCount
-#error You must define the GHVentilatorChannelCount before including \
-       "GHVentilator.hpp"
+#ifndef SBVentilatorChannelDecl
+#define SBVentilatorChannelDecl
+#include <_Config.h>
+#ifndef SBVentilatorChannelCount
+#define SBVentilatorChannelCount 1
 #endif
 namespace SickBay {
     
-class GHVentilator;
+class SBVentilator;
 
-/* A Gravity Hookah Ventilator channel for one patient. */
-class GHVentilatorChannel {
+/* A Ventilator channel for one patient. */
+class SBVentilatorChannel {
   public:
   
   enum {
@@ -28,7 +27,7 @@ class GHVentilatorChannel {
     StateExhaling = -1,     //< The exhaling state is where Ticks > 0.
   };
   
-  GHVentilator* Parent;     //< The GHVentilator this is part of.
+  SBVentilator* Parent;     //< The SBVentilator this is part of.
   int Ticks,                //< Ticks since the beginning of the inhale.
       TicksInhale,          //< The tick count in the inhale duty cycle.
       TicksExhale,          //< The period of the breathing.
@@ -48,16 +47,16 @@ class GHVentilatorChannel {
   @param PressureHysteresis 1.0 + the percent hysteresis up and down from the 
   center the 
   */
-  void Init (GHVentilator* Parent, int TicksInhale, int TicksExhale, 
+  void Init (SBVentilator* Parent, int TicksInhale, int TicksExhale, 
              float ChannelPressureHysteresis);
              
   /* Doesn't do anything and requires a call to . */
-  GHVentilatorChannel ();
+  SBVentilatorChannel ();
     
   /* Returns a pointer to this. */
-  GHVentilatorChannel* This();
+  SBVentilatorChannel* This();
   
-  void ChannelValveSet (GHVentilatorChannel* Channel, int Value);
+  void ChannelValveSet (SBVentilatorChannel* Channel, int Value);
   
   /* Turns this channel off. */
   void TurnOff ();

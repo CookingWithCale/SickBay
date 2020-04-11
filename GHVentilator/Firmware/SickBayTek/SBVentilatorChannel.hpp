@@ -1,20 +1,17 @@
-/** Gravity Hookah Ventilator @version 0.x
+/** SickBay Tek @version 0.x
 @link    https://github.com/KabukiStarship/SickBay.git
-@file    /GHVentilatorChannel.cpp
+@file    /Devices/Tek/SBVentilatorChannel.cpp
 @author  Cale McCollough <https://cale-mccollough.github.io>
 @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>.
 This Source Code Form is subject to the terms of the Mozilla Public License, 
 v. 2.0. If a copy of the MPL was not distributed with this file, you can obtain 
 one at <https://mozilla.org/MPL/2.0/>. */
 
-#include "GHVentilatorChannel.h"
-
-#include <mbedBug.h>
-using namespace mbedBug;
+#include "SBVentilatorChannel.h"
 
 namespace SickBay {
 
-GHVentilatorChannel::GHVentilatorChannel () :
+SBVentilatorChannel::SBVentilatorChannel () :
     Ticks         (0),
     TicksInhale   (0),
     TicksExhale   (0),
@@ -23,7 +20,7 @@ GHVentilatorChannel::GHVentilatorChannel () :
     ServoClosed   (0),
     ServoOpen     (1) {}
 
-void GHVentilatorChannel::Init (GHVentilator* Parent, int TicksInhale, 
+void SBVentilatorChannel::Init (SBVentilator* Parent, int TicksInhale, 
                                 int TicksExhale, float PressureHysteresis) {
   this->Parent             = Parent;
   this->TicksInhale        = TicksInhale;
@@ -31,14 +28,14 @@ void GHVentilatorChannel::Init (GHVentilator* Parent, int TicksInhale,
   this->PressureHysteresis = Pressure * PressureHysteresis;
 }
 
-GHVentilatorChannel* GHVentilatorChannel::This() { return this; }
+SBVentilatorChannel* SBVentilatorChannel::This() { return this; }
 
-void GHVentilatorChannel::TurnOff () {
+void SBVentilatorChannel::TurnOff () {
   Parent->ChannelValveSet(this, LLLow);
   Ticks = 0;
 }
 
-void GHVentilatorChannel::TicksInhaleExhaleSet (int NewTicksInhale, 
+void SBVentilatorChannel::TicksInhaleExhaleSet (int NewTicksInhale, 
                                                 int NewTicksExhale) {
   int Tick = Ticks;
   if (Tick == 0) {
@@ -47,32 +44,32 @@ void GHVentilatorChannel::TicksInhaleExhaleSet (int NewTicksInhale,
   }
   TicksInhale = NewTicksInhale;
   TicksExhale = NewTicksExhale;
-  if (Tick < 0) { // We're exhaling.
+  if (Tick < 0) { // StateExhaling.
     if (Ticks > NewTicksExhale) {
-        Ticks = NewTicksExhale;
-        Inhale ();
+      Ticks = NewTicksExhale;
+      Inhale ();
     }
   }
-  else if (Tick > 0) { // We're inhaling.
+  else if (Tick > 0) { // StateInhaling.
     if (Ticks > NewTicksInhale) {
-        Ticks = NewTicksInhale;
-        Exhale ();
+      Ticks = NewTicksInhale;
+      Exhale ();
     }
     return;
   }
 }
 
-void GHVentilatorChannel::TickFlow () {
+void SBVentilatorChannel::TickFlow () {
   ++TicksFlow;
 }
 
-void GHVentilatorChannel::Inhale () {
+void SBVentilatorChannel::Inhale () {
   DPrintf ("\n  ? Inhaling. <");
   Ticks = StateInhaling;
   Parent->ChannelValveSet(this, LLHigh);
 }
 
-void GHVentilatorChannel::Exhale () {
+void SBVentilatorChannel::Exhale () {
   DPrintf ("\n  ? Exhaling. <");
   Ticks = StateExhaling;
   Parent->ChannelValveSet(this, LLLow);

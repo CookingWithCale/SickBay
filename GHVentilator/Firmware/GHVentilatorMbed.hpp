@@ -1,27 +1,24 @@
 /** Gravity Hookah Ventilator @version 0.x
 @link    https://github.com/KabukiStarship/SickBay.git
-@file    /TargetMbed.cpp
+@file    /SBVentilator/Firmware/TargetMbed.cpp
 @author  Cale McCollough <https://cale-mccollough.github.io>
 @license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>.
 This Source Code Form is subject to the terms of the Mozilla Public License, 
 v. 2.0. If a copy of the MPL was not distributed with this file, you can obtain 
 one at <https://mozilla.org/MPL/2.0/>. */
 #pragma once
-#ifndef GHVentilatorTargetMbed
-#define GHVentilatorTargetMbed
+#ifndef SBVentilatorMbed
+#define SBVentilatorMbed
+#include <_KabukiTek.hpp>
+#include <BMP280.hpp>
+#include <BExprI2CMbed.hpp>
+using namespace _;
+
+#include "SBVentilator.hpp"
 
 #define SickBayDebug 1
 #define Platform PlatformMbed
-#define GHVentilatorChannelCount 4
-
-// Define LLLow and LLHigh before you #include "GHVentilator.hpp"
-enum {
-  LLHigh = 1, //< Logic-level High.
-  LLLow  = 0, //< Logic-level Low.
-};
-
-#include "GHVentilator.hpp"
-#include "BMP280.hpp"
+#define SBVentilatorChannelCount 4
 
 namespace SickBay {
  
@@ -29,84 +26,90 @@ namespace SickBay {
 DigitalOut Blower(D2),
            Status(D3),
            Channel1Valve (D4);
-DigitalIn ChannelFlowSensor (D5);
+DigitalIn  ChannelFlowSensor (D5);
 DigitalOut Channel2Valve (D6);
-DigitalIn Channel2FlowSensor (D7);
+DigitalIn  Channel2FlowSensor (D7);
 DigitalOut Channel3Valve (D8);
-DigitalIn Channel3FlowSensor (D9);
+DigitalIn  Channel3FlowSensor (D9);
 DigitalOut Channel4Valve (D10);
-DigitalIn Channel4FlowSensor (D11);
+DigitalIn  Channel4FlowSensor (D11);
 
-void GHVentilator::BlowerTurnOff() {
+void SBVentilator::BlowerTurnOff() {
   Blower = LLLow;
 }
 
-void GHVentilator::BlowerTurnOn() {
+void SBVentilator::BlowerTurnOn() {
   Blower = LLHigh;
 }
 
-bool GHVentilator::IsOverPressure () { return Pressure > PressureMax; }
+bool SBVentilator::IsOverPressure () { return Pressure > PressureMax; }
 
-bool GHVentilator::IsUnderPressure () { return Pressure < PressureMax; }
+bool SBVentilator::IsUnderPressure () { return Pressure < PressureMax; }
 
-void GHVentilator::Channel1ValveSet (int Value) {
+void SBVentilator::Channel1ValveSet (int Value) {
   Channel1Valve = Value;
 }
 
-void GHVentilator::Channel2ValveSet (int Value) {
+void SBVentilator::Channel2ValveSet (int Value) {
   Channel2Valve = Value;
 }
-void GHVentilator::Channel3ValveSet (int Value) {
+void SBVentilator::Channel3ValveSet (int Value) {
   Channel3Valve = Value;
 }
-void GHVentilator::Channel4ValveSet (int Value) {
+void SBVentilator::Channel4ValveSet (int Value) {
   Channel4Valve = Value;
 }
-#if GHVentilatorChannelCount >= 2
+#if SBVentilatorChannelCount >= 2
 #endif
-#if GHVentilatorChannelCount >= 3
+#if SBVentilatorChannelCount >= 3
 #endif
-#if GHVentilatorChannelCount >= 4
+#if SBVentilatorChannelCount >= 4
 #endif
 
-void GHVentilator::Run(){
-  DPrintIndent (100, "Starting GHVentilator...\r\n\r\n");
+void SBVentilator::Run(){
+  DPrintIndent (100, "Starting SBVentilator...\r\n\r\n");
   
   enum {
     TicksSecond = 250,
     TicksCalibrate = TicksSecond * 10, //< Calibrate for 10 seconds.
   };
+  DPrintf("\nInitalizing system with %d ticks per second.", TicksSecond);
   float ChamberPressureHysteresis = 1.25f, //< +/-25% goes up and down half-way.
         PatientPressureHysteresis = 1.01f; //< + 1% over 1 atmosphere.
   
   I2C Bus(A4, A5);
-  int BusAddress = BMP280SlaveAddressDefault;
+  int BMP280Address = BMP280::AddressDefault;
   
-   // Pressure sensor for the air tank.
-  BMP280 AtmosphereChamber(Bus, BusAddress);
-  Pressure = AtmosphereChamber.Pressure ();
-  Temperature = AtmosphereChamber.Temperature ();
+  // Pressure sensor for the air tank.
+  BMP280 Atmosphere0;
+  Atmosphere0.Init(EvaluateI2C, &Bus, BMP280Address);
+  Pressure = Atmosphere0.Pressure ();
+  Temperature = Atmosphere0.Temperature ();
   // Atmoshperic sensor to Patient 1.
-  BMP280 Channel1Atmosphere(Bus, BusAddress + 1);
-  Channels[0].Pressure = Channel1Atmosphere.Pressure ();
-  Channels[0].Temperature = Channel1Atmosphere.Temperature ();
-  #if GHVentilatorChannelCount >= 2
+  BMP280 Atmosphere1;
+  Atmosphere1.Init(EvaluateI2C, &Bus, BMP280Address + 1);
+  Channels[0].Pressure = Atmosphere1.Pressure ();
+  Channels[0].Temperature = Atmosphere1.Temperature ();
+  #if SBVentilatorChannelCount >= 2
   // Atmoshperic sensor to Patient 2.
-  BMP280 Channel2Atmosphere(Bus, BusAddress + 1);
-  Channels[1].Pressure = Channel2Atmosphere.Pressure ();
-  Channels[1].Temperature = Channel2Atmosphere.Temperature ();
+  BMP280 Atmosphere2;
+  Atmosphere2.Init (EvaluateI2C, &Bus, BMP280Address + 2);
+  Channels[1].Pressure = Atmosphere2.Pressure ();
+  Channels[1].Temperature = Atmosphere2.Temperature ();
   #endif
-  #if GHVentilatorChannelCount >= 3
+  #if SBVentilatorChannelCount >= 3
   // Atmoshperic sensor to Patient 3.
-  BMP280 Channel3Atmosphere(Bus, BusAddress + 2);
-  Channels[2].Pressure = Channel3Atmosphere.Pressure ();
-  Channels[2].Temperature = Channel3Atmosphere.Temperature ();
+  BMP280 Atmosphere3;
+  Atmosphere3.Init(EvaluateI2C, &Bus, BMP280Address + 3);
+  Channels[2].Pressure = Atmosphere3.Pressure ();
+  Channels[2].Temperature = Atmosphere3.Temperature ();
   #endif
-  #if GHVentilatorChannelCount >= 4
+  #if SBVentilatorChannelCount >= 4
   // Atmoshperic sensor to Patient 4.
-  BMP280 Channel4Atmosphere(Bus, BusAddress + 3);
-  Channels[3].Pressure = Channel4Atmosphere.Pressure ();
-  Channels[3].Temperature = Channel4Atmosphere.Temperature ();
+  BMP280 Atmosphere4;
+  Atmosphere4.Init (EvaluateI2C, &Bus, BMP280Address + 4);
+  Channels[3].Pressure = Atmosphere4.Pressure ();
+  Channels[3].Temperature = Atmosphere4.Temperature ();
   #endif
   
   Init (TicksSecond, TicksPEEP,
@@ -115,30 +118,30 @@ void GHVentilator::Run(){
   // Make sure you don't start the UpdateTicker until everything is setup to
   // enter the Configuration State.
   Ticker UpdateTicker;    //< The x times per second update ticker.
-  UpdateTicker.attach (callback(this, &GHVentilator::Update), 
+  UpdateTicker.attach (callback(this, &SBVentilator::Update), 
                        1.0f / float (TicksSecond));
   
-  while (1) { // Poll the pressure and temperature.
-    Temperature = AtmosphereChamber.Temperature ();
-    Pressure  = AtmosphereChamber.Pressure();
+  while (1) { // Poll the sensors.
+    Temperature = Atmosphere0.Temperature ();
+    Pressure  = Atmosphere0.Pressure();
     
-    GHVentilatorChannel* Channel = &Channels[0];
-    Channel->Temperature = Channel1Atmosphere.Temperature ();
-    Channel->Pressure  = Channel1Atmosphere.Pressure();
+    SBVentilatorChannel* Channel = &Channels[0];
+    Channel->Temperature = Atmosphere1.Temperature ();
+    Channel->Pressure  = Atmosphere1.Pressure();
     Channel = &Channels[1];
-    #if GHVentilatorChannelCount >= 2
-    Channel->Temperature = Channel2Atmosphere.Temperature ();
-    Channel->Pressure  = Channel2Atmosphere.Pressure();
+    #if SBVentilatorChannelCount >= 2
+    Channel->Temperature = Atmosphere2.Temperature ();
+    Channel->Pressure  = Atmosphere2.Pressure();
     #endif
     Channel = &Channels[2];
-    #if GHVentilatorChannelCount >= 3
-    Channel->Temperature = Channel3Atmosphere.Temperature ();
-    Channel->Pressure  = Channel3Atmosphere.Pressure();
+    #if SBVentilatorChannelCount >= 3
+    Channel->Temperature = Atmosphere3.Temperature ();
+    Channel->Pressure  = Atmosphere3.Pressure();
     #endif
     Channel = &Channels[3];
-    #if GHVentilatorChannelCount >= 4
-    Channel->Temperature = Channel4Atmosphere.Temperature ();
-    Channel->Pressure  = Channel4Atmosphere.Pressure();
+    #if SBVentilatorChannelCount >= 4
+    Channel->Temperature = Atmosphere4.Temperature ();
+    Channel->Pressure  = Atmosphere4.Pressure();
     #endif
   }
 }

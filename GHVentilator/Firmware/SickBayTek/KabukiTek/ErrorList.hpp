@@ -1,14 +1,14 @@
-/* mbedBug @version 0.x
-@link    https://github.com/KabukiStarship/mbedbug.git
-@file    /error_list.h
+/** Kabuki Tek @version 0.x
+@link  https://github.com/KabukiStarship/KabukiTek.git
+@file  /ErrorList.hpp
 @author  Cale McCollough <https://cale-mccollough.github.io>
-@license Copyright 2016-20 (C) Kabuki Starship <kabukistarship.com>; all rights 
-reserved (R). This Source Code Form is subject to the terms of the Mozilla 
-Public License, v. 2.0. If a copy of the MPL was not distributed with this file,
-You can obtain one at <https://mozilla.org/MPL/2.0/>. */
+@license Copyright 2020 (C) Kabuki Starship <kabukistarship.com>.
+This Source Code Form is subject to the terms of the Mozilla Public License, 
+v. 2.0. If a copy of the MPL was not distributed with this file, you can obtain 
+one at <https://mozilla.org/MPL/2.0/>. */
 #pragma once
-#include <mbedbug_config.h>
-namespace mbedBug {
+#include <_Config.h>
+namespace _ {
 
 /* An array of error strings.
 @code
@@ -60,4 +60,4 @@ class ErrorList {
     const char* Errors[ErrorCountMax];
 };
 
-}   //< namespace mbedBug
+}   //< namespace _
