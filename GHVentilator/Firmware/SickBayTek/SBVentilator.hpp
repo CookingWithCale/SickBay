@@ -7,8 +7,9 @@ This Source Code Form is subject to the terms of the Mozilla Public License,
 v. 2.0. If a copy of the MPL was not distributed with this file, you can obtain 
 one at <https://mozilla.org/MPL/2.0/>. */
 
-#include "SBVentilator.h"
 #include <_KabukiTek.hpp>
+#include "SBVentilator.h"
+#include "SBVentilatorChannel.hpp"
 
 namespace SickBay {
 
@@ -167,4 +168,3 @@ void SBVentilator::Update() {
   }
 }
 }   //< namespace SickBay
-#include "SBVentilatorChannel.hpp"
